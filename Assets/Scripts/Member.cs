@@ -26,7 +26,6 @@ namespace Assets.Scripts
             this.Stamina = stamina;
             this.performAction = false;
             this.actionDone = false;
-            action = new WalkAction();
         }
 
         /// <summary>
@@ -34,9 +33,9 @@ namespace Assets.Scripts
         /// </summary>
         public void PerformAction()
         {
-            performAction = true;
-            actionDone = false;
-            action.Perform();
+            this.performAction = true;
+            this.actionDone = false;
+            this.action.Perform();
         }
 
         /// <summary>
@@ -46,7 +45,7 @@ namespace Assets.Scripts
         public void SetAction(List<Vector2> movementpoints)
         {
             //Fill in the action with a walk action
-            action.WalkAction(movementpoints);
+            this.action = new WalkAction(movementpoints);
         }
 
         /// <summary>
@@ -55,32 +54,32 @@ namespace Assets.Scripts
         /// <returns>Whether their action is finished, or if the phase is in planning mode, whichever is true</returns>
         public bool IsActionDone()
         {
-            return actionDone;
+            return this.actionDone;
         }
 
         void Update()
         {
             //If not in the planning phase, skip the validation part
-            if (actionDone && !performAction) return;
+            if (this.actionDone && !this.performAction) return;
 
             //If the last location exists
-            if (lastLocation != null)
+            if (this.lastLocation != null)
             {
                 //And equals to its parent's last position
-                if (lastLocation == gameObject.transform.position)
+                if (this.lastLocation == this.gameObject.transform.position)
                 {
                     //Then it has not moved, and therefore is done with its action
-                    actionDone = true;
-                    performAction = false;
+                    this.actionDone = true;
+                    this.performAction = false;
                 }
                 else
                 {
                     //Else it is still in progress
-                    actionDone = false;
+                    this.actionDone = false;
                 }
             }
             //Set the new last location
-            lastLocation = gameObject.transform.position;
+            this.lastLocation = this.gameObject.transform.position;
         }
     }
 }
