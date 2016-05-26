@@ -1,15 +1,20 @@
-﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-public class WalkAction : MonoBehaviour {
+public class WalkAction : Action {
 
-	// Use this for initialization
-	void Start () {
-	
+	private List<Vector2> Positions;
+
+	/**
+	 * 
+	 * @param positions
+	 */
+	public WalkAction(List<Vector2> positions) {
+
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
+    public override void Perform()
+    {
+            
+    }
 }

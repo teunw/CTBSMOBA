@@ -1,15 +1,19 @@
-﻿using UnityEngine;
-using System.Collections;
+using UnityEngine;
 
 public class DrawManager : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
+	private int Current;
+
+	public void GetCurrentDrawManager() {
+
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	public void SetAction() {
+
 	}
+
+	public void Draw() {
+
+	}
+
 }
