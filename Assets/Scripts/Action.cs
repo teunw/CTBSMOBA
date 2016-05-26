@@ -1,15 +1,15 @@
-﻿using UnityEngine;
-using System.Collections;
+using UnityEngine;
 
-public class Action : MonoBehaviour {
+public abstract class Action {
 
-	// Use this for initialization
-	void Start () {
-	
+	/**
+	 * 
+	 * @param member
+	 */
+	public Action() {
+
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
+    public abstract void Perform();
+
 }
