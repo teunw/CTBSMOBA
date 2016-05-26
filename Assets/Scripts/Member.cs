@@ -9,11 +9,15 @@ namespace Assets.Scripts
 
     public class Member : MonoBehaviour, IFieldObject
     {
+        public DrawManager DrawManager;
+
         //Member data
         public int Stamina;
         public int Speed;
         public DrawManager DrawManager;
 
+        private int stamina;
+        private int speed;
 
         //Action saving
         private Action action;
@@ -25,8 +29,8 @@ namespace Assets.Scripts
 
         public Member(int speed, int stamina)
         {
-            this.Speed = speed;
-            this.Stamina = stamina;
+            this.speed = speed;
+            this.stamina = stamina;
             this.performAction = false;
             this.actionDone = false;
         }
@@ -88,6 +92,11 @@ namespace Assets.Scripts
         void OnMouseDown()
         {
             DrawManager.SetMember(this);
+        }
+
+        void OnMouseDown()
+        {
+            DrawManager.SelectedMember = this;
         }
     }
 }
