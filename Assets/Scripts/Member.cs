@@ -8,11 +8,11 @@ namespace Assets.Scripts
 {
     public class Member : MonoBehaviour, IFieldObject
     {
+        //Member data
+        public int Stamina { get; private set; }
+        public int Speed  { get; private set; }
         public DrawManager DrawManager;
 
-        //Member data
-        private int stamina;
-        private int speed;
 
         //Action saving
         private Action action;
@@ -24,8 +24,8 @@ namespace Assets.Scripts
 
         public Member(int speed, int stamina)
         {
-            this.speed = speed;
-            this.stamina = stamina;
+            this.Speed = speed;
+            this.Stamina = stamina;
             this.performAction = false;
             this.actionDone = false;
         }
@@ -84,9 +84,9 @@ namespace Assets.Scripts
             this.lastLocation = this.gameObject.transform.position;
         }
 
-        void OnMouseDown()
-        {
-            DrawManager.SelectedMember = this;
-        }
+      void OnMouseDown()
+      {
+        DrawManager.SetMember(this);
+      }
     }
 }
