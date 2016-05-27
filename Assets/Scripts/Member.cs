@@ -6,11 +6,12 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
+
     public class Member : MonoBehaviour, IFieldObject
     {
         //Member data
-        public int Stamina { get; private set; }
-        public int Speed  { get; private set; }
+        public int Stamina;
+        public int Speed;
         public DrawManager DrawManager;
 
 
@@ -84,9 +85,9 @@ namespace Assets.Scripts
             this.lastLocation = this.gameObject.transform.position;
         }
 
-      void OnMouseDown()
-      {
-        DrawManager.SetMember(this);
-      }
+        void OnMouseDown()
+        {
+            DrawManager.SetMember(this);
+        }
     }
 }
