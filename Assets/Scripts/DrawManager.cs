@@ -1,96 +1,107 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Linq;
+using System.Security.Policy;
 using Assets.Scripts;
 using UnityEngine;
 
 public class DrawManager : MonoBehaviour
 {
-    public readonly Color DefaultColor = new Color(0f, 0f, 0f);
+  public float LineWidth = .5f;
+  // Lower value makes the line more round, but consumes more resources
+  [Tooltip("Lower value makes the line more round, but consumes more resources")] public float LineRoundness = .3f;
 
-    public float LineWidth = .5f;
-    public float LineDistance = .5f;
+  public GameObject DrawPlane;
+  public Camera PlayerCamera;
 
-    public GameObject DrawPlane;
-    public GameObject RendererParent;
-    public Camera PlayerCamera;
-    public Member SelectedMember;
+  private Member SelectedMember;
+  private List<Vector3> Positions;
 
-    private List<LineRenderer> LineRenderers; 
-    private List<Vector2> Positions;
-    private Vector2 PreviousMouseLocation;
+  private Vector3 LastPosition
+  {
+    get { return (Positions.Count > 0) ? Positions[Positions.Count - 1] : Vector3.zero; }
+  }
 
-    void Start()
+  private List<GameObject> LineRenderers;
+
+  void Start()
+  {
+    this.Positions = new List<Vector3>();
+    this.LineRenderers = new List<GameObject>();
+  }
+
+  public void ClearLine()
+  {
+    Positions.Clear();
+    // Destroys all Linerenderer objects
+    LineRenderers.ForEach(Destroy);
+  }
+
+  void Update()
+  {
+    if (IsMemberSelected)
     {
-        this.Positions = new List<Vector2>();
-        this.LineRenderers = new List<LineRenderer>();
-    }
+      if (Input.GetMouseButton(0))
+      {
+        Ray ray = PlayerCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
 
-    void Update()
-    {
-        if (IsMemberSelected)
+        if (Physics.Raycast(ray, out hit))
         {
-            if (Input.GetMouseButton(0))
-            {
-                Ray ray = PlayerCamera.ScreenPointToRay(DrawPlane.GetComponent<Transform>().position);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit))
-                {
-                    Vector3 currentMouseLocation = hit.point;
-                    if (Vector2.Distance(currentMouseLocation, PreviousMouseLocation) < LineDistance) return;
-                    Positions.Add(currentMouseLocation);
-
-                    GameObject gameObject = new GameObject();
-                    gameObject.GetComponent<Transform>().parent = RendererParent.transform; 
-                    gameObject.AddComponent<LineRenderer>();
-                    LineRenderer lineRenderer = gameObject.GetComponent<LineRenderer>();
-                    lineRenderer.SetPositions(new Vector3[]
-                    {
-                        PreviousMouseLocation,
-                        currentMouseLocation 
-                    });
-                    LineRenderers.Add(lineRenderer);
-
-                    PreviousMouseLocation = currentMouseLocation;
-                }
-            }
-            else
-            {
-                SelectedMember = null;
-                SetAction();
-                ClearLine();
-            }
+          Vector3 hitpos = hit.point;
+          // Check distance so lines aren't drawn when user holds mouse still
+          if (Vector2.Distance(hitpos, LastPosition) <= LineRoundness)
+          {
+            Debug.Log("Returned");
+            return;
+          }
+          CreateLine(LastPosition, hitpos);
+          Positions.Add(hitpos);
         }
+      }
+      else
+      {
+        SetAction();
+        SelectedMember = null;
+      }
     }
+  }
 
-    /// <summary>
-    /// Checks if member is selected, return true if selected
-    /// </summary>
-    public bool IsMemberSelected
+  public bool IsMemberSelected
+  {
+    get { return SelectedMember != null; }
+  }
+
+  private void CreateLine(Vector2 begin, Vector2 end)
+  {
+    GameObject gameObject = new GameObject();
+    gameObject.AddComponent<LineRenderer>();
+
+    LineRenderer line = gameObject.GetComponent<LineRenderer>();
+    line.SetVertexCount(2);
+    line.SetWidth(0.08f, 0.08f);
+    line.useWorldSpace = true;
+    line.SetPosition(0, begin);
+    line.SetPosition(1, end);
+    line.transform.SetParent(transform);
+    line.transform.position += new Vector3(0, -0.1f, 0f);
+
+    LineRenderers.Add(gameObject);
+  }
+
+  public void SetAction()
+  {
+    List<Vector2> vector2s = new List<Vector2>(Positions.Count);
+    Positions.ForEach(o =>
     {
-        get
-        {
-            return SelectedMember != null;
-        }
-    }
+      vector2s.Add((Vector2) o);
+    });
+    SelectedMember.SetAction(vector2s);
+  }
 
-    /// <summary>
-    /// Clears the line on screen and in memory
-    /// </summary>
-    private void ClearLine()
-    {
-        this.Positions = new List<Vector2>();
-        LineRenderers.ForEach(o =>
-        {
-            Destroy(o.gameObject);
-        });
-        LineRenderers.Clear();
-    }
-
-    /// <summary>
-    /// Sets action 
-    /// </summary>
-	public void SetAction() {
-        SelectedMember.SetAction(this.Positions);
-	}
+  public void SetMember(Member member)
+  {
+    this.SelectedMember = member;
+    Positions.Add(member.transform.position);
+  }
 }
