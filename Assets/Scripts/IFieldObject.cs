@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Assets.Scripts
+public interface IFieldObject
 {
+<<<<<<< HEAD
     public interface IFieldObject
     {
         /// <summary>
@@ -14,3 +15,12 @@ namespace Assets.Scripts
         bool IsActionDone();
     }
 }
+=======
+    /// <summary>
+    /// Method for calculating the distance of whether an object is done with its action or not
+    /// </summary>
+    /// <returns>Whether it has done its action</returns>
+    bool IsActionDone();
+}
+
+>>>>>>> origin/Rowan_Action
