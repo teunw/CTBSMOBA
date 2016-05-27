@@ -66,11 +66,20 @@ public class GameScript : MonoBehaviour {
     /// </summary>
     public void Start()
     {
+        //Create teams
+        //CreateTeams();
+
         currentTeam = team1;
         teamStatus = TeamStatus.Planning;
 
         team1ActionsDone = false;
         team2ActionsDone = false;
+    }
+
+    public void CreateTeams(Team team1, Team team2)
+    {
+        this.team1 = team1;
+        this.team2 = team2;
     }
 
     /// <summary>
@@ -120,11 +129,19 @@ public class GameScript : MonoBehaviour {
         {
             return true;
         }
-
         else
         {
             return false;
         }
+    }
+
+    /// <summary>
+    /// Checks if the game
+    /// </summary>
+    /// <param name="t"></param>
+    public void Win(Team t)
+    {
+
     }
 
     /// <summary>

@@ -1,18 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class Team : MonoBehaviour {
-    private ArrayList<Member> members;
+public class Team : MonoBehaviour
+{
+    private List<Member> members;
     private Flag flag;
     private Base base_; //TODO: Better name
     private int score;
+    private int team;
 
-    public Team (Flag flag, Base base_, ArrayList<Member> members)
+    private GameScript game;
+
+    public Team(Flag flag, Base base_, List<Member> members, GameScript game, int teamnumber)
     {
         this.flag = flag;
         this.base_ = base_;
         this.members = members;
         this.score = 0;
+        this.team = teamnumber;
     }
 
     /// <summary>
@@ -20,7 +26,7 @@ public class Team : MonoBehaviour {
     /// </summary>
     public void PerformActions()
     {
-        foreach(Member member in this.members)
+        foreach (Member member in this.members)
         {
             member.PerformAction();
         }
@@ -31,10 +37,9 @@ public class Team : MonoBehaviour {
     /// </summary>
     public void RaiseScore()
     {
-        this.score++;
-        if(this.score == 3)
+        if (game.CheckEndGame(++this.score))
         {
-            this.Win();
+            game.Win(this);
         }
     }
 
@@ -61,10 +66,32 @@ public class Team : MonoBehaviour {
     public bool CheckActionsDone()
     {
         bool done = true;
-        foreach(Member member in this.members)
+        foreach (Member member in this.members)
         {
-            if (!member.isDone()) done = false;
+            if (!member.IsActionDone()) done = false;
         }
         return done;
+    }
+
+    /// <summary>
+    /// Checks if the team number is the same as the given integer
+    /// </summary>
+    /// <param name="t">the team to check</param>
+    /// <param name="i">the team number to validate</param>
+    /// <returns>whether the team number is the same as the integer</returns>
+    public static bool operator ==(Team t, int i)
+    {
+        return t.team == i;
+    }
+
+    /// <summary>
+    /// Checks if the team number is the same as the given integer
+    /// </summary>
+    /// <param name="t">the team to check</param>
+    /// <param name="i">the team number to validate</param>
+    /// <returns>whether the team number is not the same as the integer</returns>
+    public static bool operator !=(Team t, int i)
+    {
+        return t.team != i;
     }
 }
