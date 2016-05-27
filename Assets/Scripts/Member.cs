@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +6,23 @@ using UnityEngine;
 
 public class Member : MonoBehaviour, IFieldObject
 {
+<<<<<<< HEAD
+
+    public class Member : MonoBehaviour, IFieldObject
+    {
+
+        //Member data
+        public int Stamina;
+        public int Speed;
+        public DrawManager DrawManager;
+
+        private int stamina;
+        private int speed;
+=======
     //Member data
     private int Stamina;
     private int Speed;
+>>>>>>> origin/Rowan_Action
 
     //Action saving
     private Action action;
@@ -18,6 +32,15 @@ public class Member : MonoBehaviour, IFieldObject
     private bool performAction;
     private Vector3 lastLocation;
 
+<<<<<<< HEAD
+        public Member(int speed, int stamina)
+        {
+            this.speed = speed;
+            this.stamina = stamina;
+            this.performAction = false;
+            this.actionDone = false;
+        }
+=======
     public Member(int speed, int stamina)
     {
         this.Speed = speed;
@@ -25,6 +48,7 @@ public class Member : MonoBehaviour, IFieldObject
         this.performAction = false;
         this.actionDone = false;
     }
+>>>>>>> origin/Rowan_Action
 
     /// <summary>
     /// Performs the given action
@@ -76,8 +100,18 @@ public class Member : MonoBehaviour, IFieldObject
                 this.actionDone = false;
             }
         }
+<<<<<<< HEAD
+
+        void OnMouseDown()
+        {
+            DrawManager.SetMember(this);
+        }
+    }
+}
+=======
         //Set the new last location
         this.lastLocation = this.gameObject.transform.position;
     }
 }
 
+>>>>>>> origin/Rowan_Action
