@@ -1,15 +1,11 @@
 using UnityEngine;
 
-public abstract class Action
+public abstract class Action : MonoBehaviour
 {
-    /**
-	 * 
-	 * @param member
-	 */
 
-    public Action()
-    {
-    }
+    public virtual void Start() { }
+
+    public virtual void Update() { }
 
     public abstract void Perform();
 }
