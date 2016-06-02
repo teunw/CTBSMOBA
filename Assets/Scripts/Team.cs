@@ -5,21 +5,17 @@ using Assets.Scripts;
 
 public class Team : MonoBehaviour
 {
-    private List<Member> members;
-    private Flag flag;
-    private Base base_; //TODO: Better name
-    private int score;
-    private int team;
+    public List<Member> members;
+    public Flag flag;
+    public Base base_; //TODO: Better name
+    public int score;
+    public int team;
 
     private GameScript game;
 
-    public Team(Flag flag, Base base_, List<Member> members, GameScript game, int teamnumber)
+    public Team()
     {
-        this.flag = flag;
-        this.base_ = base_;
-        this.members = members;
         this.score = 0;
-        this.team = teamnumber;
     }
 
     /// <summary>
