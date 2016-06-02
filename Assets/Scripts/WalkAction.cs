@@ -1,20 +1,38 @@
 using System.Collections.Generic;
+using Assets.Scripts;
 using UnityEngine;
 
-public class WalkAction : Action {
+[RequireComponent(typeof(Rigidbody2D))]
+public class WalkAction : Action
+{
+    private Member member;
+    private List<Vector2> Positions;
+    private Rigidbody2D rigidbody2D;
 
-	private List<Vector2> Positions;
-
-	/**
+    /**
 	 * 
 	 * @param positions
 	 */
-	public WalkAction(List<Vector2> positions) {
 
-	}
+    public WalkAction(Member member, List<Vector2> positions)
+    {
+        this.Positions = positions;
+        this.member = member;
+    }
+
+    public void CalculateMovement()
+    {
+        
+    }
+
+    public override void Update()
+    {
+        base.Update();
+
+    }
 
     public override void Perform()
     {
-            
+        
     }
 }

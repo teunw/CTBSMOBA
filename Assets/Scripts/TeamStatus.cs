@@ -12,5 +12,5 @@ namespace Assets
     {
         Planning,
         Executing
-    };
+    }
 }
