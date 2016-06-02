@@ -5,9 +5,13 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class WalkAction : Action
 {
-    private Member member;
-    private List<Vector2> Positions;
     private Rigidbody2D rigidbody2D;
+
+    private Member member;
+    private List<Vector2> positions;
+
+    private int currentStep;
+    private bool ready = false;
 
     /**
 	 * 
@@ -16,8 +20,15 @@ public class WalkAction : Action
 
     public WalkAction(Member member, List<Vector2> positions)
     {
-        this.Positions = positions;
+        this.positions = positions;
         this.member = member;
+        this.currentStep = 0;
+    }
+
+    public void setRigidbody2D(Rigidbody2D rigidbody2D)
+    {
+        this.rigidbody2D = rigidbody2D;
+        Debug.Log("Rigidbody2D set succesfully");
     }
 
     public void CalculateMovement()
@@ -25,14 +36,23 @@ public class WalkAction : Action
         
     }
 
-    public override void Update()
+    public override void Perform(Member member)
     {
-        base.Update();
+        //Set rigidbody2D from the member
+        Debug.Log("Setting rigidbody2D");
+        this.setRigidbody2D(this.member.gameObject.GetComponent<Rigidbody2D>());
 
+        Debug.Log("Ready up");
+        this.ready = true;
     }
 
-    public override void Perform()
+    public Vector2 getStep(int index)
     {
-        
+        return this.positions[index];
+    }
+
+    public int getListCount()
+    {
+        return this.positions.Count;
     }
 }

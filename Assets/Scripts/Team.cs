@@ -29,7 +29,7 @@ public class Team : MonoBehaviour
     {
         foreach (Member member in this.members)
         {
-            member.PerformAction();
+            member.PerformActions();
         }
     }
 
@@ -69,7 +69,7 @@ public class Team : MonoBehaviour
         bool done = true;
         foreach (Member member in this.members)
         {
-            if (!member.IsActionDone()) done = false;
+            //if (!member.IsActionDone()) done = false;
         }
         return done;
     }
