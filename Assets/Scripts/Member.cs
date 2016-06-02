@@ -16,75 +16,91 @@ namespace Assets.Scripts
         public DrawManager DrawManager;
 
         //Action saving
-        private Action action;
+        private List<Action> actions;
 
         //Verifying action is done
-        private bool actionDone;
+        private int actionsDone;
         private bool performAction;
         private Vector3 lastLocation;
+
+        private bool ready = false;
+        private int currentAction;
+        private int currentStep;
 
         public Member(int speed, int stamina)
         {
             this.performAction = false;
-            this.actionDone = false;
+            this.actionsDone = 0;
+        }
+
+        private void Start()
+        {
+            this.actions = new List<Action>();
         }
 
         /// <summary>
         /// Performs the given action
         /// </summary>
-        public void PerformAction()
+        public void PerformActions()
         {
             this.performAction = true;
-            this.actionDone = false;
-            this.action.Perform();
+            this.actionsDone = 0;
+            Debug.Log(this.actions.Count() + " actions found");
+            this.currentAction = 0;
+            this.currentStep = 0;
+            this.ready = true;
         }
 
         /// <summary>
         /// Sets the action to a walk action to follow a specific pattern
         /// </summary>
         /// <param name="movementpoints">The pattern to follow</param>
-        public void SetAction(List<Vector2> movementpoints)
+        public void SetAction(Action action)
         {
-            //Fill in the action with a walk action
-//            this.action = new WalkAction(movementpoints);
+            this.actions.Add(action);
         }
 
         /// <summary>
         /// Returns whether the member has finished performing its action
         /// </summary>
         /// <returns>Whether their action is finished, or if the phase is in planning mode, whichever is true</returns>
-        public bool IsActionDone()
+        public void ActionDone()
         {
-            return this.actionDone;
+            this.actionsDone++;
         }
 
         void Update()
         {
-            //If not in the planning phase, skip the validation part
-            if (this.actionDone && !this.performAction) return;
-
-            //If the last location exists
-            if (this.lastLocation != null)
-            {
-                //And equals to its parent's last position
-                if (this.lastLocation == this.gameObject.transform.position)
-                {
-                    //Then it has not moved, and therefore is done with its action
-                    this.actionDone = true;
-                    this.performAction = false;
-                }
-                else
-                {
-                    //Else it is still in progress
-                    this.actionDone = false;
-                }
-            }
+            
         }
 
         void OnMouseDown()
         {
             if (DrawManager != null)
                 DrawManager.SetMember(this);
+        }
+
+        public void FixedUpdate()
+        {
+            if (ready)
+            {
+                if(this.actions[currentAction].GetType().Equals(typeof(WalkAction)))
+                {
+                    WalkAction wa = (WalkAction)this.actions[currentAction];
+                    Debug.Log("WA: " + wa.getStep(currentStep + 1));
+                    Debug.Log("Pos" + transform.position);
+                    this.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(transform.position.x, transform.position.y) + wa.getStep(currentStep + 1);
+                    if(Vector2.Distance(new Vector2(transform.position.x, transform.position.y), wa.getStep(currentStep + 1)) <= 0.1f) {
+                        if(currentStep + 2 <= wa.getListCount())
+                        {
+                            currentStep++;
+                        } else
+                        {
+                            currentAction = 1;
+                        }
+                    }
+                }
+            }
         }
     }
 }
