@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts;
 
 public class Flag : MonoBehaviour, IFieldObject {
+    private int actionsDone;
+
     /// <summary>
     /// Returns the flag back to its original spawnpoint
     /// </summary>
@@ -9,11 +12,11 @@ public class Flag : MonoBehaviour, IFieldObject {
     public void ReturnToSpawnPoint(Vector2 flagSpawnPoint)
     {
         this.transform.position = new Vector3(flagSpawnPoint.x, flagSpawnPoint.y, 0);
-        this.IsActionDone();
+        this.ActionDone();
     }
 
-    public bool IsActionDone()
+    public void ActionDone()
     {
-        return true;
+        this.actionsDone++;
     }
 }

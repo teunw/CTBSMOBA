@@ -100,7 +100,10 @@ public class DrawManager : MonoBehaviour
     /// </summary>
     public void CompleteLine()
     {
+        Debug.Log("Completed line, setting action");
         SetAction();
+        Debug.Log("Performing action");
+        SelectedMember.PerformActions();
         SelectedMember = null;
     }
 
@@ -126,6 +129,8 @@ public class DrawManager : MonoBehaviour
         line.SetVertexCount(2);
         line.SetWidth(LineWidth, LineWidth);
         line.useWorldSpace = true;
+        Debug.Log("Begin: " + begin.x + ", " + begin.y);
+        Debug.Log("End: " + end.x + ", " + end.y);
         line.SetPosition(0, begin);
         line.SetPosition(1, end);
         line.transform.SetParent(transform);
@@ -141,8 +146,15 @@ public class DrawManager : MonoBehaviour
     public void SetAction()
     {
         List<Vector2> vector2s = new List<Vector2>(CurrentMemberLine.Positions.Count);
-        CurrentMemberLine.Positions.ForEach(o => { vector2s.Add((Vector2) o); });
-        SelectedMember.SetAction(vector2s);
+        for (int i = 0; i < CurrentMemberLine.Positions.Count - 1; i++)
+        {
+            Vector2 pos1 = CurrentMemberLine.Positions[i];
+            Vector2 pos2 = CurrentMemberLine.Positions[i + 1];
+            Vector2 relativePos = pos2 - pos1;
+            vector2s.Add(relativePos);
+        }
+        WalkAction walkAction = new WalkAction(SelectedMember, vector2s);
+        SelectedMember.SetAction(walkAction);
     }
 
     /// <summary>

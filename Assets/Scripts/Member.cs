@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class Member : MonoBehaviour, IFieldObject
+namespace Assets.Scripts
 {
-<<<<<<< HEAD
 
     public class Member : MonoBehaviour, IFieldObject
     {
@@ -16,102 +15,92 @@ public class Member : MonoBehaviour, IFieldObject
         public int Speed;
         public DrawManager DrawManager;
 
-        private int stamina;
-        private int speed;
-=======
-    //Member data
-    private int Stamina;
-    private int Speed;
->>>>>>> origin/Rowan_Action
+        //Action saving
+        private List<Action> actions;
 
-    //Action saving
-    private Action action;
+        //Verifying action is done
+        private int actionsDone;
+        private bool performAction;
+        private Vector3 lastLocation;
 
-    //Verifying action is done
-    private bool actionDone;
-    private bool performAction;
-    private Vector3 lastLocation;
+        private bool ready = false;
+        private int currentAction;
+        private int currentStep;
 
-<<<<<<< HEAD
         public Member(int speed, int stamina)
         {
-            this.speed = speed;
-            this.stamina = stamina;
             this.performAction = false;
-            this.actionDone = false;
+            this.actionsDone = 0;
         }
-=======
-    public Member(int speed, int stamina)
-    {
-        this.Speed = speed;
-        this.Stamina = stamina;
-        this.performAction = false;
-        this.actionDone = false;
-    }
->>>>>>> origin/Rowan_Action
 
-    /// <summary>
-    /// Performs the given action
-    /// </summary>
-    public void PerformAction()
-    {
-        this.performAction = true;
-        this.actionDone = false;
-        this.action.Perform();
-    }
-
-    /// <summary>
-    /// Sets the action to a walk action to follow a specific pattern
-    /// </summary>
-    /// <param name="movementpoints">The pattern to follow</param>
-    public void SetAction(List<Vector2> movementpoints)
-    {
-        //Fill in the action with a walk action
-        this.action = new WalkAction(movementpoints);
-    }
-
-    /// <summary>
-    /// Returns whether the member has finished performing its action
-    /// </summary>
-    /// <returns>Whether their action is finished, or if the phase is in planning mode, whichever is true</returns>
-    public bool IsActionDone()
-    {
-        return this.actionDone;
-    }
-
-    void Update()
-    {
-        //If not in the planning phase, skip the validation part
-        if (this.actionDone && !this.performAction) return;
-
-        //If the last location exists
-        if (this.lastLocation != null)
+        private void Start()
         {
-            //And equals to its parent's last position
-            if (this.lastLocation == this.gameObject.transform.position)
-            {
-                //Then it has not moved, and therefore is done with its action
-                this.actionDone = true;
-                this.performAction = false;
-            }
-            else
-            {
-                //Else it is still in progress
-                this.actionDone = false;
-            }
+            this.actions = new List<Action>();
         }
-<<<<<<< HEAD
+
+        /// <summary>
+        /// Performs the given action
+        /// </summary>
+        public void PerformActions()
+        {
+            this.performAction = true;
+            this.actionsDone = 0;
+            Debug.Log(this.actions.Count() + " actions found");
+            this.currentAction = 0;
+            this.currentStep = 0;
+            this.ready = true;
+        }
+
+        /// <summary>
+        /// Sets the action to a walk action to follow a specific pattern
+        /// </summary>
+        /// <param name="movementpoints">The pattern to follow</param>
+        public void SetAction(Action action)
+        {
+            this.actions.Add(action);
+        }
+
+        /// <summary>
+        /// Returns whether the member has finished performing its action
+        /// </summary>
+        /// <returns>Whether their action is finished, or if the phase is in planning mode, whichever is true</returns>
+        public void ActionDone()
+        {
+            this.actionsDone++;
+        }
+
+        void Update()
+        {
+            
+        }
 
         void OnMouseDown()
         {
-            DrawManager.SetMember(this);
+            if (DrawManager != null)
+                DrawManager.SetMember(this);
+        }
+
+        public void FixedUpdate()
+        {
+            if (ready)
+            {
+                if(this.actions[currentAction].GetType().Equals(typeof(WalkAction)))
+                {
+                    WalkAction wa = (WalkAction)this.actions[currentAction];
+                    Debug.Log("WA: " + wa.getStep(currentStep + 1));
+                    Debug.Log("Pos" + transform.position);
+                    this.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(transform.position.x, transform.position.y) + wa.getStep(currentStep + 1);
+                    if(Vector2.Distance(new Vector2(transform.position.x, transform.position.y), wa.getStep(currentStep + 1)) <= 0.1f) {
+                        if(currentStep + 2 <= wa.getListCount())
+                        {
+                            currentStep++;
+                        } else
+                        {
+                            currentAction = 1;
+                        }
+                    }
+                }
+            }
         }
     }
 }
-=======
-        //Set the new last location
-        this.lastLocation = this.gameObject.transform.position;
-    }
-}
-
->>>>>>> origin/Rowan_Action

@@ -1,15 +1,12 @@
+using Assets.Scripts;
 using UnityEngine;
 
 public abstract class Action
 {
-    /**
-	 * 
-	 * @param member
-	 */
 
-    public Action()
-    {
-    }
+    public virtual void Start() { }
 
-    public abstract void Perform();
+    public virtual void Update() { }
+
+    public abstract void Perform(Member member);
 }
