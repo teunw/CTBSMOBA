@@ -3,10 +3,13 @@ using UnityEngine;
 
 public abstract class Action
 {
+    public Member Member
+    { get; protected set; }
 
-    public virtual void Start() { }
+    public Action(Member member)
+    {
+        this.Member = member;
+    }
 
-    public virtual void Update() { }
-
-    public abstract void Perform(Member member);
+    public abstract bool Update();
 }

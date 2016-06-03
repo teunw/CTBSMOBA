@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Assets.Scripts;
 using UnityEngine;
@@ -6,53 +7,54 @@ using UnityEngine;
 public class WalkAction : Action
 {
     private Rigidbody2D rigidbody2D;
-
-    private Member member;
-    private List<Vector2> positions;
+    private readonly List<Vector2> Positions;
+    private Vector2 CurrentStepPos, NextStepPos;
 
     private int currentStep;
-    private bool ready = false;
 
     /**
 	 * 
-	 * @param positions
+	 * @param Positions
 	 */
 
-    public WalkAction(Member member, List<Vector2> positions)
+    public WalkAction(Member member, List<Vector2> positions) : base(member)
     {
-        this.positions = positions;
-        this.member = member;
+        this.Positions = positions;
         this.currentStep = 0;
+        this.rigidbody2D = Member.gameObject.GetComponent<Rigidbody2D>();
     }
 
-    public void setRigidbody2D(Rigidbody2D rigidbody2D)
+    public override bool Update()
     {
-        this.rigidbody2D = rigidbody2D;
-        Debug.Log("Rigidbody2D set succesfully");
+        rigidbody2D.velocity = Positions[currentStep];
+
+        return true;
     }
 
-    public void CalculateMovement()
+    public bool shouldMoveToNextPoint()
     {
         
     }
 
-    public override void Perform(Member member)
+    public Vector2 CurrentStep
     {
-        //Set rigidbody2D from the member
-        Debug.Log("Setting rigidbody2D");
-        this.setRigidbody2D(this.member.gameObject.GetComponent<Rigidbody2D>());
-
-        Debug.Log("Ready up");
-        this.ready = true;
+        get { return Positions[currentStep]; }
     }
 
-    public Vector2 getStep(int index)
+    public Vector2 NextStep(bool plus = true)
     {
-        return this.positions[index];
+        if (currentStep >= ListCount)
+        {
+            throw new IndexOutOfRangeException();
+        }
+        return plus ? Positions[++currentStep] : Positions[currentStep];
     }
 
-    public int getListCount()
+    public int ListCount
     {
-        return this.positions.Count;
+        get
+        {
+            return this.Positions.Count;
+        } 
     }
 }

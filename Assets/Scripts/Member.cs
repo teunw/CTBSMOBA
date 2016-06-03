@@ -20,22 +20,23 @@ namespace Assets.Scripts
 
         //Verifying action is done
         private int actionsDone;
-        private bool performAction;
         private Vector3 lastLocation;
 
-        private bool ready = false;
+        private bool doPerform = false;
         private int currentAction;
-        private int currentStep;
 
         public Member(int speed, int stamina)
         {
-            this.performAction = false;
             this.actionsDone = 0;
         }
 
         private void Start()
         {
             this.actions = new List<Action>();
+            if (DrawManager == null)
+            {
+                throw new NullReferenceException("Drawmanager not set");
+            }
         }
 
         /// <summary>
@@ -43,19 +44,16 @@ namespace Assets.Scripts
         /// </summary>
         public void PerformActions()
         {
-            this.performAction = true;
-            this.actionsDone = 0;
             Debug.Log(this.actions.Count() + " actions found");
             this.currentAction = 0;
-            this.currentStep = 0;
-            this.ready = true;
+            this.doPerform = true;
         }
 
         /// <summary>
         /// Sets the action to a walk action to follow a specific pattern
         /// </summary>
         /// <param name="movementpoints">The pattern to follow</param>
-        public void SetAction(Action action)
+        public void AddAction(Action action)
         {
             this.actions.Add(action);
         }
@@ -76,30 +74,21 @@ namespace Assets.Scripts
 
         void OnMouseDown()
         {
-            if (DrawManager != null)
-                DrawManager.SetMember(this);
+            DrawManager.SetMember(this);
         }
 
         public void FixedUpdate()
         {
-            if (ready)
+            if (doPerform)
             {
-                if(this.actions[currentAction].GetType().Equals(typeof(WalkAction)))
-                {
-                    WalkAction wa = (WalkAction)this.actions[currentAction];
-                    Debug.Log("WA: " + wa.getStep(currentStep + 1));
-                    Debug.Log("Pos" + transform.position);
-                    this.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(transform.position.x, transform.position.y) + wa.getStep(currentStep + 1);
-                    if(Vector2.Distance(new Vector2(transform.position.x, transform.position.y), wa.getStep(currentStep + 1)) <= 0.1f) {
-                        if(currentStep + 2 <= wa.getListCount())
-                        {
-                            currentStep++;
-                        } else
-                        {
-                            currentAction = 1;
-                        }
-                    }
-                }
+                bool done = this.actions[currentAction].Update();
+//                WalkAction wa = this.actions[currentAction] as WalkAction;
+//                if(wa != null)
+//                {
+//                    Debug.Log("WA: " + wa.NextStep(false));
+//                    Debug.Log("Pos" + transform.position);
+//                    rigidbody2D.velocity = wa.NextStep();
+//                }
             }
         }
     }
