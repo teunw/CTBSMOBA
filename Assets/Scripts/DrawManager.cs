@@ -19,7 +19,7 @@ public class DrawManager : MonoBehaviour
     private Member SelectedMember;
     private List<MemberLine> MemberLines; 
 
-    void Start()
+    void Awake()
     {
         this.MemberLines = new List<MemberLine>();
     }

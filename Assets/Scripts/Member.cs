@@ -1,7 +1,8 @@
 ﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+﻿﻿using System.Runtime.CompilerServices;
+﻿﻿using System.Text;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -33,10 +34,7 @@ namespace Assets.Scripts
         private void Start()
         {
             this.actions = new List<Action>();
-            if (DrawManager == null)
-            {
-                throw new NullReferenceException("Drawmanager not set");
-            }
+            if (DrawManager == null) throw new NullReferenceException("DrawManager is null!");
         }
 
         /// <summary>
@@ -69,7 +67,7 @@ namespace Assets.Scripts
 
         void Update()
         {
-            
+
         }
 
         void OnMouseDown()
@@ -81,7 +79,15 @@ namespace Assets.Scripts
         {
             if (doPerform)
             {
-                bool done = this.actions[currentAction].Update();
+                if (currentAction >= actions.Count)
+                {
+                    doPerform = false;
+                    this.actions.Clear();
+                    return;
+                }
+                    bool done = this.actions[currentAction].Update();
+                    if (done)
+                        currentAction++;
 //                WalkAction wa = this.actions[currentAction] as WalkAction;
 //                if(wa != null)
 //                {
