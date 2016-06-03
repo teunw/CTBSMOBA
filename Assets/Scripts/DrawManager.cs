@@ -1,30 +1,53 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
 using Assets.Scripts;
-using UnityEditor;
 using UnityEngine;
+
+#endregion
 
 public class DrawManager : MonoBehaviour
 {
-    public float StaminaModifier = .1f;
-    public float LineWidth = .08f;
-    // Lower value makes the line more round, but consumes more resources
-    [Tooltip("Lower value makes the line more round, but consumes more resources")]
-    public float LineRoundness = .3f;
     public GameObject DrawPlane;
+    // Lower value makes the line more round, but consumes more resources
+    [Tooltip("Lower value makes the line more round, but consumes more resources")] public float LineRoundness = .3f;
+
+    public float LineWidth = .08f;
+    private List<MemberLine> MemberLines;
     public Camera PlayerCamera;
 
     private Member SelectedMember;
-    private List<MemberLine> MemberLines; 
+    public float StaminaModifier = .1f;
 
-    void Awake()
+    private MemberLine CurrentMemberLine
     {
-        this.MemberLines = new List<MemberLine>();
+        get { return MemberLines.Find(o => o.Member == SelectedMember); }
     }
 
-    void Update()
+    /// <summary>
+    ///     Checks if a member is selected
+    /// </summary>
+    public bool IsMemberSelected
+    {
+        get { return SelectedMember != null; }
+    }
+
+
+    /// <summary>
+    ///     Checks if the current member has enough stamina to complete this line
+    /// </summary>
+    public bool HasEnoughStamina
+    {
+        get { return CalculateLineDistance() <= SelectedMember.Stamina; }
+    }
+
+    private void Awake()
+    {
+        MemberLines = new List<MemberLine>();
+    }
+
+    private void Update()
     {
         if (IsMemberSelected)
         {
@@ -54,21 +77,13 @@ public class DrawManager : MonoBehaviour
         }
     }
 
-    private MemberLine CurrentMemberLine
-    {
-        get { return MemberLines.Find(o => o.Member == SelectedMember); }
-    }
-
     /// <summary>
-    /// Clears all lines that are being drawn
+    ///     Clears all lines that are being drawn
     /// </summary>
     public void DestroyLines()
     {
         // Destroys all Linerenderer objects
-        MemberLines.ForEach(ml =>
-        {
-            DestroyLines(ml);
-        });
+        MemberLines.ForEach(DestroyLines);
         MemberLines.Clear();
     }
 
@@ -84,19 +99,15 @@ public class DrawManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="ml"></param>
     private void DestroyLines(MemberLine ml)
     {
-        ml.LineRenderers.ForEach(o =>
-        {
-            Destroy(o.gameObject);
-        });
+        ml.LineRenderers.ForEach(o => { Destroy(o.gameObject); });
     }
 
     /// <summary>
-    /// Completes the current line
+    ///     Completes the current line
     /// </summary>
     public void CompleteLine()
     {
@@ -105,15 +116,7 @@ public class DrawManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Checks if a member is selected
-    /// </summary>
-    public bool IsMemberSelected
-    {
-        get { return SelectedMember != null; }
-    }
-
-    /// <summary>
-    /// Creates a line using the Unity linerenderer
+    ///     Creates a line using the Unity linerenderer
     /// </summary>
     /// <param name="begin">Begin point the line</param>
     /// <param name="end">End point of the line</param>
@@ -138,7 +141,7 @@ public class DrawManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Sets action to the member for processing
+    ///     Sets action to the member for processing
     /// </summary>
     public void SetSelectedMemberAction()
     {
@@ -156,19 +159,16 @@ public class DrawManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Sets the current member for the line
+    ///     Sets the current member for the line
     /// </summary>
     /// <param name="member">Member to select</param>
     public void SetMember(Member member)
     {
-        this.SelectedMember = member;
+        SelectedMember = member;
         MemberLine ml = MemberLines.Find(o => o.Member == SelectedMember);
         if (ml != null)
         {
-            ml.LineRenderers.ForEach(o =>
-            {
-                Destroy(o.gameObject);
-            });
+            ml.LineRenderers.ForEach(o => { Destroy(o.gameObject); });
             ml.Reset(member.transform.position);
         }
         else
@@ -177,28 +177,19 @@ public class DrawManager : MonoBehaviour
         }
     }
 
-
     /// <summary>
-    /// Checks if the current member has enough stamina to complete this line
-    /// </summary>
-    public bool HasEnoughStamina
-    {
-        get { return CalculateLineDistance() <= SelectedMember.Stamina; }
-    }
-
-    /// <summary>
-    /// Calculates the stamina needed for the current line
+    ///     Calculates the stamina needed for the current line
     /// </summary>
     /// <returns>Stamina need for the line, rounds up!</returns>
     public int CalculateLineDistance()
     {
         float distance = 0;
-        List<Vector3> Positions = CurrentMemberLine.Positions;
+        List<Vector3> positions = CurrentMemberLine.Positions;
         // Calculate total distance for the line
-        for (int i = 1; i < Positions.Count; i++)
+        for (int i = 1; i < positions.Count; i++)
         {
-            Vector2 v1 = Positions[i - 1];
-            Vector2 v2 = Positions[i];
+            Vector2 v1 = positions[i - 1];
+            Vector2 v2 = positions[i];
             distance += Vector2.Distance(v1, v2);
         }
         distance *= StaminaModifier;

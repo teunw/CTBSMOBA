@@ -1,15 +1,21 @@
+#region
+
 using Assets.Scripts;
-using UnityEngine;
+
+#endregion
 
 public abstract class Action
 {
-    public Member Member
-    { get; protected set; }
-
     public Action(Member member)
     {
-        this.Member = member;
+        Member = member;
     }
 
+    public Member Member { get; protected set; }
+
+    /// <summary>
+    ///     Updates to the member, implementation dependent on member
+    /// </summary>
+    /// <returns>Return true when action is done, false otherwise</returns>
     public abstract bool Update();
 }
