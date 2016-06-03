@@ -1,58 +1,96 @@
+using System;
 using System.Collections.Generic;
 using Assets.Scripts;
+using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class WalkAction : Action
 {
     private Rigidbody2D rigidbody2D;
-
-    private Member member;
-    private List<Vector2> positions;
+    private readonly List<Vector2> Positions;
 
     private int currentStep;
-    private bool ready = false;
+    private Vector2 CurrentStepStartPosition, NextStepStartPosition;
+    private float StepRadius;
 
     /**
 	 * 
-	 * @param positions
+	 * @param Positions
 	 */
 
-    public WalkAction(Member member, List<Vector2> positions)
+    public WalkAction(Member member, List<Vector2> positions) : base(member)
     {
-        this.positions = positions;
-        this.member = member;
+        this.Positions = positions;
         this.currentStep = 0;
+        this.rigidbody2D = Member.gameObject.GetComponent<Rigidbody2D>();
+        this.CurrentStepStartPosition = Vector2.zero;
+        this.NextStepStartPosition = Vector2.zero;
     }
 
-    public void setRigidbody2D(Rigidbody2D rigidbody2D)
+    public override bool Update()
     {
-        this.rigidbody2D = rigidbody2D;
-        Debug.Log("Rigidbody2D set succesfully");
+        rigidbody2D.velocity = Positions[currentStep] * Member.Speed;
+        return ShouldMoveToNextPoint();
     }
 
-    public void CalculateMovement()
+    public bool ShouldMoveToNextPoint()
     {
-        
+        // Calculate positions
+        if (CurrentStepStartPosition == Vector2.zero)
+        {
+            CurrentStepStartPosition = Member.transform.position;
+            try
+            {
+                NextStepStartPosition = (Vector2) Member.transform.position + NextStep(true);
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                rigidbody2D.velocity = Vector2.zero;
+                return true;
+            }
+            StepRadius = Vector2.Distance(CurrentStepStartPosition, NextStepStartPosition);
+        }
+        // Calculate distance between positions (radius)
+        // Get current position
+        // Get distance between this position and step position
+        // If this distance is equal or larger than the radius, it should move to the next point
+        Vector2 currentMemberPosition = Member.transform.position;
+        float currentRadius = Vector2.Distance(CurrentStepStartPosition, currentMemberPosition);
+        if (currentRadius > StepRadius)
+        {
+            CurrentStepStartPosition = Vector2.zero;
+            NextStepStartPosition = Vector2.zero;
+            StepRadius = -1.0f;
+            if (currentStep >= ListCount)
+            {
+                rigidbody2D.velocity = Vector2.zero;
+                return true;
+            }
+        }
+        return false;
+
     }
 
-    public override void Perform(Member member)
+    public Vector2 CurrentStep
     {
-        //Set rigidbody2D from the member
-        Debug.Log("Setting rigidbody2D");
-        this.setRigidbody2D(this.member.gameObject.GetComponent<Rigidbody2D>());
-
-        Debug.Log("Ready up");
-        this.ready = true;
+        get { return Positions[currentStep]; }
     }
 
-    public Vector2 getStep(int index)
+    public Vector2 NextStep(bool plus = true)
     {
-        return this.positions[index];
+        if (currentStep + 1 >= ListCount)
+        {
+            throw new IndexOutOfRangeException();
+        }
+        return plus ? Positions[++currentStep] : Positions[currentStep];
     }
 
-    public int getListCount()
+    public int ListCount
     {
-        return this.positions.Count;
+        get
+        {
+            return this.Positions.Count;
+        } 
     }
 }

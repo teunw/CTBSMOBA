@@ -19,7 +19,7 @@ public class DrawManager : MonoBehaviour
     private Member SelectedMember;
     private List<MemberLine> MemberLines; 
 
-    void Start()
+    void Awake()
     {
         this.MemberLines = new List<MemberLine>();
     }
@@ -38,7 +38,7 @@ public class DrawManager : MonoBehaviour
                     Vector3 hitpos = hit.point;
                     // Check distance so lines aren't drawn when user holds mouse still
                     if (Vector2.Distance(hitpos, CurrentMemberLine.LastPosition) <= LineRoundness) return;
-                    if (HasEnoughStamina)
+                    if (!HasEnoughStamina)
                     {
                         Debug.Log("Out of stamina");
                         CompleteLine();
@@ -100,10 +100,7 @@ public class DrawManager : MonoBehaviour
     /// </summary>
     public void CompleteLine()
     {
-        Debug.Log("Completed line, setting action");
-        SetAction();
-        Debug.Log("Performing action");
-        SelectedMember.PerformActions();
+        SetSelectedMemberAction();
         SelectedMember = null;
     }
 
@@ -143,7 +140,7 @@ public class DrawManager : MonoBehaviour
     /// <summary>
     /// Sets action to the member for processing
     /// </summary>
-    public void SetAction()
+    public void SetSelectedMemberAction()
     {
         List<Vector2> vector2s = new List<Vector2>(CurrentMemberLine.Positions.Count);
         for (int i = 0; i < CurrentMemberLine.Positions.Count - 1; i++)
@@ -154,7 +151,8 @@ public class DrawManager : MonoBehaviour
             vector2s.Add(relativePos);
         }
         WalkAction walkAction = new WalkAction(SelectedMember, vector2s);
-        SelectedMember.SetAction(walkAction);
+        SelectedMember.AddAction(walkAction);
+        SelectedMember.PerformActions();
     }
 
     /// <summary>
@@ -185,7 +183,7 @@ public class DrawManager : MonoBehaviour
     /// </summary>
     public bool HasEnoughStamina
     {
-        get { return CalculateLineDistance() > SelectedMember.Stamina; }
+        get { return CalculateLineDistance() <= SelectedMember.Stamina; }
     }
 
     /// <summary>
