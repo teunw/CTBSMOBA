@@ -13,9 +13,14 @@ public class Team : MonoBehaviour
 
     private GameScript game;
 
-    public Team()
+    private void Start()
     {
         this.score = 0;
+    }
+
+    private void Update()
+    {
+        
     }
 
     /// <summary>
@@ -34,10 +39,11 @@ public class Team : MonoBehaviour
     /// </summary>
     public void RaiseScore()
     {
-        if (game.CheckEndGame(++this.score))
-        {
-            game.Win(this);
-        }
+        Debug.Log("RAISE SCORE CALLED FROM TEAM");
+        //if (game.CheckEndGame(++this.score))
+        //{
+        //    game.Win(this);
+        //}
     }
 
     /// <summary>
@@ -91,4 +97,6 @@ public class Team : MonoBehaviour
     {
         return t.team != i;
     }
+
+  
 }
