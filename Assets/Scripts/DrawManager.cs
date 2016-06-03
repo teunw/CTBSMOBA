@@ -146,7 +146,13 @@ public class DrawManager : MonoBehaviour
     public void SetAction()
     {
         List<Vector2> vector2s = new List<Vector2>(CurrentMemberLine.Positions.Count);
-        CurrentMemberLine.Positions.ForEach(o => { vector2s.Add((Vector2) o); });
+        for (int i = 0; i < CurrentMemberLine.Positions.Count - 1; i++)
+        {
+            Vector2 pos1 = CurrentMemberLine.Positions[i];
+            Vector2 pos2 = CurrentMemberLine.Positions[i + 1];
+            Vector2 relativePos = pos2 - pos1;
+            vector2s.Add(relativePos);
+        }
         WalkAction walkAction = new WalkAction(SelectedMember, vector2s);
         SelectedMember.SetAction(walkAction);
     }
