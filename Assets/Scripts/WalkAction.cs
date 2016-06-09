@@ -16,6 +16,7 @@ public class WalkAction : Action
     private int _currentStep;
     private Vector2 _currentStepStartPosition, _nextStepStartPosition;
     private float _stepRadius;
+    private Transform transform;
 
     /// <summary>
     ///     Constructs walk action
@@ -29,6 +30,7 @@ public class WalkAction : Action
         _rigidbody2D = Member.gameObject.GetComponent<Rigidbody2D>();
         _currentStepStartPosition = Vector2.zero;
         _nextStepStartPosition = Vector2.zero;
+        transform = _rigidbody2D.gameObject.transform;
     }
 
     /// <summary>
@@ -50,7 +52,9 @@ public class WalkAction : Action
     /// <returns></returns>
     public override bool Update()
     {
-        _rigidbody2D.velocity = _positions[_currentStep]*Member.Speed;
+        Transform transform = _rigidbody2D.gameObject.transform;
+//        _rigidbody2D.MovePosition(tra);
+        _rigidbody2D.velocity = transform.forward*Member.Speed*Time.deltaTime;
         return ShouldMoveToNextPoint();
     }
 
@@ -59,10 +63,11 @@ public class WalkAction : Action
         // Calculate positions
         if (_currentStepStartPosition == Vector2.zero)
         {
-            _currentStepStartPosition = Member.transform.position;
+            _currentStepStartPosition = CurrentStep;
             try
             {
-                _nextStepStartPosition = (Vector2) Member.transform.position + NextStep(true);
+                _nextStepStartPosition = NextStep(true);
+                transform.LookAt(_positions[_currentStep]);
             }
             catch (IndexOutOfRangeException e)
             {
@@ -104,6 +109,7 @@ public class WalkAction : Action
         {
             throw new IndexOutOfRangeException();
         }
+       
         return plus ? _positions[++_currentStep] : _positions[_currentStep];
     }
 }
