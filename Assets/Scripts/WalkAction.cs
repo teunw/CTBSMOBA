@@ -10,6 +10,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class WalkAction : Action
 {
+    private const float SPEEDMULTIPLIER = 1.2F;
+
     private readonly List<Vector2> _positions;
     private readonly Rigidbody2D _rigidbody2D;
 
@@ -52,8 +54,6 @@ public class WalkAction : Action
     /// <returns></returns>
     public override bool Update()
     {
-        Transform transform = _rigidbody2D.gameObject.transform;
-//        _rigidbody2D.MovePosition(tra);
         _rigidbody2D.velocity = transform.forward*Member.Speed*Time.deltaTime;
         return ShouldMoveToNextPoint();
     }
