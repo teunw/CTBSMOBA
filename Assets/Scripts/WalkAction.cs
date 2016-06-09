@@ -10,6 +10,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class WalkAction : Action
 {
+    private const float SPEEDMULTIPLIER = 1.2F;
+
     private readonly List<Vector2> _positions;
     private readonly Rigidbody2D _rigidbody2D;
 
@@ -50,7 +52,7 @@ public class WalkAction : Action
     /// <returns></returns>
     public override bool Update()
     {
-        _rigidbody2D.velocity = _positions[_currentStep]*Member.Speed;
+        _rigidbody2D.velocity = _positions[_currentStep].normalized * Member.Speed * SPEEDMULTIPLIER;
         return ShouldMoveToNextPoint();
     }
 
@@ -62,7 +64,7 @@ public class WalkAction : Action
             _currentStepStartPosition = Member.transform.position;
             try
             {
-                _nextStepStartPosition = (Vector2) Member.transform.position + NextStep(true);
+                _nextStepStartPosition = (Vector2)Member.transform.position + NextStep(true);
             }
             catch (IndexOutOfRangeException e)
             {
