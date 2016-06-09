@@ -1,32 +1,43 @@
-﻿using System;
+﻿#region
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
+
+#endregion
 
 namespace Assets.Scripts
 {
     public class MemberLine
     {
+        /// <param name="member">Member for later replacement && reference</param>
+        public MemberLine(Member member)
+        {
+            Member = member;
+            LineRenderers = new List<LineRenderer>();
+            Positions = new List<Vector3>();
+        }
+
         /// <summary>
         /// Member holder
         /// </summary>
         public Member Member { get; private set; }
+
         /// <summary>
         /// LineRenderers stored for later reference
         /// </summary>
         public List<LineRenderer> LineRenderers { get; private set; }
+
         /// <summary>
         /// Positions in the line that are saved
         /// </summary>
         public List<Vector3> Positions { get; private set; }
 
-        /// <param name="member">Member for later replacement && reference</param>
-        public MemberLine(Member member)
+        /// <summary>
+        /// Returns last drawn position of this object
+        /// </summary>
+        public Vector3 LastPosition
         {
-            this.Member = member;
-            this.LineRenderers = new List<LineRenderer>();
-            this.Positions = new List<Vector3>();
+            get { return Positions.Count > 0 ? Positions[Positions.Count - 1] : Member.transform.position; }
         }
 
         /// <summary>
@@ -34,8 +45,8 @@ namespace Assets.Scripts
         /// </summary>
         public void Reset()
         {
-            this.LineRenderers.Clear();
-            this.Positions.Clear();;
+            LineRenderers.Clear();
+            Positions.Clear();
         }
 
         /// <summary>
@@ -46,18 +57,8 @@ namespace Assets.Scripts
         public MemberLine Reset(Vector3 startPos)
         {
             Reset();
-            this.Positions.Add(startPos);
+            Positions.Add(startPos);
             return this;
         }
-
-        /// <summary>
-        /// Returns last drawn position of this object
-        /// </summary>
-        public Vector3 LastPosition
-        {
-            get { return (Positions.Count > 0) ? Positions[Positions.Count - 1] : Member.transform.position; }
-        }
-
-
     }
 }

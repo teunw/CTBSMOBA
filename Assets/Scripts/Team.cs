@@ -2,27 +2,58 @@
 using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts;
+using UnityEngine.UI;
 
 public class Team : MonoBehaviour
 {
+    /// <summary>
+    /// The game object.
+    /// </summary>
+    public GameScript game;
+
+    /// <summary>
+    /// A list of members in this team.
+    /// </summary>
     public List<Member> members;
+
+    /// <summary>
+    /// The flag of this team.
+    /// </summary>
     public Flag flag;
-    public Base base_; //TODO: Better name
+
+    /// <summary>
+    /// The base of this team.
+    /// </summary>
+    public Base base_;
+
+    /// <summary>
+    /// The score of this team.
+    /// </summary>
     public int score;
+
+    /// <summary>
+    /// The number of this team.
+    /// </summary>
     public int team;
+    
+    /// <summary>
+    /// The text element which indicates the score.
+    /// </summary>
+    public Text textScore;
 
-    private GameScript game;
+    /// <summary>
+    /// The soundmanager which is responsible for all the sounds.
+    /// </summary>
+    public Sound soundManager;
 
-    public Team()
-    {
-        this.score = 0;
-    }
 
     /// <summary>
     /// Makes each member of this team perform its action
     /// </summary>
     public void PerformActions()
     {
+        ChangeTurn(false);
+
         foreach (Member member in this.members)
         {
             member.PerformActions();
@@ -30,30 +61,21 @@ public class Team : MonoBehaviour
     }
 
     /// <summary>
-    /// Raises the score of this team by 1
+    /// Raises the score of this team by 1,
+    /// Checks if the team needs to win.
     /// </summary>
     public void RaiseScore()
     {
-        if (game.CheckEndGame(++this.score))
+        score += 1;
+        textScore.text = "Team " + team + ": " + score;
+        if (game.CheckEndGame(score))
         {
+            soundManager.playWinSound();
             game.Win(this);
+            return;
         }
-    }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public void Win()
-    {
-        //TODO
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public void Lose()
-    {
-        //TODO
+        soundManager.playScoreSound();
     }
 
     /// <summary>
@@ -65,8 +87,22 @@ public class Team : MonoBehaviour
         bool done = true;
         foreach (Member member in this.members)
         {
-            //if (!member.IsActionDone()) done = false;
+            if (!member.ActionDone())
+            {
+                done = false;
+            }
+
+            else
+            {
+                member.ResetActions();
+            }
         }
+
+        if (!this.flag.ActionDone())
+        {
+            done = false;
+        }
+
         return done;
     }
 
@@ -90,5 +126,17 @@ public class Team : MonoBehaviour
     public static bool operator !=(Team t, int i)
     {
         return t.team != i;
+    }
+
+    /// <summary>
+    /// Sets the turn of the player
+    /// </summary>
+    /// <param name="yourTurn">The bool which says if it's this member's turn</param>
+    public void ChangeTurn(bool yourTurn)
+    {
+        foreach (Member m in this.members)
+        {
+            m.ChangeTurn(yourTurn);
+        }
     }
 }

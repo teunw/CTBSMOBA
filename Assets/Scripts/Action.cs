@@ -1,12 +1,30 @@
+#region
+
 using Assets.Scripts;
-using UnityEngine;
+
+#endregion
 
 public abstract class Action
 {
+    /// <summary>
+    /// The constructor of the abstract class Action.
+    /// Initializes the member variable.
+    /// </summary>
+    /// <param name="member">The member to initialize</param>
+    public Action(Member member)
+    {
+        Member = member;
+    }
 
-    public virtual void Start() { }
+    /// <summary>
+    /// Getter/Setter for member.
+    /// </summary>
+    public Member Member { get; protected set; }
 
-    public virtual void Update() { }
-
-    public abstract void Perform(Member member);
+    /// <summary>
+    /// Updates to the member, implementation dependent on member
+    /// </summary>
+    /// <returns>Return true when action is done, false otherwise</returns>
+    public abstract bool Update();
+    public abstract bool isDone();
 }

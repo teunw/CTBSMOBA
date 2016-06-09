@@ -1,8 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Assets;
+using UnityEngine.UI;
+using Assets.Scripts;
+using UnityEngine.SceneManagement;
 
-public class GameScript : MonoBehaviour {
+public class GameScript : MonoBehaviour
+{
 
     /// <summary>
     /// The first team.
@@ -17,7 +21,7 @@ public class GameScript : MonoBehaviour {
     /// <summary>
     /// The team which has the current turn.
     /// </summary>
-    public Team currentTeam;
+    private Team currentTeam;
 
     /// <summary>
     /// The score limit of the game.
@@ -36,14 +40,6 @@ public class GameScript : MonoBehaviour {
     public TeamStatus teamStatus;
 
     /// <summary>
-    /// This is the drawmanager.
-    /// It is responsible for drawing the paths
-    /// of the players.
-    /// This class uses it to get the currentMember.
-    /// </summary>
-    public DrawManager drawManager;
-
-    /// <summary>
     /// A boolean to check if the 
     /// actions of team 1 are done.
     /// This is standard set to false.
@@ -57,6 +53,15 @@ public class GameScript : MonoBehaviour {
     /// </summary>
     private bool team2ActionsDone;
 
+    //UI ELEMENTS
+    public Text textCurrentTurn;
+    public Text textScoreTeam1;
+    public Text textScoreTeam2;
+    public Text textWin;
+
+    public Button playAgain;
+    public Button endTurn;
+
     /// <summary>
     /// This gets called to initialize this class.
     /// This method will setup the current teamStatus
@@ -66,20 +71,14 @@ public class GameScript : MonoBehaviour {
     /// </summary>
     public void Start()
     {
-        //Create teams
-        //CreateTeams();
-
-        currentTeam = team1;
+        SwitchTurn();
         teamStatus = TeamStatus.Planning;
 
         team1ActionsDone = false;
         team2ActionsDone = false;
-    }
 
-    public void CreateTeams(Team team1, Team team2)
-    {
-        this.team1 = team1;
-        this.team2 = team2;
+        textWin.enabled = false;
+        playAgain.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -91,16 +90,44 @@ public class GameScript : MonoBehaviour {
     /// </summary>
     public void SwitchTurn()
     {
-        if (currentTeam == 1)
-        {
-            currentTeam = team2;
-        }
-
-        else if (currentTeam == 2)
+        if (currentTeam == null)
         {
             currentTeam = team1;
-            teamStatus = TeamStatus.Executing;
+            textCurrentTurn.text = "Turn: Team 1";
+            team1.ChangeTurn(true);
+            team2.ChangeTurn(false);
+            return;
+        }
+
+        if (currentTeam == team1)
+        {
+            currentTeam = team2;
+            textCurrentTurn.text = "Turn: Team 2";
+            team1.ChangeTurn(false);
+
+            foreach (Member m in team1.members)
+            {
+                m.RemoveLines();
+            }
+
+            team2.ChangeTurn(true);
+            return;
+        }
+
+        else if (currentTeam == team2)
+        {
+            currentTeam = team1;
+            textCurrentTurn.text = "Turn: Team 1";
+
+            foreach (Member m in team2.members)
+            {
+                m.RemoveLines();
+            }
+
+            team1.ChangeTurn(false);
+            team2.ChangeTurn(false);
             StartActions();
+            return;
         }
     }
 
@@ -112,11 +139,15 @@ public class GameScript : MonoBehaviour {
     /// </summary>
     public void StartActions()
     {
+        if (teamStatus == TeamStatus.Executing)
+        {
+            return;
+        }
         teamStatus = TeamStatus.Executing;
+        Debug.Log("Status: Executing");
         team1.PerformActions();
         team2.PerformActions();
-
-        //TODO: DISABLE GUI COMPONENTS AND INPUT
+        endTurn.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -135,13 +166,11 @@ public class GameScript : MonoBehaviour {
         }
     }
 
-    /// <summary>
-    /// Checks if the game
-    /// </summary>
-    /// <param name="t"></param>
-    public void Win(Team t)
+    public void Win(Team team)
     {
-
+        textWin.text = "Team " + team.team + " won!";
+        textWin.enabled = true;
+        playAgain.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -172,9 +201,22 @@ public class GameScript : MonoBehaviour {
                 team1ActionsDone = false;
                 team2ActionsDone = false;
                 teamStatus = TeamStatus.Planning;
+                Debug.Log("Status: Planning");
 
-                //TODO: ENABLE GUI COMPONENTS AND INPUT AGAIN.
+                currentTeam = team1;
+                team1.ChangeTurn(true);
+                team2.ChangeTurn(false);
+                endTurn.gameObject.SetActive(true);
+                Debug.Log("BOTH TEAMS ARE DONE");
             }
         }
+    }
+
+    /// <summary>
+    /// Restart the scene.
+    /// </summary>
+    public void RestartScene()
+    {
+        SceneManager.LoadScene("GameScene");
     }
 }
