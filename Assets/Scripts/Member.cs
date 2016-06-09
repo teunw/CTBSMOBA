@@ -12,30 +12,55 @@ namespace Assets.Scripts
 {
     public class Member : MonoBehaviour, IFieldObject
     {
-        //Action saving
+        /// <summary>
+        /// A list of actions which this player has.
+        /// </summary>
         private List<Action> actions;
 
-        //Verifying action is done
-        private int actionsDone;
+        /// <summary>
+        /// The current action which the player is performing.
+        /// </summary>
         private int currentAction;
 
+        /// <summary>
+        /// A bool which indicates if the member should perform
+        /// his actions.
+        /// </summary>
         private bool doPerform;
+
+        /// <summary>
+        /// The DrawManager which is responsible for the drawing
+        /// the lines and making the actions.
+        /// </summary>
         public DrawManager DrawManager;
-        private Vector3 lastLocation;
-        private bool notMoving;
-        public int Speed;
+
+        /// <summary>
+        /// A bool which indicates if this member is allowed to 
+        /// draw actions.
+        /// </summary>
         private bool yourTurn;
 
-        //Member data
+        /// <summary>
+        /// A bool which indicates if the player is moving.
+        /// </summary>
+        private bool notMoving;
+
+        /// <summary>
+        /// The speed of this player.
+        /// The speed of the character is based on this.
+        /// </summary>
+        public int Speed;
+
+        /// <summary>
+        /// The stamina of this player.
+        /// The length of the line is based on this.
+        /// </summary>
         public int Stamina;
-
-        //SOUND ELEMENT
+        
+        /// <summary>
+        /// The soundmanager which is responsible for making sounds.
+        /// </summary>
         public Sound soundManager;
-
-        public Member(int speed, int stamina)
-        {
-            actionsDone = 0;
-        }
 
         /// <summary>
         /// Check if player is moving.
@@ -49,7 +74,7 @@ namespace Assets.Scripts
         private IEnumerator CheckMoving()
         {
             Vector3 startPos = transform.position;
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.03f);
             Vector3 finalPos = transform.position;
             if (startPos.x == finalPos.x && startPos.y == finalPos.y
                 && startPos.z == finalPos.z)
@@ -87,6 +112,11 @@ namespace Assets.Scripts
             }
         }
 
+        /// <summary>
+        /// The start method, which checks
+        /// if the drawmanager is null. And
+        /// it initializes a list of actions.
+        /// </summary>
         private void Start()
         {
             actions = new List<Action>();
@@ -94,7 +124,8 @@ namespace Assets.Scripts
         }
 
         /// <summary>
-        /// Performs the given action
+        /// Sets the currentAction to 0,
+        /// and sets the boolean doPerform to true.
         /// </summary>
         public void PerformActions()
         {
@@ -112,6 +143,11 @@ namespace Assets.Scripts
             actions.Add(action);
         }
 
+        /// <summary>
+        /// Checks if you're allowed
+        /// to draw and if so, it draws a line
+        /// from this member.
+        /// </summary>
         private void OnMouseDown()
         {
             if (yourTurn)
@@ -120,6 +156,10 @@ namespace Assets.Scripts
             }
         }
 
+        /// <summary>
+        /// If the member is allowed to perform it's actions,
+        /// it will till it has reached the end.
+        /// </summary>
         public void FixedUpdate()
         {
             if (doPerform)
@@ -188,6 +228,15 @@ namespace Assets.Scripts
             soundManager.playBumpSound();
             actions.Clear();
             transform.GetComponent<Rigidbody2D>().velocity = velocity;
+        }
+        
+        /// <summary>
+        /// Resets the actions of this member.
+        /// The list gets cleared.
+        /// </summary>
+        public void ResetActions()
+        {
+            this.actions.Clear();
         }
     }
 }

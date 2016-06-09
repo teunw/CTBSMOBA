@@ -3,18 +3,36 @@ using System.Collections;
 using UnityEngine.Networking;
 
 public class Base : MonoBehaviour {
-    
+
+    /// <summary>
+    /// The team where the base belongs to.
+    /// </summary>
     public Team team;
     
-    private Rect rectangle;
+    /// <summary>
+    /// The spawnpoint of the flag in the base.
+    /// </summary>
     private Vector2 flagSpawnPoint;
+
+    /// <summary>
+    /// The enemy flag, this is needed 
+    /// to check if it's in your base.
+    /// </summary>
     private Flag EnemyFlag;
 
+    /// <summary>
+    /// Set the spawnpoint at the start
+    /// of the game.
+    /// </summary>
     private void Start()
     {
         flagSpawnPoint = this.transform.position;
     }
 
+    /// <summary>
+    /// The update method which checks if the other flag is in this base.
+    /// If it is, raise the score of the team.
+    /// </summary>
     private void Update()
     {
         if (EnemyFlag == null) return;
@@ -28,7 +46,7 @@ public class Base : MonoBehaviour {
 
 
     /// <summary>
-    /// get the Spawnpoint
+    /// Get the spawnpoint of the flag.
     /// </summary>
     /// <returns> Vector2: The spawnPoint</returns>
     public Vector2 getSpawn()
@@ -53,6 +71,11 @@ public class Base : MonoBehaviour {
             }      
     }
 
+    /// <summary>
+    /// Checks if the flag leaves
+    /// the base.
+    /// </summary>
+    /// <param name="flag"></param>
     void OnTriggerExit2D(Collider2D flag)
     {
         if (flag.tag == "Flag")

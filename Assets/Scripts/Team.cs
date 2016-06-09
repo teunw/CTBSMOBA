@@ -6,21 +6,46 @@ using UnityEngine.UI;
 
 public class Team : MonoBehaviour
 {
-    public Text textScore;
-    public List<Member> members;
-    public Flag flag;
-    public Base base_;
-    public int score;
-    public int team;
+    /// <summary>
+    /// The game object.
+    /// </summary>
     public GameScript game;
 
-    //SOUND ELEMENTS
+    /// <summary>
+    /// A list of members in this team.
+    /// </summary>
+    public List<Member> members;
+
+    /// <summary>
+    /// The flag of this team.
+    /// </summary>
+    public Flag flag;
+
+    /// <summary>
+    /// The base of this team.
+    /// </summary>
+    public Base base_;
+
+    /// <summary>
+    /// The score of this team.
+    /// </summary>
+    public int score;
+
+    /// <summary>
+    /// The number of this team.
+    /// </summary>
+    public int team;
+    
+    /// <summary>
+    /// The text element which indicates the score.
+    /// </summary>
+    public Text textScore;
+
+    /// <summary>
+    /// The soundmanager which is responsible for all the sounds.
+    /// </summary>
     public Sound soundManager;
 
-    private void Start()
-    {
-        this.score = 0;
-    }
 
     /// <summary>
     /// Makes each member of this team perform its action
@@ -36,7 +61,8 @@ public class Team : MonoBehaviour
     }
 
     /// <summary>
-    /// Raises the score of this team by 1
+    /// Raises the score of this team by 1,
+    /// Checks if the team needs to win.
     /// </summary>
     public void RaiseScore()
     {
@@ -64,6 +90,11 @@ public class Team : MonoBehaviour
             if (!member.ActionDone())
             {
                 done = false;
+            }
+
+            else
+            {
+                member.ResetActions();
             }
         }
 

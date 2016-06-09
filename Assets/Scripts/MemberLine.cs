@@ -18,22 +18,22 @@ namespace Assets.Scripts
         }
 
         /// <summary>
-        ///     Member holder
+        /// Member holder
         /// </summary>
         public Member Member { get; private set; }
 
         /// <summary>
-        ///     LineRenderers stored for later reference
+        /// LineRenderers stored for later reference
         /// </summary>
         public List<LineRenderer> LineRenderers { get; private set; }
 
         /// <summary>
-        ///     Positions in the line that are saved
+        /// Positions in the line that are saved
         /// </summary>
         public List<Vector3> Positions { get; private set; }
 
         /// <summary>
-        ///     Returns last drawn position of this object
+        /// Returns last drawn position of this object
         /// </summary>
         public Vector3 LastPosition
         {
@@ -41,17 +41,16 @@ namespace Assets.Scripts
         }
 
         /// <summary>
-        ///     Resets this line
+        /// Resets this line
         /// </summary>
         public void Reset()
         {
             LineRenderers.Clear();
             Positions.Clear();
-            ;
         }
 
         /// <summary>
-        ///     Resets this line, with another starting position
+        /// Resets this line, with another starting position
         /// </summary>
         /// <param name="startPos">New starting position</param>
         /// <returns>This object</returns>

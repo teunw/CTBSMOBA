@@ -5,8 +5,18 @@ namespace Assets.Scripts
 {
     public class FrontCollisionChecker : MonoBehaviour
     {
+        /// <summary>
+        /// The member of this collisionChecker.
+        /// </summary>
+        public Member member;
 
-
+        /// <summary>
+        /// Checks with which object this collider collides.
+        /// If it's the arena then it will call the wallhit of the member.
+        /// If it's another character it will or get bumped or bump the other member,
+        /// depending on the movement of the other member.
+        /// </summary>
+        /// <param name="other">The object which collides with this collider</param>
         void OnTriggerEnter2D(Collider2D other)
         {
             string otherTag = other.tag;
@@ -16,7 +26,17 @@ namespace Assets.Scripts
             }
             if (otherTag.Equals("Character"))
             {
-                other.GetComponent<Member>().IsHit(transform.parent.transform.GetComponent<Rigidbody2D>().velocity);
+                Member otherMember = other.GetComponent<Member>();
+
+                if (!this.member.ActionDone())
+                {
+                    otherMember.IsHit(transform.parent.transform.GetComponent<Rigidbody2D>().velocity);
+                }
+
+                if (!this.member.ActionDone() && !otherMember.ActionDone())
+                {
+                    member.IsHit(otherMember.transform.GetComponent<Rigidbody2D>().velocity);
+                }
             }
         }
     }
