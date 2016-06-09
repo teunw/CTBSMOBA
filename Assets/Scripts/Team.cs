@@ -2,16 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts;
+using UnityEngine.UI;
 
 public class Team : MonoBehaviour
 {
+    public Text textScore;
     public List<Member> members;
     public Flag flag;
     public Base base_;
     public int score;
     public int team;
-
-    private GameScript game;
+    public GameScript game;
 
     private void Start()
     {
@@ -36,27 +37,12 @@ public class Team : MonoBehaviour
     /// </summary>
     public void RaiseScore()
     {
-        Debug.Log("RAISE SCORE CALLED FROM TEAM");
-        //if (game.CheckEndGame(++this.score))
-        //{
-        //    game.Win(this);
-        //}
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public void Win()
-    {
-        //TODO
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public void Lose()
-    {
-        //TODO
+        score += 1;
+        textScore.text = "Team " + team + ": " + score;
+        if (game.CheckEndGame(score))
+        {
+            game.Win(this);
+        }
     }
 
     /// <summary>
@@ -115,5 +101,4 @@ public class Team : MonoBehaviour
             m.ChangeTurn(yourTurn);
         }
     }
-
 }

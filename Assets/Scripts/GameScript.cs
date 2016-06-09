@@ -3,6 +3,7 @@ using System.Collections;
 using Assets;
 using UnityEngine.UI;
 using Assets.Scripts;
+using UnityEngine.SceneManagement;
 
 public class GameScript : MonoBehaviour
 {
@@ -56,6 +57,10 @@ public class GameScript : MonoBehaviour
     public Text textCurrentTurn;
     public Text textScoreTeam1;
     public Text textScoreTeam2;
+    public Text textWin;
+
+    public Button playAgain;
+    public Button endTurn;
 
     /// <summary>
     /// This gets called to initialize this class.
@@ -71,6 +76,9 @@ public class GameScript : MonoBehaviour
 
         team1ActionsDone = false;
         team2ActionsDone = false;
+
+        textWin.enabled = false;
+        playAgain.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -139,6 +147,7 @@ public class GameScript : MonoBehaviour
         Debug.Log("Status: Executing");
         team1.PerformActions();
         team2.PerformActions();
+        endTurn.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -155,6 +164,13 @@ public class GameScript : MonoBehaviour
         {
             return false;
         }
+    }
+
+    public void Win(Team team)
+    {
+        textWin.text = "Team " + team.team + " won!";
+        textWin.enabled = true;
+        playAgain.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -190,9 +206,17 @@ public class GameScript : MonoBehaviour
                 currentTeam = team1;
                 team1.ChangeTurn(true);
                 team2.ChangeTurn(false);
-
+                endTurn.gameObject.SetActive(true);
                 Debug.Log("BOTH TEAMS ARE DONE");
             }
         }
+    }
+
+    /// <summary>
+    /// Restart the scene.
+    /// </summary>
+    public void RestartScene()
+    {
+        SceneManager.LoadScene("GameScene");
     }
 }
