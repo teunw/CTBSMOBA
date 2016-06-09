@@ -58,7 +58,7 @@ namespace Assets.Scripts
         }
 
         /// <summary>
-        ///     Sets the action to a walk action to follow a specific pattern
+        /// Sets the action to a walk action to follow a specific pattern
         /// </summary>
         /// <param name="movementpoints">The pattern to follow</param>
         public void AddAction(Action action)
@@ -84,16 +84,10 @@ namespace Assets.Scripts
                     actions.Clear();
                     return;
                 }
+
                 bool done = actions[currentAction].Update();
                 if (done)
                     currentAction++;
-//                WalkAction wa = this.actions[currentAction] as WalkAction;
-//                if(wa != null)
-//                {
-//                    Debug.Log("WA: " + wa.NextStep(false));
-//                    Debug.Log("Pos" + transform.position);
-//                    rigidbody2D.velocity = wa.NextStep();
-//                }
             }
         }
 

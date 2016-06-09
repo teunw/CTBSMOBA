@@ -94,9 +94,9 @@ public class Team : MonoBehaviour
     }
 
     /// <summary>
-    /// Sets 
+    /// Sets the turn of the player
     /// </summary>
-    /// <param name="yourTurn"></param>
+    /// <param name="yourTurn">The bool which says if it's this member's turn</param>
     public void ChangeTurn(bool yourTurn)
     {
         foreach(Member m in this.members)

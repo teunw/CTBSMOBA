@@ -152,7 +152,6 @@ public class DrawManager : MonoBehaviour
         }
         WalkAction walkAction = new WalkAction(SelectedMember, vector2s);
         SelectedMember.AddAction(walkAction);
-        SelectedMember.PerformActions();
     }
 
     /// <summary>
