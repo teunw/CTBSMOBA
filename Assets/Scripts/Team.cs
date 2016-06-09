@@ -18,11 +18,6 @@ public class Team : MonoBehaviour
         this.score = 0;
     }
 
-    private void Update()
-    {
-        
-    }
-
     /// <summary>
     /// Makes each member of this team perform its action
     /// </summary>
@@ -98,5 +93,16 @@ public class Team : MonoBehaviour
         return t.team != i;
     }
 
-  
+    /// <summary>
+    /// Sets 
+    /// </summary>
+    /// <param name="yourTurn"></param>
+    public void ChangeTurn(bool yourTurn)
+    {
+        foreach(Member m in this.members)
+        {
+            m.ChangeTurn(yourTurn);
+        }
+    }
+
 }

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Assets;
+using UnityEngine.UI;
 
 public class GameScript : MonoBehaviour {
 
@@ -17,7 +18,7 @@ public class GameScript : MonoBehaviour {
     /// <summary>
     /// The team which has the current turn.
     /// </summary>
-    public Team currentTeam;
+    private Team currentTeam;
 
     /// <summary>
     /// The score limit of the game.
@@ -36,14 +37,6 @@ public class GameScript : MonoBehaviour {
     public TeamStatus teamStatus;
 
     /// <summary>
-    /// This is the drawmanager.
-    /// It is responsible for drawing the paths
-    /// of the players.
-    /// This class uses it to get the currentMember.
-    /// </summary>
-    public DrawManager drawManager;
-
-    /// <summary>
     /// A boolean to check if the 
     /// actions of team 1 are done.
     /// This is standard set to false.
@@ -57,6 +50,11 @@ public class GameScript : MonoBehaviour {
     /// </summary>
     private bool team2ActionsDone;
 
+    //UI ELEMENTS
+    public Text textCurrentTurn;
+    public Text textScoreTeam1;
+    public Text textScoreTeam2;
+
     /// <summary>
     /// This gets called to initialize this class.
     /// This method will setup the current teamStatus
@@ -66,20 +64,11 @@ public class GameScript : MonoBehaviour {
     /// </summary>
     public void Start()
     {
-        //Create teams
-        //CreateTeams();
-
-        currentTeam = team1;
+        SwitchTurn();
         teamStatus = TeamStatus.Planning;
 
         team1ActionsDone = false;
         team2ActionsDone = false;
-    }
-
-    public void CreateTeams(Team team1, Team team2)
-    {
-        this.team1 = team1;
-        this.team2 = team2;
     }
 
     /// <summary>
@@ -91,16 +80,33 @@ public class GameScript : MonoBehaviour {
     /// </summary>
     public void SwitchTurn()
     {
-        if (currentTeam == 1)
-        {
-            currentTeam = team2;
-        }
-
-        else if (currentTeam == 2)
+        if (currentTeam == null)
         {
             currentTeam = team1;
+            textCurrentTurn.text = "Turn: Team 1";
+            team1.ChangeTurn(true);
+            team2.ChangeTurn(false);
+            return;
+        }
+
+        if (currentTeam == team1)
+        {
+            currentTeam = team2;
+            textCurrentTurn.text = "Turn: Team 2";
+            team1.ChangeTurn(false);
+            team2.ChangeTurn(true);
+            return;
+        }
+
+        else if (currentTeam == team2)
+        {
+            currentTeam = team1;
+            textCurrentTurn.text = "Turn: Team 1";
+            team1.ChangeTurn(true);
+            team2.ChangeTurn(false);
             teamStatus = TeamStatus.Executing;
             StartActions();
+            return;
         }
     }
 
@@ -136,15 +142,6 @@ public class GameScript : MonoBehaviour {
     }
 
     /// <summary>
-    /// Checks if the game
-    /// </summary>
-    /// <param name="t"></param>
-    public void Win(Team t)
-    {
-
-    }
-
-    /// <summary>
     /// First checks if the teamStatus is executing.
     /// If it is executing then it waits for the 
     /// teamActions to be done. If they are, they
@@ -155,7 +152,7 @@ public class GameScript : MonoBehaviour {
     /// </summary>
     public void Update()
     {
-        if (teamStatus == TeamStatus.Executing)
+        if (teamStatus == TeamStatus.Executing) 
         {
             if (team1.CheckActionsDone())
             {

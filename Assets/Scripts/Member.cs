@@ -22,6 +22,7 @@ namespace Assets.Scripts
         public DrawManager DrawManager;
         private Vector3 lastLocation;
         public int Speed;
+        private bool yourTurn;
 
         //Member data
         public int Stamina;
@@ -65,13 +66,12 @@ namespace Assets.Scripts
             actions.Add(action);
         }
 
-        private void Update()
-        {
-        }
-
         private void OnMouseDown()
         {
-            DrawManager.SetMember(this);
+            if (yourTurn)
+            {
+                DrawManager.SetMember(this);
+            }
         }
 
         public void FixedUpdate()
@@ -95,6 +95,11 @@ namespace Assets.Scripts
 //                    rigidbody2D.velocity = wa.NextStep();
 //                }
             }
+        }
+
+        public void ChangeTurn(bool yourTurn)
+        {
+            this.yourTurn = yourTurn;
         }
     }
 }
