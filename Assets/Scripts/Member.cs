@@ -133,5 +133,16 @@ namespace Assets.Scripts
         {
             DrawManager.ClearLine(this);
         }
+
+        public void WallHit()
+        {
+            actions.Clear();
+        }
+
+        public void IsHit(Vector3 velocity)
+        {
+            actions.Clear();
+            transform.GetComponent<Rigidbody2D>().velocity = velocity;
+        }
     }
 }

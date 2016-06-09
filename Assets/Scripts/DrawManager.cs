@@ -70,10 +70,20 @@ public class DrawManager : MonoBehaviour
                             CompleteLine();
                             return;
                         }
+
+                        float distance = Vector3.Distance(CurrentMemberLine.LastPosition, hitpos);
+                        if (distance > LineRoundness * 33)
+                        {
+                            Debug.LogWarning("Drawn out of screen!");
+                            CompleteLine();
+                            return;
+                        }
+
                         CreateLine(CurrentMemberLine.LastPosition, hitpos);
                     }
                 }
             }
+
             else
             {
                 CompleteLine();
