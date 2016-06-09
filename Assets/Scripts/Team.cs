@@ -14,6 +14,9 @@ public class Team : MonoBehaviour
     public int team;
     public GameScript game;
 
+    //SOUND ELEMENTS
+    public Sound soundManager;
+
     private void Start()
     {
         this.score = 0;
@@ -41,8 +44,12 @@ public class Team : MonoBehaviour
         textScore.text = "Team " + team + ": " + score;
         if (game.CheckEndGame(score))
         {
+            soundManager.playWinSound();
             game.Win(this);
+            return;
         }
+
+        soundManager.playScoreSound();
     }
 
     /// <summary>

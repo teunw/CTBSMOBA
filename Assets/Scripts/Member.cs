@@ -29,6 +29,9 @@ namespace Assets.Scripts
         //Member data
         public int Stamina;
 
+        //SOUND ELEMENT
+        public Sound soundManager;
+
         public Member(int speed, int stamina)
         {
             actionsDone = 0;
@@ -166,6 +169,7 @@ namespace Assets.Scripts
         /// </summary>
         public void WallHit()
         {
+            soundManager.playBumpSound();
             actions.Clear();
         }
 
@@ -181,6 +185,7 @@ namespace Assets.Scripts
         /// </param>
         public void IsHit(Vector3 velocity)
         {
+            soundManager.playBumpSound();
             actions.Clear();
             transform.GetComponent<Rigidbody2D>().velocity = velocity;
         }
