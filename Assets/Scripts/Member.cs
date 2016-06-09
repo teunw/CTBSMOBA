@@ -90,6 +90,7 @@ namespace Assets.Scripts
             doPerform = true;
         }
 
+
         /// <summary>
         /// Sets the action to a walk action to follow a specific pattern
         /// </summary>
