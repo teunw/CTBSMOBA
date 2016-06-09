@@ -54,8 +54,13 @@ public class WalkAction : Action
     /// <returns></returns>
     public override bool Update()
     {
-        _rigidbody2D.velocity = transform.forward*Member.Speed*Time.deltaTime;
+        _rigidbody2D.velocity = transform.forward * Member.Speed * Time.deltaTime;
         return ShouldMoveToNextPoint();
+    }
+
+    public override bool isDone()
+    {
+        return _currentStep == _positions.Count - 1;
     }
 
     public bool ShouldMoveToNextPoint()
@@ -109,7 +114,7 @@ public class WalkAction : Action
         {
             throw new IndexOutOfRangeException();
         }
-       
+
         return plus ? _positions[++_currentStep] : _positions[_currentStep];
     }
 }

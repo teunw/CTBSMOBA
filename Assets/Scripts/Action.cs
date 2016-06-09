@@ -18,4 +18,5 @@ public abstract class Action
     /// </summary>
     /// <returns>Return true when action is done, false otherwise</returns>
     public abstract bool Update();
+    public abstract bool isDone();
 }

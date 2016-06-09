@@ -53,6 +53,14 @@ namespace Assets.Scripts
         /// <returns>Whether their action is finished, or if the phase is in planning mode, whichever is true</returns>
         public bool ActionDone()
         {
+            if (actions.Count != 0)
+            {
+                if (!actions.Last().isDone())
+                {
+                    return false;
+                }
+            }
+
             StartCoroutine(CheckMoving());
 
             if (notMoving == true)

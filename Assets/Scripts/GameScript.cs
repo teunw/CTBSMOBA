@@ -4,7 +4,8 @@ using Assets;
 using UnityEngine.UI;
 using Assets.Scripts;
 
-public class GameScript : MonoBehaviour {
+public class GameScript : MonoBehaviour
+{
 
     /// <summary>
     /// The first team.
@@ -95,8 +96,8 @@ public class GameScript : MonoBehaviour {
             currentTeam = team2;
             textCurrentTurn.text = "Turn: Team 2";
             team1.ChangeTurn(false);
-            
-            foreach(Member m in team1.members)
+
+            foreach (Member m in team1.members)
             {
                 m.RemoveLines();
             }
@@ -115,6 +116,8 @@ public class GameScript : MonoBehaviour {
                 m.RemoveLines();
             }
 
+            team1.ChangeTurn(false);
+            team2.ChangeTurn(false);
             StartActions();
             return;
         }
@@ -128,7 +131,12 @@ public class GameScript : MonoBehaviour {
     /// </summary>
     public void StartActions()
     {
+        if (teamStatus == TeamStatus.Executing)
+        {
+            return;
+        }
         teamStatus = TeamStatus.Executing;
+        Debug.Log("Status: Executing");
         team1.PerformActions();
         team2.PerformActions();
     }
@@ -160,7 +168,7 @@ public class GameScript : MonoBehaviour {
     /// </summary>
     public void Update()
     {
-        if (teamStatus == TeamStatus.Executing) 
+        if (teamStatus == TeamStatus.Executing)
         {
             if (team1.CheckActionsDone())
             {
@@ -177,7 +185,9 @@ public class GameScript : MonoBehaviour {
                 team1ActionsDone = false;
                 team2ActionsDone = false;
                 teamStatus = TeamStatus.Planning;
+                Debug.Log("Status: Planning");
 
+                currentTeam = team1;
                 team1.ChangeTurn(true);
                 team2.ChangeTurn(false);
 

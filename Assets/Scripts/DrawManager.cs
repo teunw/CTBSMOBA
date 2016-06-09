@@ -10,6 +10,7 @@ using UnityEngine;
 public class DrawManager : MonoBehaviour
 {
     public GameObject DrawPlane;
+    public GameScript GameScript;
     // Lower value makes the line more round, but consumes more resources
     [Tooltip("Lower value makes the line more round, but consumes more resources")] public float LineRoundness = .3f;
 
@@ -58,15 +59,19 @@ public class DrawManager : MonoBehaviour
 
                 if (Physics.Raycast(ray, out hit))
                 {
-                    Vector3 hitpos = hit.point;
-                    // Check distance so lines aren't drawn when user holds mouse still
-                    if (Vector2.Distance(hitpos, CurrentMemberLine.LastPosition) <= LineRoundness) return;
-                    if (!HasEnoughStamina)
+                    Debug.Log("--Status: " + GameScript.teamStatus.ToString());
+                    if (GameScript.teamStatus != Assets.TeamStatus.Executing)
                     {
-                        CompleteLine();
-                        return;
+                        Vector3 hitpos = hit.point;
+                        // Check distance so lines aren't drawn when user holds mouse still
+                        if (Vector2.Distance(hitpos, CurrentMemberLine.LastPosition) <= LineRoundness) return;
+                        if (!HasEnoughStamina)
+                        {
+                            CompleteLine();
+                            return;
+                        }
+                        CreateLine(CurrentMemberLine.LastPosition, hitpos);
                     }
-                    CreateLine(CurrentMemberLine.LastPosition, hitpos);
                 }
             }
             else
