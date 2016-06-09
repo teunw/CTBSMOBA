@@ -1,10 +1,27 @@
 fileFormatVersion: 2
 guid: bb0925934b60a2640b46feac2fd927df
-timeCreated: 1464353092
+timeCreated: 1465505428
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - team1: {instanceID: 0}
+  - team2: {instanceID: 0}
+  - textCurrentTurn: {instanceID: 0}
+  - textScoreTeam1: {instanceID: 0}
+  - textScoreTeam2: {instanceID: 0}
+  - textWin: {instanceID: 0}
+  - playAgain: {instanceID: 0}
+  - endTurn: {instanceID: 0}
+  - skill1: {instanceID: 0}
+  - skill2: {instanceID: 0}
+  - squareIndicator: {fileID: 21300000, guid: 724cb6e6bbb9371448550ec9d5ce0646, type: 3}
+  - triangleIndicator: {fileID: 21300000, guid: cec6a0c78e0bfa6449b30530b8e7e322,
+      type: 3}
+  - diamondIndicator: {fileID: 21300000, guid: b709b09de5b0a9d458a3cdddf183efa6, type: 3}
+  - hexagonIndicator: {fileID: 21300000, guid: a381adbe313e0314ca0f91cd97914f9b, type: 3}
+  - polygonIndicator: {fileID: 21300000, guid: aa2640f2fd6c3414dbd4a1076c23e0ea, type: 3}
+  - circleIndicator: {fileID: 21300000, guid: 056a71c54921c6741a1833a4e878c48e, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

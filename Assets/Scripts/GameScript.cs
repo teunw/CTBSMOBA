@@ -61,6 +61,16 @@ public class GameScript : MonoBehaviour
 
     public Button playAgain;
     public Button endTurn;
+    public Button skill1;
+    public Button skill2;
+
+    //Skill Indicators
+    public Sprite squareIndicator;
+    public Sprite triangleIndicator;
+    public Sprite diamondIndicator;
+    public Sprite hexagonIndicator;
+    public Sprite polygonIndicator;
+    public Sprite circleIndicator;
 
     /// <summary>
     /// This gets called to initialize this class.
@@ -218,5 +228,12 @@ public class GameScript : MonoBehaviour
     public void RestartScene()
     {
         SceneManager.LoadScene("GameScene");
+    }
+
+    public void Skill1Casting()
+    {
+        //TODO: Select skill 1 from selected character
+        //Skill skill = new Skill()
+
     }
 }
