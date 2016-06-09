@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -21,6 +22,7 @@ namespace Assets.Scripts
         private bool doPerform;
         public DrawManager DrawManager;
         private Vector3 lastLocation;
+        private bool notMoving;
         public int Speed;
         private bool yourTurn;
 
@@ -32,13 +34,37 @@ namespace Assets.Scripts
             actionsDone = 0;
         }
 
+        private IEnumerator CheckMoving()
+        {
+            Vector3 startPos = transform.position;
+            yield return new WaitForSeconds(1f);
+            Vector3 finalPos = transform.position;
+            if (startPos.x == finalPos.x && startPos.y == finalPos.y
+                && startPos.z == finalPos.z)
+            {
+                notMoving = true;
+            }
+                
+        }
+
         /// <summary>
-        ///     Returns whether the member has finished performing its action
+        /// Returns whether the member has finished performing its action
         /// </summary>
         /// <returns>Whether their action is finished, or if the phase is in planning mode, whichever is true</returns>
-        public void ActionDone()
+        public bool ActionDone()
         {
-            actionsDone++;
+            StartCoroutine(CheckMoving());
+
+            if (notMoving == true)
+            {
+                notMoving = false;
+                return true;
+            }
+
+            else
+            {
+                return false;
+            }
         }
 
         private void Start()
@@ -52,7 +78,6 @@ namespace Assets.Scripts
         /// </summary>
         public void PerformActions()
         {
-            Debug.Log(actions.Count() + " actions found");
             currentAction = 0;
             doPerform = true;
         }
@@ -94,6 +119,11 @@ namespace Assets.Scripts
         public void ChangeTurn(bool yourTurn)
         {
             this.yourTurn = yourTurn;
+        }
+
+        public void RemoveLines()
+        {
+            DrawManager.ClearLine(this);
         }
     }
 }

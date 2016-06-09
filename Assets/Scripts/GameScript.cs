@@ -2,6 +2,7 @@
 using System.Collections;
 using Assets;
 using UnityEngine.UI;
+using Assets.Scripts;
 
 public class GameScript : MonoBehaviour {
 
@@ -94,6 +95,12 @@ public class GameScript : MonoBehaviour {
             currentTeam = team2;
             textCurrentTurn.text = "Turn: Team 2";
             team1.ChangeTurn(false);
+            
+            foreach(Member m in team1.members)
+            {
+                m.RemoveLines();
+            }
+
             team2.ChangeTurn(true);
             return;
         }
@@ -102,9 +109,12 @@ public class GameScript : MonoBehaviour {
         {
             currentTeam = team1;
             textCurrentTurn.text = "Turn: Team 1";
-            team1.ChangeTurn(true);
-            team2.ChangeTurn(false);
-            teamStatus = TeamStatus.Executing;
+
+            foreach (Member m in team2.members)
+            {
+                m.RemoveLines();
+            }
+
             StartActions();
             return;
         }
@@ -121,8 +131,6 @@ public class GameScript : MonoBehaviour {
         teamStatus = TeamStatus.Executing;
         team1.PerformActions();
         team2.PerformActions();
-
-        //TODO: DISABLE GUI COMPONENTS AND INPUT
     }
 
     /// <summary>
@@ -170,7 +178,10 @@ public class GameScript : MonoBehaviour {
                 team2ActionsDone = false;
                 teamStatus = TeamStatus.Planning;
 
-                //TODO: ENABLE GUI COMPONENTS AND INPUT AGAIN.
+                team1.ChangeTurn(true);
+                team2.ChangeTurn(false);
+
+                Debug.Log("BOTH TEAMS ARE DONE");
             }
         }
     }

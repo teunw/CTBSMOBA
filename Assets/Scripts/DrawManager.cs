@@ -63,7 +63,6 @@ public class DrawManager : MonoBehaviour
                     if (Vector2.Distance(hitpos, CurrentMemberLine.LastPosition) <= LineRoundness) return;
                     if (!HasEnoughStamina)
                     {
-                        Debug.Log("Out of stamina");
                         CompleteLine();
                         return;
                     }
@@ -129,8 +128,6 @@ public class DrawManager : MonoBehaviour
         line.SetVertexCount(2);
         line.SetWidth(LineWidth, LineWidth);
         line.useWorldSpace = true;
-        Debug.Log("Begin: " + begin.x + ", " + begin.y);
-        Debug.Log("End: " + end.x + ", " + end.y);
         line.SetPosition(0, begin);
         line.SetPosition(1, end);
         line.transform.SetParent(transform);
@@ -141,7 +138,7 @@ public class DrawManager : MonoBehaviour
     }
 
     /// <summary>
-    ///     Sets action to the member for processing
+    /// Sets action to the member for processing
     /// </summary>
     public void SetSelectedMemberAction()
     {
@@ -189,7 +186,6 @@ public class DrawManager : MonoBehaviour
             distance += Vector2.Distance(v1, v2);
         }
         distance *= StaminaModifier;
-        Debug.Log("Stamina left: " + distance + " of " + SelectedMember.Stamina);
         // Round up stamina needed
         return (int) Math.Ceiling(distance);
     }

@@ -7,7 +7,7 @@ public class Team : MonoBehaviour
 {
     public List<Member> members;
     public Flag flag;
-    public Base base_; //TODO: Better name
+    public Base base_;
     public int score;
     public int team;
 
@@ -23,6 +23,8 @@ public class Team : MonoBehaviour
     /// </summary>
     public void PerformActions()
     {
+        ChangeTurn(false);
+
         foreach (Member member in this.members)
         {
             member.PerformActions();
@@ -66,8 +68,17 @@ public class Team : MonoBehaviour
         bool done = true;
         foreach (Member member in this.members)
         {
-            //if (!member.IsActionDone()) done = false;
+            if (!member.ActionDone())
+            {
+                done = false;
+            }
         }
+
+        if (!this.flag.ActionDone())
+        {
+            done = false;
+        }
+
         return done;
     }
 
@@ -99,7 +110,7 @@ public class Team : MonoBehaviour
     /// <param name="yourTurn">The bool which says if it's this member's turn</param>
     public void ChangeTurn(bool yourTurn)
     {
-        foreach(Member m in this.members)
+        foreach (Member m in this.members)
         {
             m.ChangeTurn(yourTurn);
         }

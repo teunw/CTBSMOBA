@@ -6,6 +6,8 @@ public class Flag : MonoBehaviour, IFieldObject
 {
     public Base homeBase;
     private int actionsDone;
+    private Vector3 lastPosition;
+    private bool notMoving;
 
 
     /// <summary>
@@ -17,8 +19,29 @@ public class Flag : MonoBehaviour, IFieldObject
         this.ActionDone();
     }
 
-    public void ActionDone()
+    private IEnumerator CheckMoving()
     {
-        this.actionsDone++;
+        Vector3 startPos = transform.position;
+        yield return new WaitForSeconds(1f);
+        Vector3 finalPos = transform.position;
+        if (startPos.x == finalPos.x && startPos.y == finalPos.y
+            && startPos.z == finalPos.z)
+            notMoving = true;
+    }
+
+    public bool ActionDone()
+    {
+        StartCoroutine(CheckMoving());
+
+        if (notMoving == true)
+        {
+            notMoving = false;
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
     }
 }
