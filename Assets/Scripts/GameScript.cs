@@ -170,7 +170,7 @@ public class GameScript : MonoBehaviour
     {
         textWin.text = "Team " + team.team + " won!";
         textWin.enabled = true;
-        playAgain.gameObject.SetActive(false);
+        playAgain.gameObject.SetActive(true);
     }
 
     /// <summary>
