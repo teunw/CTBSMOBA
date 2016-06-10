@@ -62,6 +62,8 @@ namespace Assets.Scripts
         /// </summary>
         public Sound soundManager;
 
+        public string PlayerName;
+
         /// <summary>
         /// Check if player is moving.
         /// Sets boolean notMoving to it's value.
