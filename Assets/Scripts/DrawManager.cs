@@ -164,6 +164,8 @@ public class DrawManager : MonoBehaviour
         {
             vector2s.Add(CurrentMemberLine.Positions[i]);
         }
+        vector2s.RemoveAt(0);
+        vector2s.RemoveAt(1);
         WalkAction walkAction = new WalkAction(SelectedMember, vector2s);
         SelectedMember.AddAction(walkAction);
     }
