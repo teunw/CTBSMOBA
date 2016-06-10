@@ -31,9 +31,7 @@ namespace Assets.Scripts
                 if (!this.member.ActionDone())
                 {
                     otherMember.IsHit(transform.parent.transform.GetComponent<Rigidbody2D>().velocity);
-                }
-
-                if (!this.member.ActionDone() && !otherMember.ActionDone())
+                } else if (!this.member.ActionDone() && !otherMember.ActionDone())
                 {
                     member.IsHit(otherMember.transform.GetComponent<Rigidbody2D>().velocity);
                 }
