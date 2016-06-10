@@ -83,6 +83,7 @@ public class GameScript : MonoBehaviour
 
     /// <summary>
     /// Call this method when you want to switch turns.
+    /// This automatically changes round after 2 calls (of team 1 and team 2)
     /// This will also change the teamStatus of the game.
     /// So if both players planned their moves and this gets called,
     /// it will change the teamStatus and wait for the players to be done
@@ -90,45 +91,39 @@ public class GameScript : MonoBehaviour
     /// </summary>
     public void SwitchTurn()
     {
-        if (currentTeam == null)
+        // If current team is not null (is null once team 2 has ended their game), so 1 or 2
+        // Then the turn for the current team is ended
+        // The drawn lines for the team (1 or 2) are hidden
+        if (currentTeam != null)
         {
-            currentTeam = team1;
-            textCurrentTurn.text = "Turn: Team 1";
-            team1.ChangeTurn(true);
-            team2.ChangeTurn(false);
-            return;
-        }
-
-        if (currentTeam == team1)
-        {
-            currentTeam = team2;
-            textCurrentTurn.text = "Turn: Team 2";
-            team1.ChangeTurn(false);
-
-            foreach (Member m in team1.members)
+            // Set the current team to no longer able to change their actions
+            currentTeam.ChangeTurn(false);
+            // Remove visibility of the lines of this team
+            foreach (Member m in currentTeam.members)
             {
                 m.RemoveLines();
             }
 
-            team2.ChangeTurn(true);
-            return;
-        }
-
-        else if (currentTeam == team2)
-        {
-            currentTeam = team1;
-            textCurrentTurn.text = "Turn: Team 1";
-
-            foreach (Member m in team2.members)
+            // In case it was team 2's turn
+            // Reset the current team 'selection'
+            // Start the actions
+            if (currentTeam == 2)
             {
-                m.RemoveLines();
+                currentTeam = null;
+                StartActions();
+                return;
             }
-
-            team1.ChangeTurn(false);
-            team2.ChangeTurn(false);
-            StartActions();
-            return;
         }
+
+        // If there is no current team, that means that the new round has just started
+        // Set the new team to team 1
+        currentTeam = currentTeam == null ? team1 : team2;
+
+        // Set the new current team to be able to change their actions
+        currentTeam.ChangeTurn(true);
+
+        // Show indication of the new, active team
+        textCurrentTurn.text = "Turn: Team " + currentTeam.team;
     }
 
     /// <summary>
@@ -156,21 +151,14 @@ public class GameScript : MonoBehaviour
     /// </summary>
     public bool CheckEndGame(int teamScore)
     {
-        if (teamScore >= scoreLimt)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return teamScore >= scoreLimt;
     }
 
     public void Win(Team team)
     {
         textWin.text = "Team " + team.team + " won!";
         textWin.enabled = true;
-        playAgain.gameObject.SetActive(false);
+        playAgain.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -203,9 +191,7 @@ public class GameScript : MonoBehaviour
                 teamStatus = TeamStatus.Planning;
                 Debug.Log("Status: Planning");
 
-                currentTeam = team1;
-                team1.ChangeTurn(true);
-                team2.ChangeTurn(false);
+                SwitchTurn();
                 endTurn.gameObject.SetActive(true);
                 Debug.Log("BOTH TEAMS ARE DONE");
             }
