@@ -55,6 +55,9 @@ public class DrawManager : MonoBehaviour
         {
             if (Input.GetMouseButton(0))
             {
+                /* Casting a ray from the camera to the mouse position
+                 * Because camera is orthographic depth doesnt matter
+                 */
                 Ray ray = PlayerCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
 
@@ -70,7 +73,8 @@ public class DrawManager : MonoBehaviour
                             CompleteLine();
                             return;
                         }
-
+    
+                        // Checks if the line is too big, to prevent drawing to quick or out of screen
                         float distance = Vector3.Distance(CurrentMemberLine.LastPosition, hitpos);
                         if (distance > LineRoundness * 33)
                         {
@@ -92,7 +96,7 @@ public class DrawManager : MonoBehaviour
     }
 
     /// <summary>
-    ///     Clears all lines that are being drawn
+    /// Destroys any linerenderer objects currently in memory
     /// </summary>
     public void DestroyLines()
     {
@@ -101,6 +105,10 @@ public class DrawManager : MonoBehaviour
         MemberLines.Clear();
     }
 
+    /// <summary>
+    /// Clears the lines from this member, and removing the instance from the register
+    /// </summary>
+    /// <param name="m"></param>
     public void ClearLine(Member m)
     {
         // Destroys all Linerenderer objects
