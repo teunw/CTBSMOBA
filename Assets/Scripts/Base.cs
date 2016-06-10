@@ -20,12 +20,15 @@ public class Base : MonoBehaviour {
     /// </summary>
     private Flag EnemyFlag;
 
+    private Collider2D basecollider;
+
     /// <summary>
     /// Set the spawnpoint at the start
     /// of the game.
     /// </summary>
     private void Start()
     {
+        basecollider = this.GetComponent<Collider2D>();
         flagSpawnPoint = this.transform.position;
     }
 
@@ -36,11 +39,14 @@ public class Base : MonoBehaviour {
     private void Update()
     {
         if (EnemyFlag == null) return;
-        if (EnemyFlag.GetComponent<Rigidbody2D>().velocity == Vector2.zero)
+        if (basecollider.OverlapPoint(EnemyFlag.GetComponent<Renderer>().bounds.center))
         {
-            team.RaiseScore();
-            EnemyFlag.ReturnToSpawnPoint();
-            EnemyFlag = null;
+            if (EnemyFlag.GetComponent<Rigidbody2D>().velocity == Vector2.zero)
+            {
+                team.RaiseScore();
+                EnemyFlag.ReturnToSpawnPoint();
+                EnemyFlag = null;
+            }
         }
     }
 

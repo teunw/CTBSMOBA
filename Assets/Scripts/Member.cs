@@ -137,11 +137,16 @@ namespace Assets.Scripts
 
 
         /// <summary>
-        /// Sets the action to a walk action to follow a specific pattern
+        /// Adds an action to this member to execute once the round has started
+        /// If the action is a new walk action, all other actions are deleted first
         /// </summary>
         /// <param name="movementpoints">The pattern to follow</param>
         public void AddAction(Action action)
         {
+            if (action is WalkAction)
+            {
+                actions.Clear();
+            }
             actions.Add(action);
         }
 
