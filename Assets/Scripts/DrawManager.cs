@@ -11,6 +11,7 @@ public class DrawManager : MonoBehaviour
 {
     public GameObject DrawPlane;
     public GameScript GameScript;
+    public Material whiteLine;
     // Lower value makes the line more round, but consumes more resources
     [Tooltip("Lower value makes the line more round, but consumes more resources")] public float LineRoundness = .3f;
 
@@ -59,7 +60,6 @@ public class DrawManager : MonoBehaviour
 
                 if (Physics.Raycast(ray, out hit))
                 {
-                    Debug.Log("--Status: " + GameScript.teamStatus.ToString());
                     if (GameScript.teamStatus != Assets.TeamStatus.Executing)
                     {
                         Vector3 hitpos = hit.point;
@@ -140,8 +140,10 @@ public class DrawManager : MonoBehaviour
         gameObject.AddComponent<LineRenderer>();
 
         LineRenderer line = gameObject.GetComponent<LineRenderer>();
+        
         line.SetVertexCount(2);
         line.SetWidth(LineWidth, LineWidth);
+        line.material = whiteLine;
         line.useWorldSpace = true;
         line.SetPosition(0, begin);
         line.SetPosition(1, end);
@@ -162,6 +164,8 @@ public class DrawManager : MonoBehaviour
         {
             vector2s.Add(CurrentMemberLine.Positions[i]);
         }
+        vector2s.RemoveAt(0);
+        vector2s.RemoveAt(1);
         WalkAction walkAction = new WalkAction(SelectedMember, vector2s);
         SelectedMember.AddAction(walkAction);
     }
