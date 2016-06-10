@@ -21,6 +21,12 @@ public class DrawManager : MonoBehaviour
 
     private Member SelectedMember;
     public float StaminaModifier = .1f;
+    private int layerMask;
+
+    void Start() 
+    {
+        layerMask = 1 << 10;
+    }
 
     private MemberLine CurrentMemberLine
     {
@@ -61,10 +67,13 @@ public class DrawManager : MonoBehaviour
                 Ray ray = PlayerCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
 
-                if (Physics.Raycast(ray, out hit))
+                
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
                 {
+           
                     if (GameScript.teamStatus != Assets.TeamStatus.Executing)
                     {
+
                         Vector3 hitpos = hit.point;
                         // Check distance so lines aren't drawn when user holds mouse still
                         if (Vector2.Distance(hitpos, CurrentMemberLine.LastPosition) <= LineRoundness) return;
@@ -85,6 +94,10 @@ public class DrawManager : MonoBehaviour
 
                         CreateLine(CurrentMemberLine.LastPosition, hitpos);
                     }
+                }
+                //if raycast hits doesnt hit complete the line
+                else {
+                    CompleteLine();
                 }
             }
 
@@ -172,8 +185,12 @@ public class DrawManager : MonoBehaviour
         {
             vector2s.Add(CurrentMemberLine.Positions[i]);
         }
-        vector2s.RemoveAt(0);
-        vector2s.RemoveAt(1);
+        if (vector2s.Capacity > 2)
+        {
+            vector2s.RemoveAt(0);
+            vector2s.RemoveAt(1);
+        }
+        
         WalkAction walkAction = new WalkAction(SelectedMember, vector2s);
         SelectedMember.AddAction(walkAction);
     }
