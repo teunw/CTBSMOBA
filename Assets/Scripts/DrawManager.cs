@@ -75,8 +75,10 @@ public class DrawManager : MonoBehaviour
     private void Update()
     {
         GameScript.ProgressBar.Value = GetStaminaPercent;
+        GameScript.ProgressBar.gameObject.SetActive(IsMemberSelected);
         if (IsMemberSelected)
         {
+            
             if (Input.GetMouseButton(0))
             {
                 /* Casting a ray from the camera to the mouse position
