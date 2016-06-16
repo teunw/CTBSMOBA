@@ -100,30 +100,10 @@ public class DrawManager : MonoBehaviour
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, drawLayer))
                 {
                     Vector3 hitpos = hit.point;
+                    Vector2 hitpos2D = hitpos;
 
-                    //Check this once a new character has been selected
-                    if (!noLongerOnCharacter)
-                    {
-                        //Cast a ray to check if the mouse is still on a character
-                        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-                        {
-                            if (hit.collider.CompareTag("Character"))
-                            {
-                                //If still on a character, stop the drawing process
-                                noLongerOnCharacter = false;
-                                return;
-                            }
-                            else
-                            {
-                                Debug.Log("No longer on character, allowing drawing");
-                                //If not on a character, it is no longer on a character, it can create a line
-                                noLongerOnCharacter = true;
-                                //Create a line from center to current point
-                                CreateLine(SelectedMember.transform.position, hitpos);
-                                return;
-                            }
-                        }
-                    }
+                    Collider2D c2d = SelectedMember.GetComponent<Collider2D>();
+                    if (c2d.OverlapPoint(hitpos2D)) return;
 
                     // Check distance so lines aren't drawn when user holds mouse still
                     if (Vector2.Distance(hitpos, CurrentMemberLine.LastPosition) <= LineRoundness) return;
@@ -149,7 +129,6 @@ public class DrawManager : MonoBehaviour
                     CompleteLine();
                 }
             }
-
             else
             {
                 CompleteLine();
@@ -235,12 +214,6 @@ public class DrawManager : MonoBehaviour
         {
             vector2s.Add(CurrentMemberLine.Positions[i]);
         }
-        if (vector2s.Capacity > 2)
-        {
-            vector2s.RemoveAt(0);
-            vector2s.RemoveAt(1);
-        }
-
         WalkAction walkAction = new WalkAction(SelectedMember, vector2s);
         SelectedMember.AddAction(walkAction);
     }
@@ -251,6 +224,7 @@ public class DrawManager : MonoBehaviour
     /// <param name="member">Member to select</param>
     public void SetMember(Member member)
     {
+        Debug.Log("Selected member");
         SelectedMember = member;
         MemberLine ml = MemberLines.Find(o => o.Member == SelectedMember);
         if (ml != null)
