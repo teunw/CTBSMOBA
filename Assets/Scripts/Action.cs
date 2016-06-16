@@ -26,5 +26,10 @@ public abstract class Action
     /// </summary>
     /// <returns>Return true when action is done, false otherwise</returns>
     public abstract bool Update();
+
+    /// <summary>
+    /// Validates whether the last action is done or still in progress.
+    /// </summary>
+    /// <returns>Return true when the action is done, false otherwise</returns>
     public abstract bool isDone();
 }
