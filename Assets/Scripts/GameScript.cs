@@ -4,6 +4,8 @@ using Assets;
 using UnityEngine.UI;
 using Assets.Scripts;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using System.Linq;
 
 public class GameScript : MonoBehaviour
 {
@@ -62,6 +64,22 @@ public class GameScript : MonoBehaviour
     public Button playAgain;
     public Button endTurn;
 
+    //SKILL INDICATORS
+    public Sprite circleIndicator;
+    public Sprite diamondIndicator;
+    public Sprite hexagonIndicator;
+    public Sprite polygonIndicator;
+    public Sprite squareIndicator;
+    public Sprite triangleIndicator;
+    public GameObject character1; //TODO: not hardcoded
+    public GameObject indicatorRotationPoint;
+
+    private Skill selectedSkill = null;
+    private GameObject skillIndicator;
+    private bool casting = false;
+
+    public List<GameObject> fieldObjects;
+
     /// <summary>
     /// This gets called to initialize this class.
     /// This method will setup the current teamStatus
@@ -79,6 +97,17 @@ public class GameScript : MonoBehaviour
 
         textWin.enabled = false;
         playAgain.gameObject.SetActive(false);
+        
+        foreach(Member member in team1.members)
+        {
+            fieldObjects.Add(member.gameObject);
+        }
+        fieldObjects.Add(team1.flag.gameObject);
+        foreach(Member member in team2.members)
+        {
+            fieldObjects.Add(member.gameObject);
+        }
+        fieldObjects.Add(team2.flag.gameObject);
     }
 
     /// <summary>
@@ -210,6 +239,35 @@ public class GameScript : MonoBehaviour
                 Debug.Log("BOTH TEAMS ARE DONE");
             }
         }
+        if (selectedSkill != null)
+        {
+            skillIndicator.transform.parent = indicatorRotationPoint.transform;
+            indicatorRotationPoint.transform.position = new Vector3(character1.transform.position.x, character1.transform.position.y, 0.05f);
+            if (selectedSkill.IsSkillshot())
+            {
+                Debug.Log("Is skillshot");
+                skillIndicator.transform.localPosition = new Vector3(selectedSkill.GetRange() / 2, 0, 0);
+            } 
+            else
+            {
+                skillIndicator.transform.localPosition = Vector3.zero;
+            }
+
+            Vector3 mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0);
+            Vector3 lookPos = Camera.main.ScreenToWorldPoint(mousePos);
+            lookPos = lookPos - indicatorRotationPoint.transform.position;
+            float angle = Mathf.Atan2(lookPos.y, lookPos.x) * Mathf.Rad2Deg;
+            indicatorRotationPoint.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+            if(Input.GetMouseButtonDown(0))
+            {
+                SkillAction sa = new SkillAction(skillIndicator.GetComponent<SpriteRenderer>(), character1.GetComponent<Member>(), SkillType.TiedTogether);
+                sa.TieTogetherAll();
+                GameObject.Destroy(indicatorRotationPoint.transform.GetChild(0).gameObject);
+                indicatorRotationPoint.transform.rotation = Quaternion.AngleAxis(0, Vector3.forward);
+                selectedSkill = null;
+            }
+        }
     }
 
     /// <summary>
@@ -218,5 +276,11 @@ public class GameScript : MonoBehaviour
     public void RestartScene()
     {
         SceneManager.LoadScene("GameScene");
+    }
+
+    public void Skill1Casting()
+    {
+        selectedSkill = new Skill("Tied Together", circleIndicator, 5f, 0.0f, 0.0f);
+        skillIndicator = selectedSkill.CreateIndicator();
     }
 }
