@@ -49,6 +49,7 @@ namespace Assets.Scripts
         /// The speed of this player.
         /// The speed of the character is based on this.
         /// </summary>
+        [Range(0, 250)]
         public int Speed;
 
         /// <summary>
