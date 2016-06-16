@@ -13,7 +13,8 @@ public class DrawManager : MonoBehaviour
     public GameScript GameScript;
     public Material whiteLine;
     // Lower value makes the line more round, but consumes more resources
-    [Tooltip("Lower value makes the line more round, but consumes more resources")] public float LineRoundness = .3f;
+    [Tooltip("Lower value makes the line more round, but consumes more resources")]
+    public float LineRoundness = .3f;
 
     public float LineWidth = .08f;
     private List<MemberLine> MemberLines;
@@ -23,7 +24,7 @@ public class DrawManager : MonoBehaviour
     public float StaminaModifier = .1f;
     private int layerMask;
 
-    void Start() 
+    void Start()
     {
         layerMask = 1 << 10;
     }
@@ -58,7 +59,7 @@ public class DrawManager : MonoBehaviour
             float stamina = (SelectedMember == null) ? 1 : SelectedMember.Stamina;
             try
             {
-                return 100 - (calcLineDistance/ stamina) *100;
+                return 100 - (calcLineDistance / stamina) * 100;
             }
             catch (DivideByZeroException e)
             {
@@ -74,11 +75,16 @@ public class DrawManager : MonoBehaviour
 
     private void Update()
     {
-        GameScript.ProgressBar.Value = GetStaminaPercent;
+        if (GameScript.teamStatus == Assets.TeamStatus.Executing)
+        {
+            return;
+        }
         GameScript.ProgressBar.gameObject.SetActive(IsMemberSelected);
+
         if (IsMemberSelected)
         {
-            
+            GameScript.ProgressBar.Value = GetStaminaPercent;
+
             if (Input.GetMouseButton(0))
             {
                 /* Casting a ray from the camera to the mouse position
@@ -87,33 +93,27 @@ public class DrawManager : MonoBehaviour
                 Ray ray = PlayerCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
 
-                
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
                 {
-           
-                    if (GameScript.teamStatus != Assets.TeamStatus.Executing)
+                    Vector3 hitpos = hit.point;
+                    // Check distance so lines aren't drawn when user holds mouse still
+                    if (Vector2.Distance(hitpos, CurrentMemberLine.LastPosition) <= LineRoundness) return;
+                    if (!HasEnoughStamina)
                     {
-
-                        Vector3 hitpos = hit.point;
-                        // Check distance so lines aren't drawn when user holds mouse still
-                        if (Vector2.Distance(hitpos, CurrentMemberLine.LastPosition) <= LineRoundness) return;
-                        if (!HasEnoughStamina)
-                        {
-                            CompleteLine();
-                            return;
-                        }
-    
-                        // Checks if the line is too big, to prevent drawing to quick or out of screen
-                        float distance = Vector3.Distance(CurrentMemberLine.LastPosition, hitpos);
-                        if (distance > LineRoundness * 33)
-                        {
-                            Debug.LogWarning("Drawn out of screen!");
-                            CompleteLine();
-                            return;
-                        }
-
-                        CreateLine(CurrentMemberLine.LastPosition, hitpos);
+                        CompleteLine();
+                        return;
                     }
+
+                    // Checks if the line is too big, to prevent drawing to quick or out of screen
+                    float distance = Vector3.Distance(CurrentMemberLine.LastPosition, hitpos);
+                    if (distance > LineRoundness * 33)
+                    {
+                        Debug.LogWarning("Drawn out of screen!");
+                        CompleteLine();
+                        return;
+                    }
+
+                    CreateLine(CurrentMemberLine.LastPosition, hitpos);
                 }
                 //if raycast hits doesnt hit complete the line
                 else {
@@ -181,7 +181,7 @@ public class DrawManager : MonoBehaviour
         gameObject.AddComponent<LineRenderer>();
 
         LineRenderer line = gameObject.GetComponent<LineRenderer>();
-        
+
         line.SetVertexCount(2);
         line.SetWidth(LineWidth, LineWidth);
         line.material = whiteLine;
@@ -210,7 +210,7 @@ public class DrawManager : MonoBehaviour
             vector2s.RemoveAt(0);
             vector2s.RemoveAt(1);
         }
-        
+
         WalkAction walkAction = new WalkAction(SelectedMember, vector2s);
         SelectedMember.AddAction(walkAction);
     }
@@ -252,6 +252,6 @@ public class DrawManager : MonoBehaviour
         }
         distance *= StaminaModifier;
         // Round up stamina needed
-        return (int) Math.Ceiling(distance);
+        return (int)Math.Ceiling(distance);
     }
 }
