@@ -6,16 +6,16 @@ using System.Collections.Generic;
 
 public class SkillAction : Action
 {
-    private SpriteRenderer indicator;
+    private Collider2D collider;
     private SkillType skillType;
     private Member member;
 
     private GameScript gameScript;
     private List<GameObject> influencedObjects;
 
-    public SkillAction(SpriteRenderer indicator, Member member, SkillType skillType) : base(member)
+    public SkillAction(Collider2D collider, Member member, SkillType skillType) : base(member)
     {
-        this.indicator = indicator;
+        this.collider = collider;
         this.member = member;
         this.skillType = skillType;
         this.influencedObjects = new List<GameObject>();
@@ -39,7 +39,7 @@ public class SkillAction : Action
         {
             if (!fieldObject.name.Equals("Flag"))
             {
-                if (indicator.bounds.Contains(fieldObject.transform.GetChild(0).GetComponent<Renderer>().bounds.center))
+                if(this.collider.OverlapPoint(fieldObject.GetComponent<Member>().GetPosition()))
                 {
                     Debug.Log(fieldObject.name);
                     TieTogether(fieldObject);

@@ -65,7 +65,7 @@ public class GameScript : MonoBehaviour
     public Button endTurn;
 
     //SKILL INDICATORS
-    public Sprite circleIndicator;
+    public GameObject circleIndicator;
     public Sprite diamondIndicator;
     public Sprite hexagonIndicator;
     public Sprite polygonIndicator;
@@ -261,7 +261,7 @@ public class GameScript : MonoBehaviour
 
             if(Input.GetMouseButtonDown(0))
             {
-                SkillAction sa = new SkillAction(skillIndicator.GetComponent<SpriteRenderer>(), character1.GetComponent<Member>(), SkillType.TiedTogether);
+                SkillAction sa = new SkillAction(skillIndicator.transform.GetChild(0).GetComponent<Collider2D>(), character1.GetComponent<Member>(), SkillType.TiedTogether);
                 sa.TieTogetherAll();
                 GameObject.Destroy(indicatorRotationPoint.transform.GetChild(0).gameObject);
                 indicatorRotationPoint.transform.rotation = Quaternion.AngleAxis(0, Vector3.forward);
@@ -280,7 +280,16 @@ public class GameScript : MonoBehaviour
 
     public void Skill1Casting()
     {
-        selectedSkill = new Skill("Tied Together", circleIndicator, 5f, 0.0f, 0.0f);
-        skillIndicator = selectedSkill.CreateIndicator();
+        selectedSkill = new Skill("Tied Together", circleIndicator.GetComponent<Sprite>(), 5f, 0.0f, 0.0f);
+        skillIndicator = CreateIndicator();
+    }
+
+    public GameObject CreateIndicator()
+    {
+        GameObject go = GameObject.Instantiate(circleIndicator);
+
+        go.transform.localScale = new Vector3(selectedSkill.GetRange(), selectedSkill.GetRange(), 1);
+
+        return go;
     }
 }

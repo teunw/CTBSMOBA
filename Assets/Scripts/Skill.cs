@@ -34,25 +34,23 @@ public class Skill {
         this.skillshot = false;
     }
 
-    public GameObject CreateIndicator()
-    {
-        GameObject go = new GameObject();
+    //public void CreateIndicator()
+    //{
+    //    GameObject go = new GameObject();
 
-        SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
-        sr.sprite = this.indicator;
-        if(skillshot)
-        {
-            sr.transform.localScale = new Vector3(this.range, this.width, 1);
-            sr.transform.localPosition.Set(this.range / 2, this.width / 2, 0.05f);
-        }
-        else
-        {
-            sr.transform.localScale = new Vector3(this.range, this.range, 1);
-            sr.transform.localPosition.Set(this.range / 2, this.range / 2, 0.05f);
-        }
-
-        return go;
-    }
+    //    SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
+    //    sr.sprite = this.indicator;
+    //    if(skillshot)
+    //    {
+    //        .transform.localScale = new Vector3(this.range, this.width, 1);
+    //        sr.transform.localPosition.Set(this.range / 2, this.width / 2, 0.05f);
+    //    }
+    //    else
+    //    {
+    //        sr.transform.localScale = new Vector3(this.range, this.range, 1);
+    //        sr.transform.localPosition.Set(this.range / 2, this.range / 2, 0.05f);
+    //    }
+    //}
 
     public bool IsSkillshot()
     {
