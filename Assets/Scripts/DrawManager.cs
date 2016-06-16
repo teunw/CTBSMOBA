@@ -50,6 +50,23 @@ public class DrawManager : MonoBehaviour
         get { return CalculateLineDistance() <= SelectedMember.Stamina; }
     }
 
+    public float GetStaminaPercent
+    {
+        get
+        {
+            float calcLineDistance = CalculateLineDistance();
+            float stamina = (SelectedMember == null) ? 1 : SelectedMember.Stamina;
+            try
+            {
+                return 100 - (calcLineDistance/ stamina) *100;
+            }
+            catch (DivideByZeroException e)
+            {
+                return 0;
+            }
+        }
+    }
+
     private void Awake()
     {
         MemberLines = new List<MemberLine>();
@@ -57,6 +74,7 @@ public class DrawManager : MonoBehaviour
 
     private void Update()
     {
+        GameScript.ProgressBar.Value = GetStaminaPercent;
         if (IsMemberSelected)
         {
             if (Input.GetMouseButton(0))
@@ -221,6 +239,7 @@ public class DrawManager : MonoBehaviour
     public int CalculateLineDistance()
     {
         float distance = 0;
+        if (CurrentMemberLine == null) return 0;
         List<Vector3> positions = CurrentMemberLine.Positions;
         // Calculate total distance for the line
         for (int i = 1; i < positions.Count; i++)

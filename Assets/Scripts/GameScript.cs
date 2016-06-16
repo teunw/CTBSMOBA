@@ -3,6 +3,7 @@ using System.Collections;
 using Assets;
 using UnityEngine.UI;
 using Assets.Scripts;
+using ProgressBar;
 using UnityEngine.SceneManagement;
 
 public class GameScript : MonoBehaviour
@@ -61,6 +62,7 @@ public class GameScript : MonoBehaviour
 
     public Button playAgain;
     public Button endTurn;
+    public ProgressBarBehaviour ProgressBar;
 
     /// <summary>
     /// This gets called to initialize this class.
@@ -79,6 +81,7 @@ public class GameScript : MonoBehaviour
 
         textWin.enabled = false;
         playAgain.gameObject.SetActive(false);
+
     }
 
     /// <summary>
