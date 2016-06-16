@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine.Events;
 
-namespace ProgressBar.Utils
+namespace Assets.Scripts
 {
     /// <summary>
     /// Interface implementing an Incrementing Method.
@@ -64,7 +64,7 @@ namespace ProgressBar.Utils
         /// <summary>
         /// Set m_Value
         /// </summary>
-        public void Set (float newValue)
+        public void Set(float newValue)
         {
             m_Value = newValue;
         }
@@ -90,4 +90,4 @@ namespace ProgressBar.Utils
         /// </summary>
         public float PercentAsInt { get { return (int)(PercentAsFloat); } }
     }
- }
+}

@@ -3,7 +3,6 @@ using System.Collections;
 using Assets;
 using UnityEngine.UI;
 using Assets.Scripts;
-using ProgressBar;
 using UnityEngine.SceneManagement;
 
 public class GameScript : MonoBehaviour
