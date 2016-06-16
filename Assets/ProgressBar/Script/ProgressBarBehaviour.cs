@@ -69,7 +69,7 @@ namespace ProgressBar
         /// <summary>
         /// In pixels per seconds, the speed at which the Filler will be animated.
         /// </summary>
-        [Range(1,1000)]
+        [Range(1,50000)]
         public int ProgressSpeed;
 
         /// <summary>
