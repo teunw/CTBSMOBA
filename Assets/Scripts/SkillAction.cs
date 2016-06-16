@@ -39,7 +39,7 @@ public class SkillAction : Action
         {
             if (!fieldObject.name.Equals("Flag"))
             {
-                if(this.collider.OverlapPoint(fieldObject.GetComponent<Member>().GetPosition()))
+                if(this.collider.OverlapPoint(new Vector2(fieldObject.transform.position.x, fieldObject.transform.position.y)))
                 {
                     Debug.Log(fieldObject.name);
                     TieTogether(fieldObject);

@@ -238,10 +238,5 @@ namespace Assets.Scripts
         {
             this.actions.Clear();
         }
-
-        public Vector2 GetPosition()
-        {
-            return new Vector2(this.gameObject.transform.position.x, this.gameObject.transform.position.y);
-        }
     }
 }
