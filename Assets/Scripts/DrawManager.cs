@@ -22,11 +22,15 @@ public class DrawManager : MonoBehaviour
 
     private Member SelectedMember;
     public float StaminaModifier = .1f;
-    private int layerMask;
+    private int drawLayer;
+    private int characterLayer;
+
+    private bool noLongerOnCharacter = false;
 
     void Start()
     {
-        layerMask = 1 << 10;
+        drawLayer = 1 << 10;
+        characterLayer = 1 << 11;
     }
 
     private MemberLine CurrentMemberLine
@@ -93,9 +97,34 @@ public class DrawManager : MonoBehaviour
                 Ray ray = PlayerCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
 
-                if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity, drawLayer))
                 {
                     Vector3 hitpos = hit.point;
+
+                    //Check this once a new character has been selected
+                    if (!noLongerOnCharacter)
+                    {
+                        //Cast a ray to check if the mouse is still on a character
+                        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+                        {
+                            if (hit.collider.CompareTag("Character"))
+                            {
+                                //If still on a character, stop the drawing process
+                                noLongerOnCharacter = false;
+                                return;
+                            }
+                            else
+                            {
+                                Debug.Log("No longer on character, allowing drawing");
+                                //If not on a character, it is no longer on a character, it can create a line
+                                noLongerOnCharacter = true;
+                                //Create a line from center to current point
+                                CreateLine(SelectedMember.transform.position, hitpos);
+                                return;
+                            }
+                        }
+                    }
+
                     // Check distance so lines aren't drawn when user holds mouse still
                     if (Vector2.Distance(hitpos, CurrentMemberLine.LastPosition) <= LineRoundness) return;
                     if (!HasEnoughStamina)
@@ -168,6 +197,7 @@ public class DrawManager : MonoBehaviour
     {
         SetSelectedMemberAction();
         SelectedMember = null;
+        noLongerOnCharacter = false;
     }
 
     /// <summary>
