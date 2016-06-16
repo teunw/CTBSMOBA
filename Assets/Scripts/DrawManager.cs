@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Assets.Scripts;
+using Assets.Scripts.Skills;
 using UnityEngine;
 
 #endregion
@@ -214,8 +215,9 @@ public class DrawManager : MonoBehaviour
         {
             vector2s.Add(CurrentMemberLine.Positions[i]);
         }
-        WalkAction walkAction = new WalkAction(SelectedMember, vector2s);
-        SelectedMember.AddAction(walkAction);
+        GameObject gm = SelectedMember.gameObject;
+        WalkAction walkAction = gm.AddComponent<WalkAction>();
+        walkAction.Positions = vector2s;
     }
 
     /// <summary>
