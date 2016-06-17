@@ -84,21 +84,19 @@ public class Team : MonoBehaviour
     /// <returns></returns>
     public bool CheckActionsDone()
     {
-        bool done = true;
         foreach (Member member in this.members)
         {
             if (!member.ActionDone())
             {
-                done = false;
+                return false;
             }
         }
 
         if (!this.flag.ActionDone())
         {
-            done = false;
+            return false;
         }
-
-        return done;
+        return true;
     }
 
     /// <summary>
