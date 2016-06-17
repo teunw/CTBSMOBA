@@ -96,6 +96,7 @@ public class DrawManager : MonoBehaviour
                 /* Casting a ray from the camera to the mouse position
                  * Because camera is orthographic depth doesnt matter
                  */
+                if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject(-1)) return;
                 Ray ray = PlayerCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
 
