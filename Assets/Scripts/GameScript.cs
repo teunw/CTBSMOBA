@@ -195,29 +195,25 @@ public class GameScript : MonoBehaviour
     {
         if (teamStatus == TeamStatus.Executing)
         {
-            if (team1.CheckActionsDone())
+            if (!team1.CheckActionsDone())
             {
-                team1ActionsDone = true;
+                return;
             }
 
-            if (team2.CheckActionsDone())
+            if (!team2.CheckActionsDone())
             {
-                team2ActionsDone = true;
+                return;
             }
+            team1ActionsDone = false;
+            team2ActionsDone = false;
+            teamStatus = TeamStatus.Planning;
+            Debug.Log("Status: Planning");
 
-            if (team1ActionsDone && team2ActionsDone)
-            {
-                team1ActionsDone = false;
-                team2ActionsDone = false;
-                teamStatus = TeamStatus.Planning;
-                Debug.Log("Status: Planning");
-
-                currentTeam = team1;
-                team1.ChangeTurn(true);
-                team2.ChangeTurn(false);
-                endTurn.gameObject.SetActive(true);
-                Debug.Log("BOTH TEAMS ARE DONE");
-            }
+            currentTeam = team1;
+            team1.ChangeTurn(true);
+            team2.ChangeTurn(false);
+            endTurn.gameObject.SetActive(true);
+            Debug.Log("BOTH TEAMS ARE DONE");
         }
     }
 

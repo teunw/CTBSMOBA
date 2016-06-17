@@ -35,7 +35,8 @@ namespace Assets.Scripts
         /// The speed of this player.
         /// The speed of the character is based on this.
         /// </summary>
-        [Range(0, 250)] public int Speed;
+        [Range(0, 250)]
+        public int Speed;
 
         /// <summary>
         /// The stamina of this player.
@@ -52,16 +53,16 @@ namespace Assets.Scripts
         /// The name of the character
         /// </summary>
         public string PlayerName;
-        
+
         /// <summary>
         /// Threshold for the speed for when a member has officially stopped moving
         /// </summary>
-        private float noMovementThreshold = 0.0001f;
+        private float noMovementThreshold = 0.000001f;
 
         /// <summary>
         /// Amount of frames where the member has to be non-moving
         /// </summary>
-        private const int noMovementFrames = 3;
+        private const int noMovementFrames = 5;
 
         /// <summary>
         /// Storage of the locations in these frames
@@ -72,10 +73,6 @@ namespace Assets.Scripts
         /// Boolean showing whether a member has stopped moving or not
         /// </summary>
         private bool isMoving;
-        public bool IsMoving
-        {
-            get { return isMoving; }
-        }
 
         /// <summary>
         /// Returns whether the member has finished performing its action
@@ -85,12 +82,15 @@ namespace Assets.Scripts
         {
             if (GetComponent<KickAction>() == null || GetComponents<TiedTogetherAction>() == null) skillsDone = true;
             //Debug.Log(gameObject.name + (IsMoving ? ": \tis moving" : ": \tis not moving") + " (done: " + (skillsDone && !IsMoving) + ")");
-            return (skillsDone && !IsMoving);
+            CheckMovement();
+            return (skillsDone && !isMoving);
         }
 
-        void Update()
+        /// <summary>
+        /// Checks whether the member is still moving
+        /// </summary>
+        public void CheckMovement()
         {
-            if (GameScript.instance.teamStatus != TeamStatus.Executing) return;
             // Move the locations
             for (int i = 0; i < previousLocations.Length - 1; i++)
             {
@@ -99,6 +99,14 @@ namespace Assets.Scripts
             // Set last location to the current location
             previousLocations[previousLocations.Length - 1] = transform.position;
 
+            //If there are still vector3 zeroes in the array, that means that not all values have been filled
+            if (previousLocations.Contains(Vector3.zero))
+            {
+                isMoving = true;
+                return;
+            }
+
+            bool doesMove = false;
             // Check the distances between the points in your previous locations
             // If for the past several updates, there are no movements smaller than the threshold,
             // you can most likely assume that the object is not moving
@@ -107,16 +115,15 @@ namespace Assets.Scripts
                 // If it is larger than the threshold, it is moving, else not
                 if (Vector3.Distance(previousLocations[i], previousLocations[i + 1]) >= noMovementThreshold)
                 {
-                    isMoving = true;
+                    doesMove = true;
                 }
                 else
                 {
-                    isMoving = false;
-                    break;
+                    doesMove = false;
                 }
             }
+            isMoving = doesMove;
         }
-
 
         /// <summary>
         /// The start method, which checks
@@ -126,6 +133,14 @@ namespace Assets.Scripts
         private void Start()
         {
             if (DrawManager == null) throw new NullReferenceException("DrawManager is null!");
+            ResetPoints();
+        }
+
+        /// <summary>
+        /// Resets the movement points, so the member knows it needs to revalidate its movement
+        /// </summary>
+        private void ResetPoints()
+        {
             for (int i = 0; i < previousLocations.Length; i++)
             {
                 previousLocations[i] = Vector3.zero;
@@ -166,6 +181,7 @@ namespace Assets.Scripts
         /// </param>
         public void ChangeTurn(bool yourTurn)
         {
+            ResetPoints();
             this.yourTurn = yourTurn;
         }
 
@@ -225,15 +241,18 @@ namespace Assets.Scripts
 
         public void ActionPressed(Type action)
         {
-            if (action.IsSubclassOf(typeof(MonoBehaviour))) throw new Exception("Type isn't monobehaviour!");
+            if (action.IsAssignableFrom(typeof(MonoBehaviour))) throw new Exception("Type isn't monobehaviour!");
             Component c = GetComponent(action);
             if (c != null)
             {
                 Destroy(c);
+                Debug.Log("Removed skill " + action.Name);
             }
             else
             {
                 gameObject.AddComponent(action);
+                Debug.Log("Added skill " + action.Name);
+
             }
         }
     }

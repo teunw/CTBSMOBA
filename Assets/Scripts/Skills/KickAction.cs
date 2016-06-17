@@ -16,6 +16,8 @@ namespace Assets.Scripts.Skills
 
         private bool shouldExecuteSkill;
         public float KickForce = 15f;
+        public Color KickColor = Color.green;
+        private Color startColor;
 
         void Update()
         {
@@ -39,6 +41,19 @@ namespace Assets.Scripts.Skills
                 rb.AddForce(direction * KickForce, ForceMode2D.Impulse);
             }
             EndKick();
+        }
+
+        void Start()
+        {
+            SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+            startColor = sr.color;
+            sr.color = KickColor;
+        }
+
+        void OnDestroy()
+        {
+            SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+            sr.color = startColor;
         }
 
         void OnMemberWalkDone()
