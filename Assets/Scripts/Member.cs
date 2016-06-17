@@ -74,18 +74,7 @@ namespace Assets.Scripts
         private bool isMoving;
         public bool IsMoving
         {
-<<<<<<< HEAD
-            Vector3 startPos = transform.position;
-            yield return new WaitForSeconds(0.03f);
-            Vector3 finalPos = transform.position;
-            if (startPos.x == finalPos.x && startPos.y == finalPos.y
-                && startPos.z == finalPos.z)
-            {
-                notMoving = true;
-            }
-=======
             get { return isMoving; }
->>>>>>> 9a44066b88d24699b3bf7d327d61f6353c7439f7
         }
 
         /// <summary>
