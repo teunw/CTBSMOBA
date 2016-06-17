@@ -4,6 +4,7 @@ using Assets;
 using UnityEngine.UI;
 using Assets.Scripts;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class GameScript : MonoBehaviour
 {
@@ -87,7 +88,6 @@ public class GameScript : MonoBehaviour
 
         textWin.enabled = false;
         playAgain.gameObject.SetActive(false);
-
     }
 
     /// <summary>
