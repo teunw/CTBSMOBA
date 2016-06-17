@@ -56,12 +56,12 @@ namespace Assets.Scripts
         /// <summary>
         /// Threshold for the speed for when a member has officially stopped moving
         /// </summary>
-        private float noMovementThreshold = 0.0001f;
+        private float noMovementThreshold = 0.000001f;
 
         /// <summary>
         /// Amount of frames where the member has to be non-moving
         /// </summary>
-        private const int noMovementFrames = 3;
+        private const int noMovementFrames = 5;
 
         /// <summary>
         /// Storage of the locations in these frames
@@ -85,12 +85,15 @@ namespace Assets.Scripts
         {
             if (GetComponent<KickAction>() == null) skillsDone = true;
             //Debug.Log(gameObject.name + (IsMoving ? ": \tis moving" : ": \tis not moving") + " (done: " + (skillsDone && !IsMoving) + ")");
+            CheckMovement();
             return (skillsDone && !IsMoving);
         }
 
-        void Update()
+        /// <summary>
+        /// Checks whether the member is still moving
+        /// </summary>
+        public void CheckMovement()
         {
-            if (GameScript.instance.teamStatus != TeamStatus.Executing) return;
             // Move the locations
             for (int i = 0; i < previousLocations.Length - 1; i++)
             {
@@ -99,6 +102,14 @@ namespace Assets.Scripts
             // Set last location to the current location
             previousLocations[previousLocations.Length - 1] = transform.position;
 
+            //If there are still vector3 zeroes in the array, that means that not all values have been filled
+            if (previousLocations.Contains(Vector3.zero))
+            {
+                isMoving = true;
+                return;
+            }
+
+            bool toSet = false;
             // Check the distances between the points in your previous locations
             // If for the past several updates, there are no movements smaller than the threshold,
             // you can most likely assume that the object is not moving
@@ -107,16 +118,20 @@ namespace Assets.Scripts
                 // If it is larger than the threshold, it is moving, else not
                 if (Vector3.Distance(previousLocations[i], previousLocations[i + 1]) >= noMovementThreshold)
                 {
-                    isMoving = true;
+                    toSet = true;
                 }
                 else
                 {
+                    toSet = false;
                     isMoving = false;
                     break;
                 }
             }
+            if (toSet)
+            {
+                isMoving = toSet;
+            }
         }
-
 
         /// <summary>
         /// The start method, which checks
@@ -126,6 +141,11 @@ namespace Assets.Scripts
         private void Start()
         {
             if (DrawManager == null) throw new NullReferenceException("DrawManager is null!");
+            ResetPoints();
+        }
+
+        private void ResetPoints()
+        {
             for (int i = 0; i < previousLocations.Length; i++)
             {
                 previousLocations[i] = Vector3.zero;
@@ -166,6 +186,7 @@ namespace Assets.Scripts
         /// </param>
         public void ChangeTurn(bool yourTurn)
         {
+            ResetPoints();
             this.yourTurn = yourTurn;
         }
 
