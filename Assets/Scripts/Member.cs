@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-    public class Member : MonoBehaviour, IFieldObject
+    public class Member : IFieldObject
     {
         /// <summary>
         /// The DrawManager which is responsible for the drawing
@@ -55,30 +55,10 @@ namespace Assets.Scripts
         public string PlayerName;
 
         /// <summary>
-        /// Threshold for the speed for when a member has officially stopped moving
-        /// </summary>
-        private float noMovementThreshold = 0.000001f;
-
-        /// <summary>
-        /// Amount of frames where the member has to be non-moving
-        /// </summary>
-        private const int noMovementFrames = 3;
-
-        /// <summary>
-        /// Storage of the locations in these frames
-        /// </summary>
-        Vector3[] previousLocations = new Vector3[noMovementFrames];
-
-        /// <summary>
-        /// Boolean showing whether a member has stopped moving or not
-        /// </summary>
-        private bool isMoving;
-
-        /// <summary>
         /// Returns whether the member has finished performing its action
         /// </summary>
         /// <returns>Whether their action is finished, or if the phase is in planning mode, whichever is true</returns>
-        public bool ActionDone()
+        public override bool ActionDone()
         {
             if (GetComponent<KickAction>() == null || GetComponents<TiedTogetherAction>() == null) skillsDone = true;
             //Debug.Log(gameObject.name + (IsMoving ? ": \tis moving" : ": \tis not moving") + " (done: " + (skillsDone && !IsMoving) + ")");
@@ -87,65 +67,14 @@ namespace Assets.Scripts
         }
 
         /// <summary>
-        /// Checks whether the member is still moving
-        /// </summary>
-        public void CheckMovement()
-        {
-            // Move the locations
-            for (int i = 0; i < previousLocations.Length - 1; i++)
-            {
-                previousLocations[i] = previousLocations[i + 1];
-            }
-            // Set last location to the current location
-            previousLocations[previousLocations.Length - 1] = transform.position;
-
-            // If there are still vector3 zeroes in the array, that means that not all values have been filled
-            if (previousLocations.Contains(Vector3.zero))
-            {
-                isMoving = true;
-                return;
-            }
-
-            bool doesMove = true;
-            // Check the distances between the points in your previous locations
-            // If for the past several updates, there are no movements smaller than the threshold,
-            // you can most likely assume that the object is not moving
-            for (int i = 0; i < previousLocations.Length - 1; i++)
-            {
-                // If it is larger than the threshold, it is moving, else not
-                if (Vector3.Distance(previousLocations[i], previousLocations[i + 1]) >= noMovementThreshold)
-                {
-                    doesMove = true;
-                    break;
-                }
-                else
-                {
-                    doesMove = false;
-                }
-            }
-            isMoving = doesMove;
-        }
-
-        /// <summary>
         /// The start method, which checks
         /// if the drawmanager is null. And
         /// it initializes a list of actions.
         /// </summary>
-        private void Start()
+        protected override void Start()
         {
             if (DrawManager == null) throw new NullReferenceException("DrawManager is null!");
-            ResetPoints();
-        }
-
-        /// <summary>
-        /// Resets the movement points, so the member knows it needs to revalidate its movement
-        /// </summary>
-        private void ResetPoints()
-        {
-            for (int i = 0; i < previousLocations.Length; i++)
-            {
-                previousLocations[i] = Vector3.zero;
-            }
+            base.Start();
         }
 
         /// <summary>
