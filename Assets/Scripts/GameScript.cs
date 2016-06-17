@@ -4,6 +4,7 @@ using Assets;
 using UnityEngine.UI;
 using Assets.Scripts;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class GameScript : MonoBehaviour
 {
@@ -61,6 +62,22 @@ public class GameScript : MonoBehaviour
 
     public Button playAgain;
     public Button endTurn;
+    public ProgressBarBehaviour ProgressBar;
+
+    public static GameScript instance { get; private set; }
+
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Debug.LogError("Not allowed to instantiate multiple GameScripts!");
+            Destroy(this);
+        }
+    }
 
     /// <summary>
     /// This gets called to initialize this class.
@@ -186,29 +203,25 @@ public class GameScript : MonoBehaviour
     {
         if (teamStatus == TeamStatus.Executing)
         {
-            if (team1.CheckActionsDone())
+            if (!team1.CheckActionsDone())
             {
-                team1ActionsDone = true;
+                return;
             }
 
-            if (team2.CheckActionsDone())
+            if (!team2.CheckActionsDone())
             {
-                team2ActionsDone = true;
+                return;
             }
+            team1ActionsDone = false;
+            team2ActionsDone = false;
+            teamStatus = TeamStatus.Planning;
+            Debug.Log("Status: Planning");
 
-            if (team1ActionsDone && team2ActionsDone)
-            {
-                team1ActionsDone = false;
-                team2ActionsDone = false;
-                teamStatus = TeamStatus.Planning;
-                Debug.Log("Status: Planning");
-
-                currentTeam = team1;
-                team1.ChangeTurn(true);
-                team2.ChangeTurn(false);
-                endTurn.gameObject.SetActive(true);
-                Debug.Log("BOTH TEAMS ARE DONE");
-            }
+            currentTeam = team1;
+            team1.ChangeTurn(true);
+            team2.ChangeTurn(false);
+            endTurn.gameObject.SetActive(true);
+            Debug.Log("BOTH TEAMS ARE DONE");
         }
     }
 

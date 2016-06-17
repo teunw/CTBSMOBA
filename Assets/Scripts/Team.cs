@@ -46,7 +46,6 @@ public class Team : MonoBehaviour
     /// </summary>
     public Sound soundManager;
 
-
     /// <summary>
     /// Makes each member of this team perform its action
     /// </summary>
@@ -84,26 +83,19 @@ public class Team : MonoBehaviour
     /// <returns></returns>
     public bool CheckActionsDone()
     {
-        bool done = true;
         foreach (Member member in this.members)
         {
             if (!member.ActionDone())
             {
-                done = false;
-            }
-
-            else
-            {
-                member.ResetActions();
+                return false;
             }
         }
 
         if (!this.flag.ActionDone())
         {
-            done = false;
+            return false;
         }
-
-        return done;
+        return true;
     }
 
     /// <summary>

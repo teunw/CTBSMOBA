@@ -20,6 +20,10 @@ public class Base : MonoBehaviour {
     /// </summary>
     private Flag EnemyFlag;
 
+    /// <summary>
+    /// The collider of the base, 
+    /// used for collission checks with the fieldobjects
+    /// </summary>
     private Collider2D basecollider;
 
     /// <summary>
