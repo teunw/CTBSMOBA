@@ -162,11 +162,18 @@ namespace Assets.Scripts
         }
 
         /// <summary>
-        /// Performs the actions
+        /// Performs the actions, walk action first, then the skills
         /// </summary>
         public void PerformActions()
         {
-            SendMessage(ActionConstants.OnMemberWalkString);
+            if (this.GetComponent<WalkAction>() != null)
+            {
+                SendMessage(ActionConstants.OnMemberWalkString);
+            }
+            else
+            {
+                SendMessage(ActionConstants.OnMemberWalkDoneString);
+            }
         }
 
         /// <summary>
