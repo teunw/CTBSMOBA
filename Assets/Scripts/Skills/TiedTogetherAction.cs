@@ -18,6 +18,7 @@ namespace Assets.Scripts.Skills
         private List<LineRenderer> lines = new List<LineRenderer>();
         private List<GameObject> influencedObjects = new List<GameObject>();
         public float TieRange = 1.75f;
+        public float TieDistance = 2f;
 
         void Update()
         {
@@ -34,7 +35,7 @@ namespace Assets.Scripts.Skills
                             {
                                 SpringJoint2D springJoint = this.gameObject.AddComponent<SpringJoint2D>();
                                 springJoint.connectedBody = coll.gameObject.GetComponent<Rigidbody2D>();
-                                springJoint.distance = 2;
+                                springJoint.distance = TieDistance;
                                 springJoint.autoConfigureDistance = false;
 
                                 LineRenderer line = coll.gameObject.AddComponent<LineRenderer>();

@@ -80,7 +80,7 @@ namespace Assets.Scripts
         /// <returns>Whether their action is finished, or if the phase is in planning mode, whichever is true</returns>
         public bool ActionDone()
         {
-            if (GetComponent<KickAction>() == null || GetComponents<TiedTogetherAction>() == null) skillsDone = true;
+            if (GetComponent<KickAction>() == null) skillsDone = true;
             //Debug.Log(gameObject.name + (IsMoving ? ": \tis moving" : ": \tis not moving") + " (done: " + (skillsDone && !IsMoving) + ")");
             CheckMovement();
             return (skillsDone && !isMoving);
@@ -260,7 +260,6 @@ namespace Assets.Scripts
             {
                 gameObject.AddComponent(action);
                 Debug.Log("Added skill " + action.Name);
-
             }
         }
     }
