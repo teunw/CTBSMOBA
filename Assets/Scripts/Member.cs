@@ -225,15 +225,18 @@ namespace Assets.Scripts
 
         public void ActionPressed(Type action)
         {
-            if (action.IsSubclassOf(typeof(MonoBehaviour))) throw new Exception("Type isn't monobehaviour!");
+            if (action.IsAssignableFrom(typeof(MonoBehaviour))) throw new Exception("Type isn't monobehaviour!");
             Component c = GetComponent(action);
             if (c != null)
             {
                 Destroy(c);
+                Debug.Log("Removed skill " + action.Name);
             }
             else
             {
                 gameObject.AddComponent(action);
+                Debug.Log("Added skill " + action.Name);
+
             }
         }
     }

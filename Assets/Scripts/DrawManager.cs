@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Assets.Scripts;
 using Assets.Scripts.Skills;
 using UnityEngine;
+using UnityEngine.UI;
 
 #endregion
 
@@ -176,7 +177,7 @@ public class DrawManager : MonoBehaviour
     public void CompleteLine()
     {
         SetSelectedMemberAction();
-        SelectedMember = null;
+//        SelectedMember = null;
         noLongerOnCharacter = false;
     }
 
@@ -210,12 +211,17 @@ public class DrawManager : MonoBehaviour
     /// </summary>
     public void SetSelectedMemberAction()
     {
+        if (CurrentMemberLine == null) return;
         List<Vector2> vector2s = new List<Vector2>(CurrentMemberLine.Positions.Count);
         for (int i = 0; i < CurrentMemberLine.Positions.Count; i++)
         {
             vector2s.Add(CurrentMemberLine.Positions[i]);
         }
         GameObject gm = SelectedMember.gameObject;
+
+        WalkAction wa = gm.GetComponent<WalkAction>();
+        if (wa != null) Destroy(wa);
+
         WalkAction walkAction = gm.AddComponent<WalkAction>();
         walkAction.Positions = vector2s;
     }
@@ -242,6 +248,11 @@ public class DrawManager : MonoBehaviour
 
     public void KickPressed()
     {
+        if (SelectedMember == null)
+        {
+            Debug.LogError("No member selected");
+            return;
+        }
         SelectedMember.ActionPressed(typeof(KickAction));
     }
 
