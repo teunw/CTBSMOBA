@@ -57,7 +57,7 @@ namespace Assets.Scripts
         /// <summary>
         /// Threshold for the speed for when a member has officially stopped moving
         /// </summary>
-        private float noMovementThreshold = 0.00001f;
+        private float noMovementThreshold = 0.000001f;
 
         /// <summary>
         /// Amount of frames where the member has to be non-moving
@@ -99,14 +99,14 @@ namespace Assets.Scripts
             // Set last location to the current location
             previousLocations[previousLocations.Length - 1] = transform.position;
 
-            //If there are still vector3 zeroes in the array, that means that not all values have been filled
+            // If there are still vector3 zeroes in the array, that means that not all values have been filled
             if (previousLocations.Contains(Vector3.zero))
             {
                 isMoving = true;
                 return;
             }
 
-            bool doesMove = false;
+            bool doesMove = true;
             // Check the distances between the points in your previous locations
             // If for the past several updates, there are no movements smaller than the threshold,
             // you can most likely assume that the object is not moving
@@ -116,6 +116,7 @@ namespace Assets.Scripts
                 if (Vector3.Distance(previousLocations[i], previousLocations[i + 1]) >= noMovementThreshold)
                 {
                     doesMove = true;
+                    break;
                 }
                 else
                 {
