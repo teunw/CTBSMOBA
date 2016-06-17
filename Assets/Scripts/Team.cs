@@ -91,11 +91,6 @@ public class Team : MonoBehaviour
             {
                 done = false;
             }
-
-            else
-            {
-                member.ResetActions();
-            }
         }
 
         if (!this.flag.ActionDone())

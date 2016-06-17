@@ -4,6 +4,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Skills;
+using UnityEditor;
 using UnityEngine;
 
 #endregion
@@ -12,22 +14,6 @@ namespace Assets.Scripts
 {
     public class Member : MonoBehaviour, IFieldObject
     {
-        /// <summary>
-        /// A list of actions which this player has.
-        /// </summary>
-        private List<Action> actions;
-
-        /// <summary>
-        /// The current action which the player is performing.
-        /// </summary>
-        private int currentAction;
-
-        /// <summary>
-        /// A bool which indicates if the member should perform
-        /// his actions.
-        /// </summary>
-        private bool doPerform;
-
         /// <summary>
         /// The DrawManager which is responsible for the drawing
         /// the lines and making the actions.
@@ -41,50 +27,54 @@ namespace Assets.Scripts
         private bool yourTurn;
 
         /// <summary>
-        /// A bool which indicates if the player is moving.
+        /// A bool indicating whether the skills are done 
         /// </summary>
-        private bool notMoving;
+        private bool skillsDone;
 
         /// <summary>
         /// The speed of this player.
         /// The speed of the character is based on this.
         /// </summary>
-        [Range(0, 250)]
-        public int Speed;
+        [Range(0, 250)] public int Speed;
 
         /// <summary>
         /// The stamina of this player.
         /// The length of the line is based on this.
         /// </summary>
         public int Stamina;
-        
+
         /// <summary>
         /// The soundmanager which is responsible for making sounds.
         /// </summary>
         public Sound soundManager;
 
+        /// <summary>
+        /// The name of the character
+        /// </summary>
         public string PlayerName;
+        
+        /// <summary>
+        /// Threshold for the speed for when a member has officially stopped moving
+        /// </summary>
+        private float noMovementThreshold = 0.0001f;
 
         /// <summary>
-        /// Check if player is moving.
-        /// Sets boolean notMoving to it's value.
-        /// Sets position, then waits one second
-        /// and checks it's position once more.
-        /// If it didn't change it will set
-        /// the boolean notMoving to true.
+        /// Amount of frames where the member has to be non-moving
         /// </summary>
-        /// <returns></returns>
-        private IEnumerator CheckMoving()
+        private const int noMovementFrames = 3;
+
+        /// <summary>
+        /// Storage of the locations in these frames
+        /// </summary>
+        Vector3[] previousLocations = new Vector3[noMovementFrames];
+
+        /// <summary>
+        /// Boolean showing whether a member has stopped moving or not
+        /// </summary>
+        private bool isMoving;
+        public bool IsMoving
         {
-            Vector3 startPos = transform.position;
-            yield return new WaitForSeconds(0.03f);
-            Vector3 finalPos = transform.position;
-            if (startPos.x == finalPos.x && startPos.y == finalPos.y
-                && startPos.z == finalPos.z)
-            {
-                notMoving = true;
-            }
-                
+            get { return isMoving; }
         }
 
         /// <summary>
@@ -93,27 +83,40 @@ namespace Assets.Scripts
         /// <returns>Whether their action is finished, or if the phase is in planning mode, whichever is true</returns>
         public bool ActionDone()
         {
-            if (actions.Count != 0)
+            if (GetComponent<KickAction>() == null) skillsDone = true;
+            //Debug.Log(gameObject.name + (IsMoving ? ": \tis moving" : ": \tis not moving") + " (done: " + (skillsDone && !IsMoving) + ")");
+            return (skillsDone && !IsMoving);
+        }
+
+        void Update()
+        {
+            if (GameScript.instance.teamStatus != TeamStatus.Executing) return;
+            // Move the locations
+            for (int i = 0; i < previousLocations.Length - 1; i++)
             {
-                if (!actions.Last().isDone())
+                previousLocations[i] = previousLocations[i + 1];
+            }
+            // Set last location to the current location
+            previousLocations[previousLocations.Length - 1] = transform.position;
+
+            // Check the distances between the points in your previous locations
+            // If for the past several updates, there are no movements smaller than the threshold,
+            // you can most likely assume that the object is not moving
+            for (int i = 0; i < previousLocations.Length - 1; i++)
+            {
+                // If it is larger than the threshold, it is moving, else not
+                if (Vector3.Distance(previousLocations[i], previousLocations[i + 1]) >= noMovementThreshold)
                 {
-                    return false;
+                    isMoving = true;
+                }
+                else
+                {
+                    isMoving = false;
+                    break;
                 }
             }
-
-            StartCoroutine(CheckMoving());
-
-            if (notMoving == true)
-            {
-                notMoving = false;
-                return true;
-            }
-
-            else
-            {
-                return false;
-            }
         }
+
 
         /// <summary>
         /// The start method, which checks
@@ -122,33 +125,11 @@ namespace Assets.Scripts
         /// </summary>
         private void Start()
         {
-            actions = new List<Action>();
             if (DrawManager == null) throw new NullReferenceException("DrawManager is null!");
-        }
-
-        /// <summary>
-        /// Sets the currentAction to 0,
-        /// and sets the boolean doPerform to true.
-        /// </summary>
-        public void PerformActions()
-        {
-            currentAction = 0;
-            doPerform = true;
-        }
-
-
-        /// <summary>
-        /// Adds an action to this member to execute once the round has started
-        /// If the action is a new walk action, all other actions are deleted first
-        /// </summary>
-        /// <param name="movementpoints">The pattern to follow</param>
-        public void AddAction(Action action)
-        {
-            if (action is WalkAction)
+            for (int i = 0; i < previousLocations.Length; i++)
             {
-                actions.Clear();
+                previousLocations[i] = Vector3.zero;
             }
-            actions.Add(action);
         }
 
         /// <summary>
@@ -165,24 +146,11 @@ namespace Assets.Scripts
         }
 
         /// <summary>
-        /// If the member is allowed to perform it's actions,
-        /// it will till it has reached the end.
+        /// Performs the actions
         /// </summary>
-        public void FixedUpdate()
+        public void PerformActions()
         {
-            if (doPerform)
-            {
-                if (currentAction >= actions.Count)
-                {
-                    doPerform = false;
-                    actions.Clear();
-                    return;
-                }
-
-                bool done = actions[currentAction].Update();
-                if (done)
-                    currentAction++;
-            }
+            SendMessage(ActionConstants.OnMemberWalkString);
         }
 
         /// <summary>
@@ -202,6 +170,25 @@ namespace Assets.Scripts
         }
 
         /// <summary>
+        /// Performs an action after the member has walked
+        /// </summary>
+        void OnMemberWalkDone()
+        {
+            if (GetComponent<KickAction>() == null)
+            {
+                skillsDone = true;
+            }
+        }
+
+        /// <summary>
+        /// Performs an action after the skills have been executed
+        /// </summary>
+        void OnSkillExecuted()
+        {
+            skillsDone = true;
+        }
+
+        /// <summary>
         /// Remove all the lines of the player.
         /// Does not remove the actions.
         /// </summary>
@@ -218,7 +205,6 @@ namespace Assets.Scripts
         public void WallHit()
         {
             soundManager.playBumpSound();
-            actions.Clear();
         }
 
         /// <summary>
@@ -234,17 +220,24 @@ namespace Assets.Scripts
         public void IsHit(Vector3 velocity)
         {
             soundManager.playBumpSound();
-            actions.Clear();
             transform.GetComponent<Rigidbody2D>().velocity = velocity;
         }
-        
-        /// <summary>
-        /// Resets the actions of this member.
-        /// The list gets cleared.
-        /// </summary>
-        public void ResetActions()
+
+        public void ActionPressed(Type action)
         {
-            this.actions.Clear();
+            if (action.IsAssignableFrom(typeof(MonoBehaviour))) throw new Exception("Type isn't monobehaviour!");
+            Component c = GetComponent(action);
+            if (c != null)
+            {
+                Destroy(c);
+                Debug.Log("Removed skill " + action.Name);
+            }
+            else
+            {
+                gameObject.AddComponent(action);
+                Debug.Log("Added skill " + action.Name);
+
+            }
         }
     }
 }
