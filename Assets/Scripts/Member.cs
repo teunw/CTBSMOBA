@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 #endregion
 
@@ -56,12 +57,15 @@ namespace Assets.Scripts
         /// The length of the line is based on this.
         /// </summary>
         public int Stamina;
-        
+
         /// <summary>
         /// The soundmanager which is responsible for making sounds.
         /// </summary>
         public Sound soundManager;
 
+        /// <summary>
+        /// The name of the player.
+        /// </summary>
         public string PlayerName;
 
         /// <summary>
@@ -83,7 +87,7 @@ namespace Assets.Scripts
             {
                 notMoving = true;
             }
-                
+
         }
 
         /// <summary>
@@ -119,10 +123,10 @@ namespace Assets.Scripts
         /// if the drawmanager is null. And
         /// it initializes a list of actions.
         /// </summary>
-        private void Start()
+        void Start()
         {
             actions = new List<Action>();
-            if (DrawManager == null) throw new NullReferenceException("DrawManager is null!");
+            //if (DrawManager == null) throw new NullReferenceException("DrawManager is null!");
         }
 
         /// <summary>
@@ -236,7 +240,7 @@ namespace Assets.Scripts
             actions.Clear();
             transform.GetComponent<Rigidbody2D>().velocity = velocity;
         }
-        
+
         /// <summary>
         /// Resets the actions of this member.
         /// The list gets cleared.
@@ -244,6 +248,20 @@ namespace Assets.Scripts
         public void ResetActions()
         {
             this.actions.Clear();
+        }
+
+        /// <summary>
+        /// Set the fields in this class.
+        /// Is used to import it from a file.
+        /// </summary>
+        /// <param name="name">The name of the member.</param>
+        /// <param name="stamina">The stamina of the member.</param>
+        /// <param name="speed">The speed of the member.</param>
+        public void SetFieldsFromFile(string name, int stamina, int speed)
+        {
+            this.PlayerName = name;
+            this.Stamina = stamina;
+            this.Speed = speed;
         }
     }
 }
