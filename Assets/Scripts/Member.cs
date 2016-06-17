@@ -35,7 +35,8 @@ namespace Assets.Scripts
         /// The speed of this player.
         /// The speed of the character is based on this.
         /// </summary>
-        [Range(0, 250)] public int Speed;
+        [Range(0, 250)]
+        public int Speed;
 
         /// <summary>
         /// The stamina of this player.
@@ -52,7 +53,7 @@ namespace Assets.Scripts
         /// The name of the character
         /// </summary>
         public string PlayerName;
-        
+
         /// <summary>
         /// Threshold for the speed for when a member has officially stopped moving
         /// </summary>
@@ -72,10 +73,6 @@ namespace Assets.Scripts
         /// Boolean showing whether a member has stopped moving or not
         /// </summary>
         private bool isMoving;
-        public bool IsMoving
-        {
-            get { return isMoving; }
-        }
 
         /// <summary>
         /// Returns whether the member has finished performing its action
@@ -86,7 +83,7 @@ namespace Assets.Scripts
             if (GetComponent<KickAction>() == null) skillsDone = true;
             //Debug.Log(gameObject.name + (IsMoving ? ": \tis moving" : ": \tis not moving") + " (done: " + (skillsDone && !IsMoving) + ")");
             CheckMovement();
-            return (skillsDone && !IsMoving);
+            return (skillsDone && !isMoving);
         }
 
         /// <summary>
@@ -109,7 +106,7 @@ namespace Assets.Scripts
                 return;
             }
 
-            bool toSet = false;
+            bool doesMove = false;
             // Check the distances between the points in your previous locations
             // If for the past several updates, there are no movements smaller than the threshold,
             // you can most likely assume that the object is not moving
@@ -118,19 +115,14 @@ namespace Assets.Scripts
                 // If it is larger than the threshold, it is moving, else not
                 if (Vector3.Distance(previousLocations[i], previousLocations[i + 1]) >= noMovementThreshold)
                 {
-                    toSet = true;
+                    doesMove = true;
                 }
                 else
                 {
-                    toSet = false;
-                    isMoving = false;
-                    break;
+                    doesMove = false;
                 }
             }
-            if (toSet)
-            {
-                isMoving = toSet;
-            }
+            isMoving = doesMove;
         }
 
         /// <summary>
@@ -144,6 +136,9 @@ namespace Assets.Scripts
             ResetPoints();
         }
 
+        /// <summary>
+        /// Resets the movement points, so the member knows it needs to revalidate its movement
+        /// </summary>
         private void ResetPoints()
         {
             for (int i = 0; i < previousLocations.Length; i++)
