@@ -68,7 +68,15 @@ public class GameScript : MonoBehaviour
 
     void Awake()
     {
-        instance = instance ?? this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Debug.LogError("Not allowed to instantiate multiple GameScripts!");
+            Destroy(this);
+        }
     }
 
     /// <summary>

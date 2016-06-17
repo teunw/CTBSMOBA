@@ -57,12 +57,12 @@ namespace Assets.Scripts
         /// <summary>
         /// Threshold for the speed for when a member has officially stopped moving
         /// </summary>
-        private float noMovementThreshold = 0.000001f;
+        private float noMovementThreshold = 0.00001f;
 
         /// <summary>
         /// Amount of frames where the member has to be non-moving
         /// </summary>
-        private const int noMovementFrames = 5;
+        private const int noMovementFrames = 3;
 
         /// <summary>
         /// Storage of the locations in these frames
