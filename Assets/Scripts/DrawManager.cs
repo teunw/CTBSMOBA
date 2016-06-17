@@ -240,6 +240,12 @@ public class DrawManager : MonoBehaviour
         }
     }
 
+    public void KickPressed()
+    {
+        SelectedMember.ActionPressed(typeof(KickAction));
+    }
+
+
     /// <summary>
     ///     Calculates the stamina needed for the current line
     /// </summary>

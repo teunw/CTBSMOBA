@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Skills;
+using UnityEditor;
 using UnityEngine;
 
 #endregion
@@ -36,15 +37,14 @@ namespace Assets.Scripts
         /// The speed of this player.
         /// The speed of the character is based on this.
         /// </summary>
-        [Range(0, 250)]
-        public int Speed;
+        [Range(0, 250)] public int Speed;
 
         /// <summary>
         /// The stamina of this player.
         /// The length of the line is based on this.
         /// </summary>
         public int Stamina;
-        
+
         /// <summary>
         /// The soundmanager which is responsible for making sounds.
         /// </summary>
@@ -71,7 +71,6 @@ namespace Assets.Scripts
             {
                 notMoving = true;
             }
-                
         }
 
         /// <summary>
@@ -184,6 +183,20 @@ namespace Assets.Scripts
         {
             soundManager.playBumpSound();
             transform.GetComponent<Rigidbody2D>().velocity = velocity;
+        }
+
+        public void ActionPressed(Type action)
+        {
+            if (action.IsSubclassOf(typeof(MonoBehaviour))) throw new Exception("Type isn't monobehaviour!");
+            Component c = GetComponent(action);
+            if (c != null)
+            {
+                Destroy(c);
+            }
+            else
+            {
+                gameObject.AddComponent(action);
+            }
         }
     }
 }
