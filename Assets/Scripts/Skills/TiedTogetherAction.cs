@@ -15,6 +15,8 @@ namespace Assets.Scripts.Skills
         }
         
         private int doBind = 0; // 0: Do nothing | 1: Bind | 2: Wait | 3: Unbind
+        private List<LineRenderer> lines = new List<LineRenderer>();
+        private List<GameObject> influencedObjects = new List<GameObject>();
         public float TieRange = 1.75f;
 
         void Update()
@@ -33,6 +35,14 @@ namespace Assets.Scripts.Skills
                                 SpringJoint2D springJoint = this.gameObject.AddComponent<SpringJoint2D>();
                                 springJoint.connectedBody = coll.gameObject.GetComponent<Rigidbody2D>();
                                 springJoint.distance = 2;
+                                springJoint.autoConfigureDistance = false;
+
+                                LineRenderer line = coll.gameObject.AddComponent<LineRenderer>();
+                                line.SetWidth(0.08f, 0.08f);
+                                line.SetVertexCount(2);
+
+                                lines.Add(line);
+                                influencedObjects.Add(coll.gameObject);
                             }
                         }
                     }
@@ -40,11 +50,20 @@ namespace Assets.Scripts.Skills
                     EndTiedTogetherBind();
                     break;
                 case 2:
-                    return;
+                    for (int i = 0; i < lines.Count; i++)
+                    {
+                        lines[i].SetPosition(0, this.gameObject.transform.position);
+                        lines[i].SetPosition(1, influencedObjects[i].transform.position);
+                    }
+                    break;
                 case 3:
                     foreach(SpringJoint2D springJoint in this.gameObject.GetComponents<SpringJoint2D>())
                     {
                         Destroy(springJoint);
+                    }
+                    foreach(GameObject influencedObject in this.influencedObjects)
+                    {
+                        Destroy(influencedObject.GetComponent<LineRenderer>());
                     }
                     EndTiedTogetherUnbind();
                     break;
