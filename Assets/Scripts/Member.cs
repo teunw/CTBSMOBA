@@ -26,10 +26,8 @@ namespace Assets.Scripts
         private bool yourTurn;
 
         /// <summary>
-        /// A bool which indicates if the player is moving.
+        /// A bool indicating whether the skills are done 
         /// </summary>
-        private bool notMoving;
-
         private bool skillsDone;
 
         /// <summary>
@@ -44,34 +42,39 @@ namespace Assets.Scripts
         /// The length of the line is based on this.
         /// </summary>
         public int Stamina;
-        
+
         /// <summary>
         /// The soundmanager which is responsible for making sounds.
         /// </summary>
         public Sound soundManager;
 
+        /// <summary>
+        /// The name of the character
+        /// </summary>
         public string PlayerName;
+        
+        /// <summary>
+        /// Threshold for the speed for when a member has officially stopped moving
+        /// </summary>
+        private float noMovementThreshold = 0.0001f;
 
         /// <summary>
-        /// Check if player is moving.
-        /// Sets boolean notMoving to it's value.
-        /// Sets position, then waits one second
-        /// and checks it's position once more.
-        /// If it didn't change it will set
-        /// the boolean notMoving to true.
+        /// Amount of frames where the member has to be non-moving
         /// </summary>
-        /// <returns></returns>
-        private IEnumerator CheckMoving()
+        private const int noMovementFrames = 3;
+
+        /// <summary>
+        /// Storage of the locations in these frames
+        /// </summary>
+        Vector3[] previousLocations = new Vector3[noMovementFrames];
+
+        /// <summary>
+        /// Boolean showing whether a member has stopped moving or not
+        /// </summary>
+        private bool isMoving;
+        public bool IsMoving
         {
-            Vector3 startPos = transform.position;
-            yield return new WaitForSeconds(0.03f);
-            Vector3 finalPos = transform.position;
-            if (startPos.x == finalPos.x && startPos.y == finalPos.y
-                && startPos.z == finalPos.z)
-            {
-                notMoving = true;
-            }
-                
+            get { return isMoving; }
         }
 
         /// <summary>
@@ -80,19 +83,40 @@ namespace Assets.Scripts
         /// <returns>Whether their action is finished, or if the phase is in planning mode, whichever is true</returns>
         public bool ActionDone()
         {
-            StartCoroutine(CheckMoving());
-
             if (GetComponent<KickAction>() == null) skillsDone = true;
-            if (notMoving && skillsDone)
+            //Debug.Log(gameObject.name + (IsMoving ? ": \tis moving" : ": \tis not moving") + " (done: " + (skillsDone && !IsMoving) + ")");
+            return (skillsDone && !IsMoving);
+        }
+
+        void Update()
+        {
+            if (GameScript.instance.teamStatus != TeamStatus.Executing) return;
+            // Move the locations
+            for (int i = 0; i < previousLocations.Length - 1; i++)
             {
-                notMoving = false;
-                return true;
+                previousLocations[i] = previousLocations[i + 1];
             }
-            else
+            // Set last location to the current location
+            previousLocations[previousLocations.Length - 1] = transform.position;
+
+            // Check the distances between the points in your previous locations
+            // If for the past several updates, there are no movements smaller than the threshold,
+            // you can most likely assume that the object is not moving
+            for (int i = 0; i < previousLocations.Length - 1; i++)
             {
-                return false;
+                // If it is larger than the threshold, it is moving, else not
+                if (Vector3.Distance(previousLocations[i], previousLocations[i + 1]) >= noMovementThreshold)
+                {
+                    isMoving = true;
+                }
+                else
+                {
+                    isMoving = false;
+                    break;
+                }
             }
         }
+
 
         /// <summary>
         /// The start method, which checks
@@ -102,6 +126,10 @@ namespace Assets.Scripts
         private void Start()
         {
             if (DrawManager == null) throw new NullReferenceException("DrawManager is null!");
+            for (int i = 0; i < previousLocations.Length; i++)
+            {
+                previousLocations[i] = Vector3.zero;
+            }
         }
 
         /// <summary>
@@ -117,6 +145,9 @@ namespace Assets.Scripts
             }
         }
 
+        /// <summary>
+        /// Performs the actions
+        /// </summary>
         public void PerformActions()
         {
             SendMessage(ActionConstants.OnMemberWalkString);
@@ -138,6 +169,9 @@ namespace Assets.Scripts
             this.yourTurn = yourTurn;
         }
 
+        /// <summary>
+        /// Performs an action after the member has walked
+        /// </summary>
         void OnMemberWalkDone()
         {
             if (GetComponent<KickAction>() == null)
@@ -146,6 +180,9 @@ namespace Assets.Scripts
             }
         }
 
+        /// <summary>
+        /// Performs an action after the skills have been executed
+        /// </summary>
         void OnSkillExecuted()
         {
             skillsDone = true;

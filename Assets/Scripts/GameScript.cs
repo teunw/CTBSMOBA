@@ -63,6 +63,13 @@ public class GameScript : MonoBehaviour
     public Button endTurn;
     public ProgressBarBehaviour ProgressBar;
 
+    public static GameScript instance { get; private set; }
+
+    void Awake()
+    {
+        instance = instance ?? this;
+    }
+
     /// <summary>
     /// This gets called to initialize this class.
     /// This method will setup the current teamStatus
