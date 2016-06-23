@@ -9,6 +9,14 @@ namespace Assets.Scripts.Skills
 {
     public class TiedTogetherAction : MonoBehaviour, Action
     {
+        private Material color
+        {
+            get
+            {
+                return (Material)Resources.Load("Materials/Rope", typeof(Material));
+            }
+        }
+
         public string Name
         {
             get { return "Tied Together"; }
@@ -41,7 +49,7 @@ namespace Assets.Scripts.Skills
                                 LineRenderer line = coll.gameObject.AddComponent<LineRenderer>();
                                 line.SetWidth(0.08f, 0.08f);
                                 line.SetVertexCount(2);
-
+                                line.material = color;
                                 lines.Add(line);
                                 influencedObjects.Add(coll.gameObject);
                             }
