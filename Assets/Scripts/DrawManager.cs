@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Assets.Scripts;
 using Assets.Scripts.Skills;
 using UnityEngine;
@@ -14,7 +15,7 @@ public class DrawManager : MonoBehaviour
 {
     public GameObject DrawPlane;
     public GameScript GameScript;
-    public GameObject SelectedMemberIndicator;
+    public SkillIndicator SelectedMemberIndicator;
     public Material whiteLine;
     // Lower value makes the line more round, but consumes more resources
     [Tooltip("Lower value makes the line more round, but consumes more resources")]
@@ -95,12 +96,18 @@ public class DrawManager : MonoBehaviour
         {
             if (SelectedMember != null)
             {
-                SelectedMemberIndicator.SetActive(true);
-                SelectedMemberIndicator.transform.position = SelectedMember.transform.position;
+                if (CurrentMemberLine.LineRenderers.Count > 0)
+                {
+                    SelectedMemberIndicator.SetActive(
+                        CurrentMemberLine.LastPosition,
+                        CurrentMemberLine.GetAlmostLastPosition,
+                        SelectedMember.GetSkill()
+                        );
+                }
             }
             else
             {
-                SelectedMemberIndicator.SetActive(false);
+                SelectedMemberIndicator.SetInactive();
             }
         }
 
