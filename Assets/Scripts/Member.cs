@@ -8,6 +8,7 @@ using Assets.Scripts.Skills;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 #endregion
 
 namespace Assets.Scripts
@@ -244,5 +245,17 @@ namespace Assets.Scripts
             this.Stamina = stamina;
             this.Speed = speed;
         }
+
+        public Type GetSkill()
+        {
+            Skills.Action ka = GetComponent<KickAction>();
+            if (ka != null) return ka.GetType();
+
+            ka = GetComponent<TiedTogetherAction>();
+            if (ka != null) return ka.GetType();
+
+            return null;
+        }
+
     }
 }
