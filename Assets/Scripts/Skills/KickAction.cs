@@ -22,7 +22,7 @@ namespace Assets.Scripts.Skills
         void Update()
         {
             if (!shouldExecuteSkill) return;
-           
+
             Vector2 forwardPos = transform.position + (1f*transform.right);
             Vector2 pointB = transform.position + (1f*-transform.right) + (3f*transform.forward);
             Collider2D[] colliders = Physics2D.OverlapAreaAll(forwardPos, pointB);
@@ -30,17 +30,24 @@ namespace Assets.Scripts.Skills
             {
                 Rigidbody2D rb = collider.gameObject.GetComponent<Rigidbody2D>();
                 if (rb == null || gameObject == collider.gameObject) continue;
-                
+
                 Vector3 targetPosition = collider.gameObject.transform.position;
                 Vector3 position = transform.position;
 
                 Vector3 heading = targetPosition - position;
                 float distance = heading.magnitude;
                 Vector3 direction = heading/distance;
-                GetComponent<ParticleSystem>().Play();
-                
 
-                rb.AddForce(direction * KickForce, ForceMode2D.Impulse);
+                ParticleSystem ps = GetComponent<ParticleSystem>();
+                if (ps != null)
+                    GetComponent<ParticleSystem>().Play();
+                else
+                {
+                    Debug.LogError("Particle system not present in charcacter");
+                }
+
+
+                rb.AddForce(direction*KickForce, ForceMode2D.Impulse);
             }
             EndKick();
         }
