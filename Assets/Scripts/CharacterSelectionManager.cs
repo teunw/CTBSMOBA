@@ -88,6 +88,11 @@ namespace Assets.Scripts
         /// </summary>
         private List<Member> team2;
 
+        /// <summary>
+        /// The currentmember
+        /// </summary>
+        private int currentMember;
+
 
         /// <summary>
         /// Start function.
@@ -99,6 +104,8 @@ namespace Assets.Scripts
             this.currentTeam = new List<Member>();
             this.buttonNext.gameObject.SetActive(false);
             this.ReadFromFile();
+            this.currentMember = 1;
+            this.buttonLeft.gameObject.SetActive(false);
         }
 
         void Update()
@@ -113,7 +120,27 @@ namespace Assets.Scripts
                     buttonLeft.enabled = true;
                     buttonRight.enabled = true;
                 }
-            }           
+            }
+
+            if (currentMember == 1)
+            {
+                this.buttonLeft.gameObject.SetActive(false);
+            }
+
+            else
+            {
+                this.buttonLeft.gameObject.SetActive(true);
+            }
+
+            if (currentMember == this.members.Count)
+            {
+                this.buttonRight.gameObject.SetActive(false);
+            }
+
+            else
+            {
+                this.buttonRight.gameObject.SetActive(true);
+            }
         }
 
         /// <summary>
@@ -181,11 +208,15 @@ namespace Assets.Scripts
         public void moveCamera(bool right)
         {
             int value = 10;
+            currentMember += 1;
 
             if (!right)
             {
                 value *= -1;
+                currentMember -= 2;
             }
+
+            Debug.Log("Current member: " + currentMember);
 
             endPosition = new Vector3(Camera.main.transform.position.x + value, -0.44f, -5);
 
