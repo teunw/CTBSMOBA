@@ -47,6 +47,11 @@ public class Team : MonoBehaviour
     public Sound soundManager;
 
     /// <summary>
+    /// Team's color.
+    /// </summary>
+    public Color color;
+
+    /// <summary>
     /// Makes each member of this team perform its action
     /// </summary>
     public void PerformActions()

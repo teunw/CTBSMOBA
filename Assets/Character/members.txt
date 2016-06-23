@@ -1,5 +1,5 @@
-29-50-Henk
-65-31-Piet
-51-88-Sjonnie
-95-100-Messi
-50-75-PieterHenk
+21-180-Henk
+25-200-Piet
+10-170-Sjonnie
+30-250-Messi
+15-240-PieterHenk

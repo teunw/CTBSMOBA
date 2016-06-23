@@ -50,16 +50,37 @@ namespace Assets.Scripts
         public Sound soundManager;
 
         /// <summary>
+        /// The team where the user is in.
+        /// </summary>
+        public Team team;
+
+        /// <summary>
         /// The name of the character
         /// </summary>
         public string PlayerName;
 
+        /// <summary>
+        /// The default character of this user.
+        /// </summary>
         private Color defaultColor;
 
         protected override void Awake()
         {
-            SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
-            defaultColor = sr.color;
+            if (team != null)
+            {
+                defaultColor = team.color;
+            }
+
+            else
+            {
+                System.Random random = new System.Random();
+                float r = random.Next(1, 255) / 255f;
+                float g = random.Next(1, 255) / 255f;
+                float b = random.Next(1, 255) / 255f;
+                Color color = new Color(r, g, b);
+                this.SetColor(color);
+            }
+            
         }
 
         /// <summary>

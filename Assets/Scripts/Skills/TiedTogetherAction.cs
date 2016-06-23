@@ -34,6 +34,11 @@ namespace Assets.Scripts.Skills
             GetComponentInChildren<Member>().SetColor(TieColor);
         }
 
+        void OnDestroy()
+        {
+            GetComponentInChildren<Member>().SetColor();
+        }
+
         void Update()
         {
             switch (doBind)
@@ -47,17 +52,34 @@ namespace Assets.Scripts.Skills
                         {
                             if (!this.gameObject.Equals(coll.gameObject))
                             {
-                                SpringJoint2D springJoint = this.gameObject.AddComponent<SpringJoint2D>();
-                                springJoint.connectedBody = coll.gameObject.GetComponent<Rigidbody2D>();
-                                springJoint.distance = TieDistance;
-                                springJoint.autoConfigureDistance = false;
+                                SpringJoint2D springJoint = this.gameObject.GetComponent<SpringJoint2D>();
+                                LineRenderer line = this.gameObject.GetComponent<LineRenderer>();
+                                // If this character is not influenced by TTG
+                                if (springJoint == null && line == null)
+                                {
+                                    // If the to-influence character is not influenced by TTG
+                                    springJoint = coll.gameObject.GetComponent<SpringJoint2D>();
+                                    line = coll.gameObject.GetComponent<LineRenderer>();
+                                    if (springJoint == null && line == null)
+                                    {
+                                        // Influence this and the other character
+                                        springJoint = this.gameObject.AddComponent<SpringJoint2D>();
+                                        springJoint.connectedBody = coll.gameObject.GetComponent<Rigidbody2D>();
+                                        springJoint.distance = TieDistance;
+                                        springJoint.autoConfigureDistance = false;
 
-                                LineRenderer line = coll.gameObject.AddComponent<LineRenderer>();
-                                line.SetWidth(0.08f, 0.08f);
-                                line.SetVertexCount(2);
-                                line.material = color;
-                                lines.Add(line);
-                                influencedObjects.Add(coll.gameObject);
+                                        // Visualise the springjoints
+                                        if (line == null)
+                                        {
+                                            line = coll.gameObject.AddComponent<LineRenderer>();
+                                            line.SetWidth(0.08f, 0.08f);
+                                            line.SetVertexCount(2);
+                                            line.material = color;
+                                            lines.Add(line);
+                                            influencedObjects.Add(coll.gameObject);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

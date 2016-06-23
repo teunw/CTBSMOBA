@@ -14,13 +14,14 @@ public class DrawManager : MonoBehaviour
 {
     public GameObject DrawPlane;
     public GameScript GameScript;
+    public GameObject SelectedMemberIndicator;
     public Material whiteLine;
     // Lower value makes the line more round, but consumes more resources
     [Tooltip("Lower value makes the line more round, but consumes more resources")]
     public float LineRoundness = .3f;
 
     public float LineWidth = .08f;
-    private List<MemberLine> MemberLines;
+    private List<MemberLine> MemberLines = new List<MemberLine>();
     public Camera PlayerCamera;
 
     private Member SelectedMember;
@@ -29,11 +30,13 @@ public class DrawManager : MonoBehaviour
     private int characterLayer;
 
     private bool noLongerOnCharacter = false;
+    private bool lineCompleted = true;
 
     void Start()
     {
         drawLayer = 1 << 10;
         characterLayer = 1 << 11;
+        if (SelectedMemberIndicator == null) Debug.LogWarning("No indicator for member selected");
     }
 
     private MemberLine CurrentMemberLine
@@ -77,23 +80,36 @@ public class DrawManager : MonoBehaviour
 
     private void Awake()
     {
-        MemberLines = new List<MemberLine>();
+        GameScript.ProgressBar.gameObject.SetActive(IsMemberSelected);
+        GameScript.kickButton.gameObject.SetActive(IsMemberSelected);
+        GameScript.besteGameButton.gameObject.SetActive(IsMemberSelected);
     }
 
     private void Update()
     {
         if (GameScript.teamStatus == Assets.TeamStatus.Executing)
         {
-            
             return;
         }
-        GameScript.ProgressBar.gameObject.SetActive(IsMemberSelected);
+
+        if (SelectedMemberIndicator != null)
+        {
+            if (SelectedMember != null)
+            {
+                SelectedMemberIndicator.SetActive(true);
+                SelectedMemberIndicator.transform.position = SelectedMember.transform.position;
+            }
+            else
+            {
+                SelectedMemberIndicator.SetActive(false);
+            }
+        }
 
         if (IsMemberSelected)
         {
             GameScript.ProgressBar.Value = GetStaminaPercent;
 
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0) && !lineCompleted)
             {
                 /* Casting a ray from the camera to the mouse position
                  * Because camera is orthographic depth doesnt matter
@@ -130,7 +146,8 @@ public class DrawManager : MonoBehaviour
                     CreateLine(CurrentMemberLine.LastPosition, hitpos);
                 }
                 //if raycast hits doesnt hit complete the line
-                else {
+                else
+                {
                     CompleteLine();
                 }
             }
@@ -180,8 +197,9 @@ public class DrawManager : MonoBehaviour
     public void CompleteLine()
     {
         SetSelectedMemberAction();
-//        SelectedMember = null;
+        //SelectedMember = null;
         noLongerOnCharacter = false;
+        lineCompleted = true;
     }
 
     /// <summary>
@@ -235,8 +253,9 @@ public class DrawManager : MonoBehaviour
     /// <param name="member">Member to select</param>
     public void SetMember(Member member)
     {
-        Debug.Log("Selected member");
+        Debug.Log((member == null ? "des" : "S") + "elected member");
         SelectedMember = member;
+        lineCompleted = false;
         MemberLine ml = MemberLines.Find(o => o.Member == SelectedMember);
         if (ml != null)
         {
@@ -245,9 +264,14 @@ public class DrawManager : MonoBehaviour
         }
         else
         {
-            if (SelectedMember == null) return;
-            MemberLines.Add(new MemberLine(member).Reset(member.transform.position));
+            if (SelectedMember != null)
+            {
+                MemberLines.Add(new MemberLine(member).Reset(member.transform.position));
+            }
         }
+        GameScript.ProgressBar.gameObject.SetActive(IsMemberSelected);
+        GameScript.kickButton.gameObject.SetActive(IsMemberSelected);
+        GameScript.besteGameButton.gameObject.SetActive(IsMemberSelected);
     }
 
     public void ActionPressed(Type action)

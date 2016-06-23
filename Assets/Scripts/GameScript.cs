@@ -77,7 +77,7 @@ public class GameScript : MonoBehaviour
     /// and team2ActionsDone to false.
     /// Also loads the players from the character selection scene.
     /// </summary>
-    public void Awake()
+    public void Start()
     {
         if (instance == null)
         {
@@ -99,6 +99,8 @@ public class GameScript : MonoBehaviour
             Member memberToEdit = team1.members[counter];
             memberToEdit.Speed = m.Speed;
             memberToEdit.Stamina = m.Stamina;
+            memberToEdit.SetColor(team1.color);
+            Debug.Log("Set member: " + m.PlayerName);
             counter++;
         }
 
@@ -109,6 +111,8 @@ public class GameScript : MonoBehaviour
             Member memberToEdit = team2.members[counter];
             memberToEdit.Speed = m.Speed;
             memberToEdit.Stamina = m.Stamina;
+            memberToEdit.SetColor(team2.color);
+            Debug.Log("Set member: " + m.PlayerName);
             counter++;
         }
 
@@ -119,10 +123,7 @@ public class GameScript : MonoBehaviour
 
         team1ActionsDone = false;
         team2ActionsDone = false;
-    }
 
-    void Start()
-    {
         textWin.gameObject.SetActive(false);
         playAgain.gameObject.SetActive(false);
     }
@@ -148,7 +149,7 @@ public class GameScript : MonoBehaviour
         if (currentTeam == null)
         {
             currentTeam = team1;
-            textCurrentTurn.text = "Turn: Team 1";
+            textCurrentTurn.text = "TURN TEAM RED";
             team1.ChangeTurn(true);
             team2.ChangeTurn(false);
             return;
@@ -157,7 +158,7 @@ public class GameScript : MonoBehaviour
         if (currentTeam == team1)
         {
             currentTeam = team2;
-            textCurrentTurn.text = "Turn: Team 2";
+            textCurrentTurn.text = "TURN TEAM BLUE";
             team1.ChangeTurn(false);
 
             foreach (Member m in team1.members)
@@ -172,7 +173,7 @@ public class GameScript : MonoBehaviour
         else if (currentTeam == team2)
         {
             currentTeam = team1;
-            textCurrentTurn.text = "Turn: Team 1";
+            textCurrentTurn.text = "";
 
             foreach (Member m in team2.members)
             {

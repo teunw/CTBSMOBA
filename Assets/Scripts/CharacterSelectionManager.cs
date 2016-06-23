@@ -275,17 +275,19 @@ namespace Assets.Scripts
             {
                 if (currentTeam.Count == 3)
                 {
-                    team2 = currentTeam;
-                    currentTeam.Clear();
-                    TeamCollector.SetTeam(team1, 1);
+                    team2 = new List<Member>(currentTeam);
                     TeamCollector.SetTeam(team2, 2);
+                    Debug.Log("Team 2 has been set with: " + team2.Count + " players");
+                    currentTeam.Clear();
                     SceneManager.LoadScene(2);
                 }
             }
 
             else
             {
-                team1 = currentTeam;
+                team1 = new List<Member>(currentTeam);
+                Debug.Log("Team 1 has been set with: " + team1.Count + " players");
+                TeamCollector.SetTeam(team1, 1);
                 currentTeam.Clear();
                 ResetTeamLayout();
             }
