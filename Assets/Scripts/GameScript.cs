@@ -205,8 +205,6 @@ public class GameScript : MonoBehaviour
     /// </summary>
     public void Update()
     {
-        kickButton.interactable = teamStatus == TeamStatus.Planning;
-        besteGameButton.interactable = teamStatus == TeamStatus.Planning;
         if (teamStatus == TeamStatus.Executing)
         {
             if (!team1.CheckActionsDone())

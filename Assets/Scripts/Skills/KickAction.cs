@@ -37,6 +37,8 @@ namespace Assets.Scripts.Skills
                 Vector3 heading = targetPosition - position;
                 float distance = heading.magnitude;
                 Vector3 direction = heading/distance;
+                GetComponent<ParticleSystem>().Play();
+                
 
                 rb.AddForce(direction * KickForce, ForceMode2D.Impulse);
             }
