@@ -279,7 +279,7 @@ namespace Assets.Scripts
                     currentTeam.Clear();
                     TeamCollector.SetTeam(team1, 1);
                     TeamCollector.SetTeam(team2, 2);
-                    SceneManager.LoadScene("GameScene");
+                    SceneManager.LoadScene(2);
                 }
             }
 

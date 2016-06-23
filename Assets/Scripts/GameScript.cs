@@ -8,7 +8,6 @@ using System.Collections.Generic;
 
 public class GameScript : MonoBehaviour
 {
-
     /// <summary>
     /// The first team.
     /// </summary>
@@ -70,7 +69,15 @@ public class GameScript : MonoBehaviour
 
     public static GameScript instance { get; private set; }
 
-    void Awake()
+    /// <summary>
+    /// This gets called to initialize this class.
+    /// This method will setup the current teamStatus
+    /// and set the currentTeam to team 1.
+    /// Also sets the team1ActionsDone 
+    /// and team2ActionsDone to false.
+    /// Also loads the players from the character selection scene.
+    /// </summary>
+    public void Awake()
     {
         if (instance == null)
         {
@@ -81,24 +88,42 @@ public class GameScript : MonoBehaviour
             Debug.LogError("Not allowed to instantiate multiple GameScripts!");
             Destroy(this);
         }
-    }
 
-    /// <summary>
-    /// This gets called to initialize this class.
-    /// This method will setup the current teamStatus
-    /// and set the currentTeam to team 1.
-    /// Also sets the team1ActionsDone 
-    /// and team2ActionsDone to false.
-    /// </summary>
-    public void Start()
-    {
+        List<Member> team1Members = TeamCollector.team1;
+        List<Member> team2Members = TeamCollector.team2;
+
+        int counter = 0;
+
+        foreach (Member m in team1Members)
+        {
+            Member memberToEdit = team1.members[counter];
+            memberToEdit.Speed = m.Speed;
+            memberToEdit.Stamina = m.Stamina;
+            counter++;
+        }
+
+        counter = 0;
+
+        foreach (Member m in team2Members)
+        {
+            Member memberToEdit = team2.members[counter];
+            memberToEdit.Speed = m.Speed;
+            memberToEdit.Stamina = m.Stamina;
+            counter++;
+        }
+
+        Debug.Log("Changed Member's speed en stamina");
+
         SwitchTurn();
         teamStatus = TeamStatus.Planning;
 
         team1ActionsDone = false;
         team2ActionsDone = false;
+    }
 
-        textWin.enabled = false;
+    void Start()
+    {
+        textWin.gameObject.SetActive(false);
         playAgain.gameObject.SetActive(false);
     }
 
