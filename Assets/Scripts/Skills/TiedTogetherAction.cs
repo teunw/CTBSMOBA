@@ -9,6 +9,14 @@ namespace Assets.Scripts.Skills
 {
     public class TiedTogetherAction : MonoBehaviour, Action
     {
+        private Material color
+        {
+            get
+            {
+                return (Material)Resources.Load("Materials/Rope", typeof(Material));
+            }
+        }
+
         public string Name
         {
             get { return "Tied Together"; }
@@ -19,10 +27,16 @@ namespace Assets.Scripts.Skills
         private List<GameObject> influencedObjects = new List<GameObject>();
         public float TieRange = 1.75f;
         public float TieDistance = 2f;
+        public Color TieColor = Color.green;
+
+        void Start()
+        {
+            GetComponentInChildren<Member>().SetColor(TieColor);
+        }
 
         void Update()
         {
-            switch(doBind)
+            switch (doBind)
             {
                 case 0:
                     return;
@@ -41,7 +55,7 @@ namespace Assets.Scripts.Skills
                                 LineRenderer line = coll.gameObject.AddComponent<LineRenderer>();
                                 line.SetWidth(0.08f, 0.08f);
                                 line.SetVertexCount(2);
-
+                                line.material = color;
                                 lines.Add(line);
                                 influencedObjects.Add(coll.gameObject);
                             }

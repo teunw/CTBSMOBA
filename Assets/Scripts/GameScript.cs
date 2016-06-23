@@ -62,7 +62,11 @@ public class GameScript : MonoBehaviour
 
     public Button playAgain;
     public Button endTurn;
+    public Button kickButton;
+    public Button besteGameButton;
     public ProgressBarBehaviour ProgressBar;
+
+    public DrawManager drawManager;
 
     public static GameScript instance { get; private set; }
 
@@ -107,6 +111,15 @@ public class GameScript : MonoBehaviour
     /// </summary>
     public void SwitchTurn()
     {
+        if (drawManager != null)
+        {
+            drawManager.SetMember(null);
+        }
+        else
+        {
+            Debug.LogError("Drawmanager has not been set in the gamescript. \r\nPlease add it through the hierachy");
+        }
+
         if (currentTeam == null)
         {
             currentTeam = team1;
@@ -164,7 +177,9 @@ public class GameScript : MonoBehaviour
         Debug.Log("Status: Executing");
         team1.PerformActions();
         team2.PerformActions();
-        endTurn.gameObject.SetActive(false);
+        kickButton.interactable = false;
+        besteGameButton.interactable = false;
+        endTurn.interactable = false;
     }
 
     /// <summary>
@@ -220,7 +235,9 @@ public class GameScript : MonoBehaviour
             currentTeam = team1;
             team1.ChangeTurn(true);
             team2.ChangeTurn(false);
-            endTurn.gameObject.SetActive(true);
+            endTurn.interactable = true;
+            kickButton.interactable = true;
+            besteGameButton.interactable = true;
             Debug.Log("BOTH TEAMS ARE DONE");
         }
     }
