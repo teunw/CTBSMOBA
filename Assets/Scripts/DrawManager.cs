@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Assets.Scripts;
 using Assets.Scripts.Skills;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 #endregion
@@ -83,6 +84,7 @@ public class DrawManager : MonoBehaviour
     {
         if (GameScript.teamStatus == Assets.TeamStatus.Executing)
         {
+            
             return;
         }
         GameScript.ProgressBar.gameObject.SetActive(IsMemberSelected);
@@ -247,14 +249,24 @@ public class DrawManager : MonoBehaviour
         }
     }
 
-    public void KickPressed()
+    public void ActionPressed(Type action)
     {
         if (SelectedMember == null)
         {
             Debug.LogError("No member selected");
             return;
         }
-        SelectedMember.ActionPressed(typeof(KickAction));
+        SelectedMember.ActionPressed(action);
+    }
+
+    public void KickPressed()
+    {
+        ActionPressed(typeof(KickAction));
+    }
+
+    public void TiedtogetherPressed()
+    {
+        ActionPressed(typeof(TiedTogetherAction));
     }
 
 

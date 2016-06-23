@@ -4,6 +4,7 @@ using Assets;
 using UnityEngine.UI;
 using Assets.Scripts;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class GameScript : MonoBehaviour
 {
@@ -61,13 +62,23 @@ public class GameScript : MonoBehaviour
 
     public Button playAgain;
     public Button endTurn;
+    public Button kickButton;
+    public Button besteGameButton;
     public ProgressBarBehaviour ProgressBar;
 
     public static GameScript instance { get; private set; }
 
     void Awake()
     {
-        instance = instance ?? this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Debug.LogError("Not allowed to instantiate multiple GameScripts!");
+            Destroy(this);
+        }
     }
 
     /// <summary>
@@ -87,7 +98,6 @@ public class GameScript : MonoBehaviour
 
         textWin.enabled = false;
         playAgain.gameObject.SetActive(false);
-
     }
 
     /// <summary>
@@ -193,6 +203,8 @@ public class GameScript : MonoBehaviour
     /// </summary>
     public void Update()
     {
+        kickButton.interactable = teamStatus == TeamStatus.Planning;
+        besteGameButton.interactable = teamStatus == TeamStatus.Planning;
         if (teamStatus == TeamStatus.Executing)
         {
             if (!team1.CheckActionsDone())

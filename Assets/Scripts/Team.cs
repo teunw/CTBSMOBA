@@ -46,7 +46,6 @@ public class Team : MonoBehaviour
     /// </summary>
     public Sound soundManager;
 
-
     /// <summary>
     /// Makes each member of this team perform its action
     /// </summary>

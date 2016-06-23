@@ -5,14 +5,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Skills;
-using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 #endregion
 
 namespace Assets.Scripts
 {
-    public class Member : MonoBehaviour, IFieldObject
+    public class Member : IFieldObject
     {
         /// <summary>
         /// The DrawManager which is responsible for the drawing
@@ -35,7 +35,8 @@ namespace Assets.Scripts
         /// The speed of this player.
         /// The speed of the character is based on this.
         /// </summary>
-        [Range(0, 250)] public int Speed;
+        [Range(0, 250)]
+        public int Speed;
 
         /// <summary>
         /// The stamina of this player.
@@ -52,104 +53,17 @@ namespace Assets.Scripts
         /// The name of the character
         /// </summary>
         public string PlayerName;
-        
-        /// <summary>
-        /// Threshold for the speed for when a member has officially stopped moving
-        /// </summary>
-        private float noMovementThreshold = 0.000001f;
-
-        /// <summary>
-        /// Amount of frames where the member has to be non-moving
-        /// </summary>
-        private const int noMovementFrames = 5;
-
-        /// <summary>
-        /// Storage of the locations in these frames
-        /// </summary>
-        Vector3[] previousLocations = new Vector3[noMovementFrames];
-
-        /// <summary>
-        /// Boolean showing whether a member has stopped moving or not
-        /// </summary>
-        private bool isMoving;
-        public bool IsMoving
-        {
-            get { return isMoving; }
-        }
 
         /// <summary>
         /// Returns whether the member has finished performing its action
         /// </summary>
         /// <returns>Whether their action is finished, or if the phase is in planning mode, whichever is true</returns>
-        public bool ActionDone()
+        public override bool ActionDone()
         {
             if (GetComponent<KickAction>() == null) skillsDone = true;
             //Debug.Log(gameObject.name + (IsMoving ? ": \tis moving" : ": \tis not moving") + " (done: " + (skillsDone && !IsMoving) + ")");
             CheckMovement();
-            return (skillsDone && !IsMoving);
-        }
-
-        /// <summary>
-        /// Checks whether the member is still moving
-        /// </summary>
-        public void CheckMovement()
-        {
-            // Move the locations
-            for (int i = 0; i < previousLocations.Length - 1; i++)
-            {
-                previousLocations[i] = previousLocations[i + 1];
-            }
-            // Set last location to the current location
-            previousLocations[previousLocations.Length - 1] = transform.position;
-
-            //If there are still vector3 zeroes in the array, that means that not all values have been filled
-            if (previousLocations.Contains(Vector3.zero))
-            {
-                isMoving = true;
-                return;
-            }
-
-            bool toSet = false;
-            // Check the distances between the points in your previous locations
-            // If for the past several updates, there are no movements smaller than the threshold,
-            // you can most likely assume that the object is not moving
-            for (int i = 0; i < previousLocations.Length - 1; i++)
-            {
-                // If it is larger than the threshold, it is moving, else not
-                if (Vector3.Distance(previousLocations[i], previousLocations[i + 1]) >= noMovementThreshold)
-                {
-                    toSet = true;
-                }
-                else
-                {
-                    toSet = false;
-                    isMoving = false;
-                    break;
-                }
-            }
-            if (toSet)
-            {
-                isMoving = toSet;
-            }
-        }
-
-        /// <summary>
-        /// The start method, which checks
-        /// if the drawmanager is null. And
-        /// it initializes a list of actions.
-        /// </summary>
-        private void Start()
-        {
-            if (DrawManager == null) throw new NullReferenceException("DrawManager is null!");
-            ResetPoints();
-        }
-
-        private void ResetPoints()
-        {
-            for (int i = 0; i < previousLocations.Length; i++)
-            {
-                previousLocations[i] = Vector3.zero;
-            }
+            return (skillsDone && !isMoving);
         }
 
         /// <summary>
@@ -166,11 +80,18 @@ namespace Assets.Scripts
         }
 
         /// <summary>
-        /// Performs the actions
+        /// Performs the actions, walk action first, then the skills
         /// </summary>
         public void PerformActions()
         {
-            SendMessage(ActionConstants.OnMemberWalkString);
+            if (this.GetComponent<WalkAction>() != null)
+            {
+                SendMessage(ActionConstants.OnMemberWalkString);
+            }
+            else
+            {
+                SendMessage(ActionConstants.OnMemberWalkDoneString);
+            }
         }
 
         /// <summary>
@@ -226,6 +147,11 @@ namespace Assets.Scripts
         public void WallHit()
         {
             soundManager.playBumpSound();
+            WalkAction movement = gameObject.GetComponent<WalkAction>();
+            if (movement != null)
+            {
+                Destroy(movement);
+            }
         }
 
         /// <summary>
@@ -257,8 +183,22 @@ namespace Assets.Scripts
             {
                 gameObject.AddComponent(action);
                 Debug.Log("Added skill " + action.Name);
-
             }
+        }
+
+
+        /// <summary>
+        /// Set the fields in this class.
+        /// Is used to import it from a file.
+        /// </summary>
+        /// <param name="name">The name of the member.</param>
+        /// <param name="stamina">The stamina of the member.</param>
+        /// <param name="speed">The speed of the member.</param>
+        public void SetFieldsFromFile(string name, int stamina, int speed)
+        {
+            this.PlayerName = name;
+            this.Stamina = stamina;
+            this.Speed = speed;
         }
     }
 }
