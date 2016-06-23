@@ -10,6 +10,7 @@ public class MainMenu : MonoBehaviour
 {
 
     public GameObject FirstMenu;
+    public GameObject Controls;
     public GameObject DataImport;
 
     public InputField NewCharNameField;
@@ -26,6 +27,20 @@ public class MainMenu : MonoBehaviour
     public List<string> CharacterList = new List<string>();
     string[] CharacterDataArray; //Speed,stamina,name
     public List<string[]> CharacterDataList = new List<string[]>();
+
+    public Image ImageObject;
+    public Text ExplanationText;
+    public Button NextPicture;
+    public Button PreviousPicture;
+
+    public Sprite FirstPicture;
+    public Sprite SecondPicture;
+    public Sprite ThirdPicture;
+    public Sprite FourthPicture;
+    public Sprite FifthPicture;
+    public Sprite SixthPicture;
+
+    int PictureNumber = 1;
 
     int Speed;
     int Stamina;
@@ -273,5 +288,93 @@ public class MainMenu : MonoBehaviour
         {
             Stamina = 100;
         }
+    }
+
+    public void GoThroughControls(string btnPressed)
+    {
+        if (btnPressed == "Next")
+        {
+            if (PictureNumber == 1)
+            {
+                PreviousPicture.gameObject.SetActive(true);
+            }
+            if (PictureNumber == 6)
+            {
+                NextPicture.gameObject.SetActive(false);
+            }
+            PictureNumber++;
+            if (PictureNumber > 7)
+            {
+                PictureNumber = 1;
+            }
+            
+        }
+        else if (btnPressed == "Previous")
+        {
+            if (PictureNumber == 2)
+            {
+                PreviousPicture.gameObject.SetActive(false);
+            }
+            if (PictureNumber == 7)
+            {
+                NextPicture.gameObject.SetActive(true);
+            }
+            PictureNumber--;
+            if (PictureNumber < 1)
+            {
+                PictureNumber = 1;
+            }
+        }
+
+        switch (PictureNumber)
+        {
+            case 1:
+                ImageObject.sprite = FirstPicture;
+                ExplanationText.text = "This is one of your characters, you have three characters in the game which you can control.";
+                break;
+            case 2:
+                ImageObject.sprite = SecondPicture;
+                ExplanationText.text = "The white line around a character means it is selected, when selected you can command it to move or use skills.";
+                break;
+            case 3:
+                ImageObject.sprite = ThirdPicture;
+                ExplanationText.text = "When selected, you can hold and draw a line to where you want the character to move. Note: It will follow the line as you draw it. You can redraw the line whenever you want to.";
+                break;
+            case 4:
+                ImageObject.sprite = FourthPicture;
+                ExplanationText.text = "This is your stamina bar, stamina means the length in which you can move. When it's empty it means that the character can no longer move further.";
+                break;
+            case 5:
+                ImageObject.sprite = FifthPicture;
+                ExplanationText.text = "Here you see a couple of things, the triangle is the base capture area. Moving the opponents flag into this area will cap it and your team will score a point. The pentagons shape is a flag, moving the opponents flag towards your capture area will cause you to score.";
+                break;
+            case 6:
+                ImageObject.sprite = FifthPicture;
+                ExplanationText.text = "Slightly on the left of your base capture area you see a thin black line, out of which the flag cannot move. The black area on the far left of the picture indicates the edge of the arena in which the characters can move around.";
+                break;
+            case 7:
+                ImageObject.sprite = SixthPicture;
+                ExplanationText.text = "This is a bumper, moving yourself into or kicking an opponent into one makes them bounce off with extra speed.";
+                break;
+
+        }
+    }
+
+    public void GoToControls()
+    {
+        PictureNumber = 1;
+        NextPicture.gameObject.SetActive(true);
+        PreviousPicture.gameObject.SetActive(false);
+        ImageObject.sprite = FirstPicture;
+        ExplanationText.text = "This is one of your characters, you have three characters in the game which you can control.";
+
+        FirstMenu.SetActive(false);
+        Controls.SetActive(true);
+    }
+
+    public void BackToMenu()
+    {
+        FirstMenu.SetActive(true);
+        Controls.SetActive(false);
     }
 }
