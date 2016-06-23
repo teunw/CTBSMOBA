@@ -39,6 +39,8 @@ public class MainMenu : MonoBehaviour
     public Sprite FourthPicture;
     public Sprite FifthPicture;
     public Sprite SixthPicture;
+    public Sprite SeventhPicture;
+    public Sprite EigthPicture;
 
     int PictureNumber = 1;
 
@@ -298,12 +300,12 @@ public class MainMenu : MonoBehaviour
             {
                 PreviousPicture.gameObject.SetActive(true);
             }
-            if (PictureNumber == 6)
+            if (PictureNumber == 8)
             {
                 NextPicture.gameObject.SetActive(false);
             }
             PictureNumber++;
-            if (PictureNumber > 7)
+            if (PictureNumber > 9)
             {
                 PictureNumber = 1;
             }
@@ -315,7 +317,7 @@ public class MainMenu : MonoBehaviour
             {
                 PreviousPicture.gameObject.SetActive(false);
             }
-            if (PictureNumber == 7)
+            if (PictureNumber == 9)
             {
                 NextPicture.gameObject.SetActive(true);
             }
@@ -346,15 +348,23 @@ public class MainMenu : MonoBehaviour
                 break;
             case 5:
                 ImageObject.sprite = FifthPicture;
-                ExplanationText.text = "This is a flag in a base. Move the flag by pushing or using skills. Move the enemy flag into your base to score a point! The flags cant cross the black line";
+                ExplanationText.text = "This is a flag in a base. Move the flag by pushing or using skills. ";
                 break;
             case 6:
                 ImageObject.sprite = FifthPicture;
-                ExplanationText.text = "The flags cant cross the black line";
+                ExplanationText.text = "Move the enemy flag into your base to score a point! The flags cant cross the black line";
                 break;
             case 7:
                 ImageObject.sprite = SixthPicture;
                 ExplanationText.text = "This is a bumper, anything that hits it gets bounced back.";
+                break;
+            case 8:
+                ImageObject.sprite = SeventhPicture;
+                ExplanationText.text = "Kick skill kicks anything away players or flags in a small area infront of you.";
+                break;
+            case 9:
+                ImageObject.sprite = EigthPicture;
+                ExplanationText.text = "Tied Together skill binds anything within range to you at the end of your move.";
                 break;
 
         }

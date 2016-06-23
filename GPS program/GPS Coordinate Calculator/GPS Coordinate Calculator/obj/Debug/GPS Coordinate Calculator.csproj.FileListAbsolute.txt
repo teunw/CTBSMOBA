@@ -1,0 +1,9 @@
+D:\School\P7-P8 Herhaling GD\GPT4\GPS program\GPS Coordinate Calculator\GPS Coordinate Calculator\bin\Debug\GPS Coordinate Calculator.exe.config
+D:\School\P7-P8 Herhaling GD\GPT4\GPS program\GPS Coordinate Calculator\GPS Coordinate Calculator\bin\Debug\GPS Coordinate Calculator.exe
+D:\School\P7-P8 Herhaling GD\GPT4\GPS program\GPS Coordinate Calculator\GPS Coordinate Calculator\bin\Debug\GPS Coordinate Calculator.pdb
+D:\School\P7-P8 Herhaling GD\GPT4\GPS program\GPS Coordinate Calculator\GPS Coordinate Calculator\obj\Debug\GPS Coordinate Calculator.csprojResolveAssemblyReference.cache
+D:\School\P7-P8 Herhaling GD\GPT4\GPS program\GPS Coordinate Calculator\GPS Coordinate Calculator\obj\Debug\GPS_Coordinate_Calculator.Properties.Resources.resources
+D:\School\P7-P8 Herhaling GD\GPT4\GPS program\GPS Coordinate Calculator\GPS Coordinate Calculator\obj\Debug\GPS Coordinate Calculator.csproj.GenerateResource.Cache
+D:\School\P7-P8 Herhaling GD\GPT4\GPS program\GPS Coordinate Calculator\GPS Coordinate Calculator\obj\Debug\GPS Coordinate Calculator.exe
+D:\School\P7-P8 Herhaling GD\GPT4\GPS program\GPS Coordinate Calculator\GPS Coordinate Calculator\obj\Debug\GPS Coordinate Calculator.pdb
+D:\School\P7-P8 Herhaling GD\GPT4\GPS program\GPS Coordinate Calculator\GPS Coordinate Calculator\obj\Debug\GPS_Coordinate_Calculator.formCalculator.resources
