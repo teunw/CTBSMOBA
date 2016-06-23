@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -38,6 +39,24 @@ namespace Assets.Scripts
         public Vector3 LastPosition
         {
             get { return Positions.Count > 0 ? Positions[Positions.Count - 1] : Member.transform.position; }
+        }
+
+        /// <summary>
+        /// Returns last drawn position of this object
+        /// </summary>
+        public Vector3 GetAlmostLastPosition
+        {
+            get
+            {
+                try
+                {
+                    return Positions[Positions.Count - 2];
+                }
+                catch (IndexOutOfRangeException e)
+                {
+                    return Vector3.zero;
+                }
+            }
         }
 
         /// <summary>
