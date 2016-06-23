@@ -21,7 +21,7 @@ public class DrawManager : MonoBehaviour
     public float LineRoundness = .3f;
 
     public float LineWidth = .08f;
-    private List<MemberLine> MemberLines;
+    private List<MemberLine> MemberLines = new List<MemberLine>();
     public Camera PlayerCamera;
 
     private Member SelectedMember;
@@ -80,7 +80,9 @@ public class DrawManager : MonoBehaviour
 
     private void Awake()
     {
-        MemberLines = new List<MemberLine>();
+        GameScript.ProgressBar.gameObject.SetActive(IsMemberSelected);
+        GameScript.kickButton.gameObject.SetActive(IsMemberSelected);
+        GameScript.besteGameButton.gameObject.SetActive(IsMemberSelected);
     }
 
     private void Update()
@@ -89,7 +91,6 @@ public class DrawManager : MonoBehaviour
         {
             return;
         }
-        GameScript.ProgressBar.gameObject.SetActive(IsMemberSelected);
 
         if (SelectedMemberIndicator != null)
         {
@@ -252,7 +253,7 @@ public class DrawManager : MonoBehaviour
     /// <param name="member">Member to select</param>
     public void SetMember(Member member)
     {
-        Debug.Log("Selected member");
+        Debug.Log((member == null ? "des" : "S") + "elected member");
         SelectedMember = member;
         lineCompleted = false;
         MemberLine ml = MemberLines.Find(o => o.Member == SelectedMember);
@@ -263,9 +264,14 @@ public class DrawManager : MonoBehaviour
         }
         else
         {
-            if (SelectedMember == null) return;
-            MemberLines.Add(new MemberLine(member).Reset(member.transform.position));
+            if (SelectedMember != null)
+            {
+                MemberLines.Add(new MemberLine(member).Reset(member.transform.position));
+            }
         }
+        GameScript.ProgressBar.gameObject.SetActive(IsMemberSelected);
+        GameScript.kickButton.gameObject.SetActive(IsMemberSelected);
+        GameScript.besteGameButton.gameObject.SetActive(IsMemberSelected);
     }
 
     public void ActionPressed(Type action)
