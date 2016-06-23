@@ -62,6 +62,7 @@ public class SimpleMember : MonoBehaviour
         this.textName = textParentName.AddComponent<Text>();
         textName.font = Font.CreateDynamicFontFromOSFont("Arial", 20);
         textName.name = "Text Name from: " + this.member.PlayerName;
+        textName.color = Color.black;
         textName.text = this.member.PlayerName;
         textName.transform.position = Camera.main.WorldToScreenPoint(this.member.transform.position) - new Vector3(-32, 100, 0);
 
@@ -76,6 +77,7 @@ public class SimpleMember : MonoBehaviour
         textSpeed.name = "Text Speed from: " + this.member.PlayerName;
         textSpeed.text = "Speed: " + this.member.Speed.ToString();
         textSpeed.transform.position = Camera.main.WorldToScreenPoint(this.member.transform.position) - new Vector3(-18, 120, 0);
+        textSpeed.color = Color.black;
 
         GameObject textParentStamina = new GameObject();
         textParentStamina.transform.SetParent(canvas.transform);
@@ -87,6 +89,7 @@ public class SimpleMember : MonoBehaviour
         textStamina.name = "Text Stamina from: " + this.member.PlayerName;
         textStamina.text = "Stamina: " + this.member.Stamina.ToString();
         textStamina.transform.position = Camera.main.WorldToScreenPoint(this.member.transform.position) - new Vector3(-12, 140, 0);
+        textStamina.color = Color.black;
 
 
         GameObject buttonParentSelect = new GameObject();
