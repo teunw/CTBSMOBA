@@ -8,6 +8,7 @@ using Assets.Scripts.Skills;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 #endregion
 
@@ -16,7 +17,6 @@ public class DrawManager : MonoBehaviour
     public GameObject DrawPlane;
     public GameScript GameScript;
     public GameObject SelectedMemberGameObject;
-    public SkillIndicator SelectedMemberIndicator;
     public Material whiteLine;
     // Lower value makes the line more round, but consumes more resources
     [Tooltip("Lower value makes the line more round, but consumes more resources")]
@@ -38,7 +38,6 @@ public class DrawManager : MonoBehaviour
     {
         drawLayer = 1 << 10;
         characterLayer = 1 << 11;
-        if (SelectedMemberIndicator == null) Debug.LogWarning("No indicator for member selected");
     }
 
     private MemberLine CurrentMemberLine
@@ -94,33 +93,15 @@ public class DrawManager : MonoBehaviour
             return;
         }
 
-        if (SelectedMemberIndicator != null)
-        {
-            if (SelectedMember != null)
-            {
-                if (CurrentMemberLine.LineRenderers.Count > 0)
-                {
-                    SelectedMemberIndicator.SetActive(
-                        CurrentMemberLine.LastPosition,
-                        CurrentMemberLine.GetAlmostLastPosition,
-                        SelectedMember
-                        );
-                }
-            }
-            else
-            {
-                SelectedMemberIndicator.SetInactive();
-            }
-        }
-
         SelectedMemberGameObject.SetActive(IsMemberSelected);
         if (IsMemberSelected)
         {
             SelectedMemberGameObject.transform.position = SelectedMember.transform.position;
         }
-
         if (IsMemberSelected)
         {
+            SelectedMember.UpdateSkillIndicator(CurrentMemberLine);
+
             GameScript.ProgressBar.Value = GetStaminaPercent;
 
             if (Input.GetMouseButton(0) && !lineCompleted)
@@ -281,14 +262,12 @@ public class DrawManager : MonoBehaviour
             if (SelectedMember != null)
             {
                 SelectedMemberGameObject.SetActive(true);
-                SelectedMemberIndicator.gameObject.SetActive(true);
                 MemberLines.Add(new MemberLine(member).Reset(member.transform.position));
             }
             else
             {
                 //Clean traces
                 SelectedMemberGameObject.SetActive(false);
-                SelectedMemberIndicator.gameObject.SetActive(false);
             }
         }
         GameScript.ProgressBar.gameObject.SetActive(IsMemberSelected);

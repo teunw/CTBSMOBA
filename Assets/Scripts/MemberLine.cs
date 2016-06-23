@@ -52,7 +52,7 @@ namespace Assets.Scripts
                 {
                     return Positions[Positions.Count - 2];
                 }
-                catch (IndexOutOfRangeException e)
+                catch (ArgumentOutOfRangeException e)
                 {
                     return Vector3.zero;
                 }

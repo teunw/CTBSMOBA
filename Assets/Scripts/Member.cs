@@ -60,6 +60,11 @@ namespace Assets.Scripts
         /// </summary>
         public string PlayerName;
 
+        public SkillUseIndicatorManager SkillUseIndicatorManager;
+
+        public SkillIndicatorMember SkillIndicatorMember;
+
+
         /// <summary>
         /// The default character of this user.
         /// </summary>
@@ -74,7 +79,6 @@ namespace Assets.Scripts
                 defaultColor = team.color;
                 spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             }
-
             else
             {
                 System.Random random = new System.Random();
@@ -157,6 +161,11 @@ namespace Assets.Scripts
             ResetPoints();
             SetColor();
             this.yourTurn = yourTurn;
+        }
+
+        public void UpdateSkillIndicator(MemberLine memberLine)
+        {
+            SkillIndicatorMember.SetActive(memberLine.LastPosition, memberLine.GetAlmostLastPosition, this);
         }
 
         /// <summary>
@@ -296,6 +305,25 @@ namespace Assets.Scripts
             {
                 Destroy(action as KickAction);
             }
+        }
+        
+        /// <summary>
+        /// Called from skills when they are added
+        /// </summary>
+        /// <param name="gm"></param>
+        void OnSkillAdded(Component gm)
+        {
+            SkillUseIndicatorManager.SetActive(gm, true);
+        }
+
+        /// <summary>
+        /// Called from skills when they are added
+        /// </summary>
+        /// <param name="gm"></param>
+        void OnSkillRemoved(Component gm)
+        {
+            SkillUseIndicatorManager.SetActive(gm);
+            SkillIndicatorMember.SetInactive();
         }
     }
 }

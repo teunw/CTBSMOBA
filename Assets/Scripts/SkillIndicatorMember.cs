@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using Assets.Scripts.Skills;
 using UnityEngine;
+using Action = Assets.Scripts.Skills.Action;
 
 namespace Assets.Scripts
 {
-    [Obsolete]
-    public class SkillIndicator : MonoBehaviour
+    public class SkillIndicatorMember : MonoBehaviour
     {
         public GameObject KickIndicator;
         public GameObject RehtegotDietIndicator;

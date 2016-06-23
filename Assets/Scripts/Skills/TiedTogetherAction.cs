@@ -47,6 +47,7 @@ namespace Assets.Scripts.Skills
         void Start()
         {
             GetComponentInChildren<Member>().SetColor(actionColor);
+            SendMessage(ActionConstants.OnSkillAdded, this, SendMessageOptions.DontRequireReceiver);
         }
 
         void OnDestroy()
@@ -61,6 +62,7 @@ namespace Assets.Scripts.Skills
                 }
                 catch(Exception e)
                 {
+                    Debug.LogWarning(e.Message);
                 }
             }
             foreach (SpringJoint2D springJoint in this.gameObject.GetComponents<SpringJoint2D>())
@@ -72,6 +74,7 @@ namespace Assets.Scripts.Skills
                 Destroy(influencedObject.GetComponent<LineRenderer>());
             }
             EndTiedTogetherUnbind();
+            SendMessage(ActionConstants.OnSkillRemoved, this, SendMessageOptions.DontRequireReceiver);
         }
 
         void Update()

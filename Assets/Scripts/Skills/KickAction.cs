@@ -60,11 +60,13 @@ namespace Assets.Scripts.Skills
         void OnDestroy()
         {
             GetComponentInChildren<Member>().SetColor();
+            SendMessage(ActionConstants.OnSkillRemoved, this, SendMessageOptions.DontRequireReceiver);
         }
 
         void Start()
         {
             GetComponentInChildren<Member>().SetColor(actionColor);
+            SendMessage(ActionConstants.OnSkillAdded, this, SendMessageOptions.DontRequireReceiver);
         }
 
         void OnMemberWalkDone()
