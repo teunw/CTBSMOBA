@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Assets.Scripts;
 using Assets.Scripts.Skills;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 #endregion
@@ -83,6 +84,7 @@ public class DrawManager : MonoBehaviour
     {
         if (GameScript.teamStatus == Assets.TeamStatus.Executing)
         {
+            
             return;
         }
         GameScript.ProgressBar.gameObject.SetActive(IsMemberSelected);

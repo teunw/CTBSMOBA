@@ -62,6 +62,8 @@ public class GameScript : MonoBehaviour
 
     public Button playAgain;
     public Button endTurn;
+    public Button kickButton;
+    public Button besteGameButton;
     public ProgressBarBehaviour ProgressBar;
 
     public static GameScript instance { get; private set; }
@@ -201,6 +203,8 @@ public class GameScript : MonoBehaviour
     /// </summary>
     public void Update()
     {
+        kickButton.interactable = teamStatus == TeamStatus.Planning;
+        besteGameButton.interactable = teamStatus == TeamStatus.Planning;
         if (teamStatus == TeamStatus.Executing)
         {
             if (!team1.CheckActionsDone())
