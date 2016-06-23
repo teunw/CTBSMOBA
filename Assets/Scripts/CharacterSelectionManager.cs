@@ -127,25 +127,8 @@ namespace Assets.Scripts
                 }
             }
 
-            if (currentMember == 1)
-            {
-                this.buttonLeft.gameObject.SetActive(false);
-            }
-
-            else
-            {
-                this.buttonLeft.gameObject.SetActive(true);
-            }
-
-            if (currentMember == this.members.Count)
-            {
-                this.buttonRight.gameObject.SetActive(false);
-            }
-
-            else
-            {
-                this.buttonRight.gameObject.SetActive(true);
-            }
+            this.buttonLeft.gameObject.SetActive(currentMember != 1);
+            this.buttonRight.gameObject.SetActive(currentMember != this.members.Count);
         }
 
         /// <summary>
@@ -184,11 +167,11 @@ namespace Assets.Scripts
             Vector3 positionToPlaceMember;
             int currentCharacterNumber = 0;
 
-            foreach(Member m in this.members)
+            foreach (Member m in this.members)
             {
                 positionToPlaceMember = new Vector3(currentCharacterNumber * 10, 0, 0);
                 Quaternion q = Quaternion.Euler(0, 90, 0);
-                GameObject go = (GameObject) GameObject.Instantiate(this.originalGameObject, positionToPlaceMember, q);
+                GameObject go = (GameObject)GameObject.Instantiate(this.originalGameObject, positionToPlaceMember, q);
                 go.name = m.PlayerName;
                 go.transform.SetParent(emptyParentObject.transform);
 
@@ -253,7 +236,7 @@ namespace Assets.Scripts
         {
             int counter = 1;
 
-            foreach(Member m in this.currentTeam)
+            foreach (Member m in this.currentTeam)
             {
                 string text = m.PlayerName + " - " + m.Speed.ToString() + " - " + m.Stamina.ToString();
 

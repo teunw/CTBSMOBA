@@ -117,7 +117,7 @@ namespace Assets.Scripts
         {
             if (color == null)
             {
-                color = defaultColor;
+                color = team.color;
             }
             SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
             sr.color = (Color)color;
