@@ -16,7 +16,13 @@ namespace Assets.Scripts.Skills
 
         private bool shouldExecuteSkill;
         public float KickForce = 10f;
-        public Color KickColor = Color.green;
+        public Color actionColor
+        {
+            get
+            {
+                return Color.green;
+            }
+        }
 
         void Update()
         {
@@ -58,7 +64,7 @@ namespace Assets.Scripts.Skills
 
         void Start()
         {
-            GetComponentInChildren<Member>().SetColor(KickColor);
+            GetComponentInChildren<Member>().SetColor(actionColor);
         }
 
         void OnMemberWalkDone()

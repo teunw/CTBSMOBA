@@ -57,6 +57,7 @@ namespace Assets.Scripts
                 GameObject gm = GetSkillGameObject(Skill);
                 gm.transform.position = LinePosition;
                 gm.transform.LookAt(LinePosition2);
+                selectedMember.SetColor(selectedMember.GetSkillAction().actionColor);
             }
         }
     }

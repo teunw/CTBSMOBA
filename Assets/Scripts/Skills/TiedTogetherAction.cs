@@ -35,11 +35,18 @@ namespace Assets.Scripts.Skills
         private List<GameObject> influencedObjects = new List<GameObject>();
         public float TieRange = 1.75f;
         public float TieDistance = 2f;
-        public Color TieColor = Color.green;
+
+        public Color actionColor
+        {
+            get
+            {
+                return Color.green;
+            }
+        }
 
         void Start()
         {
-            GetComponentInChildren<Member>().SetColor(TieColor);
+            GetComponentInChildren<Member>().SetColor(actionColor);
         }
 
         void OnDestroy()

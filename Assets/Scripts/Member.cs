@@ -65,11 +65,14 @@ namespace Assets.Scripts
         /// </summary>
         private Color defaultColor;
 
+        private SpriteRenderer spriteRenderer;
+
         protected override void Awake()
         {
             if (team != null)
             {
                 defaultColor = team.color;
+                spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             }
 
             else
@@ -115,12 +118,12 @@ namespace Assets.Scripts
         /// <param name="color"></param>
         public void SetColor(Color? color = null)
         {
+            if (spriteRenderer.color == color) return;
             if (color == null)
             {
                 color = team.color;
             }
-            SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
-            sr.color = (Color)color;
+            spriteRenderer.color = (Color)color;
         }
 
         /// <summary>

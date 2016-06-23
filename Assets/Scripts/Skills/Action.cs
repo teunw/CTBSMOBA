@@ -10,5 +10,6 @@ namespace Assets.Scripts.Skills
     public interface Action
     {
         string Name { get; }
+        Color actionColor { get; }
     }
 }

@@ -17,6 +17,14 @@ namespace Assets.Scripts.Skills
         private float stepRadius;
         private int currentStep;
 
+        public Color actionColor
+        {
+            get
+            {
+                return Color.black;
+            }
+        }
+
         private int MemberSpeed;
 
         public string Name
