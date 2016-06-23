@@ -246,16 +246,53 @@ namespace Assets.Scripts
             this.Speed = speed;
         }
 
+        /// <summary>
+        /// Gets the type of the attached skill component
+        /// </summary>
+        /// <returns></returns>
         public Type GetSkill()
         {
-            Skills.Action ka = GetComponent<KickAction>();
-            if (ka != null) return ka.GetType();
-
-            ka = GetComponent<TiedTogetherAction>();
-            if (ka != null) return ka.GetType();
-
+            if (GetSkillAction() != null)
+            {
+                return GetSkillAction().GetType();
+            }
             return null;
         }
 
+        /// <summary>
+        /// Gets the attached skill component
+        /// </summary>
+        /// <returns></returns>
+        public Skills.Action GetSkillAction()
+        {
+            Skills.Action ka = GetComponent<KickAction>();
+            if (ka != null) return ka;
+
+            ka = GetComponent<TiedTogetherAction>();
+            if (ka != null) return ka;
+
+            return null;
+        }
+        
+        /// <summary>
+        /// Removes the first skill component attached to this member
+        /// </summary>
+        public void RemoveSkills()
+        {
+            Skills.Action action = GetSkillAction();
+            if (action == null)
+            {
+                return;
+            }
+            Debug.Log("Removed skill " + action.Name);
+            if (action is TiedTogetherAction)
+            {
+                Destroy(action as TiedTogetherAction);
+            }
+            if (action is KickAction)
+            {
+                Destroy(action as KickAction);
+            }
+        }
     }
 }

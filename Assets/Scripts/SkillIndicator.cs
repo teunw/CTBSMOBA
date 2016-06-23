@@ -31,20 +31,31 @@ namespace Assets.Scripts
 
         public void SetInactive()
         {
+            Skill = null;
             LinePosition = Vector3.zero;
             LinePosition2 = Vector3.zero;
-            Skill = null;
         }
 
         void Update()
         {
-            KickIndicator.SetActive(Skill != null && Skill == typeof(KickAction));
-            RehtegotDietIndicator.SetActive(Skill != null && Skill == typeof(TiedTogetherAction));
+            if (Skill == null)
+            {
+                KickIndicator.SetActive(false);
+                RehtegotDietIndicator.SetActive(false);
+            }
+            else
+            {
+                KickIndicator.SetActive(Skill == typeof(KickAction));
+                RehtegotDietIndicator.SetActive(Skill == typeof(TiedTogetherAction));
+                if (Skill == typeof(TiedTogetherAction))
+                {
+                    //Check if the TTG action is not in fase 2 or higher, then don't show
+                }
 
-            if (Skill == null) return;
-            GameObject gm = GetSkillGameObject(Skill);
-            gm.transform.position = LinePosition;
-            gm.transform.LookAt(LinePosition2);
+                GameObject gm = GetSkillGameObject(Skill);
+                gm.transform.position = LinePosition;
+                gm.transform.LookAt(LinePosition2);
+            }
         }
     }
 }

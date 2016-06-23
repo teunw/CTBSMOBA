@@ -37,6 +37,20 @@ namespace Assets.Scripts.Skills
         void OnDestroy()
         {
             GetComponentInChildren<Member>().SetColor();
+            for (int i = 0; i < lines.Count; i++)
+            {
+                lines[i].SetPosition(0, this.gameObject.transform.position);
+                lines[i].SetPosition(1, influencedObjects[i].transform.position);
+            }
+            foreach (SpringJoint2D springJoint in this.gameObject.GetComponents<SpringJoint2D>())
+            {
+                Destroy(springJoint);
+            }
+            foreach (GameObject influencedObject in this.influencedObjects)
+            {
+                Destroy(influencedObject.GetComponent<LineRenderer>());
+            }
+            EndTiedTogetherUnbind();
         }
 
         void Update()

@@ -295,6 +295,7 @@ public class DrawManager : MonoBehaviour
             Debug.LogError("No member selected");
             return;
         }
+        SelectedMember.RemoveSkills();
         SelectedMember.ActionPressed(action);
     }
 
