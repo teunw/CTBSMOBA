@@ -27,10 +27,23 @@ namespace Assets.Scripts.Skills
         private List<GameObject> influencedObjects = new List<GameObject>();
         public float TieRange = 1.75f;
         public float TieDistance = 2f;
+        public Color TieColor = Color.green;
+        private bool started = false;
+
+        void Start()
+        {
+            GetComponentInChildren<Member>().SetColor(TieColor);
+        }
 
         void Update()
         {
-            switch(doBind)
+            if (!started && GameScript.instance.teamStatus == TeamStatus.Executing)
+            {
+                GetComponentInChildren<Member>().SetColor();
+                started = true;
+            }
+
+            switch (doBind)
             {
                 case 0:
                     return;

@@ -17,10 +17,16 @@ namespace Assets.Scripts.Skills
         private bool shouldExecuteSkill;
         public float KickForce = 25f;
         public Color KickColor = Color.green;
-        private Color startColor;
+        private bool started = false;
 
         void Update()
         {
+            if (!started && GameScript.instance.teamStatus == TeamStatus.Executing)
+            {
+                GetComponentInChildren<Member>().SetColor();
+                started = true;
+            }
+
             if (!shouldExecuteSkill) return;
 
             Vector2 forwardPos = transform.position + (1f*transform.right);
@@ -54,15 +60,7 @@ namespace Assets.Scripts.Skills
 
         void Start()
         {
-            SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
-            startColor = sr.color;
-            sr.color = KickColor;
-        }
-
-        void OnDestroy()
-        {
-            SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
-            sr.color = startColor;
+            GetComponentInChildren<Member>().SetColor(KickColor);
         }
 
         void OnMemberWalkDone()

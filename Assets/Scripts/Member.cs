@@ -54,6 +54,15 @@ namespace Assets.Scripts
         /// </summary>
         public string PlayerName;
 
+        private Color defaultColor;
+
+        protected override void Start()
+        {
+            base.Start();
+            SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+            defaultColor = sr.color;
+        }
+
         /// <summary>
         /// Returns whether the member has finished performing its action
         /// </summary>
@@ -77,6 +86,20 @@ namespace Assets.Scripts
             {
                 DrawManager.SetMember(this);
             }
+        }
+
+        /// <summary>
+        /// Sets the color of this member
+        /// </summary>
+        /// <param name="color"></param>
+        public void SetColor(Color? color = null)
+        {
+            if (color == null)
+            {
+                color = defaultColor;
+            }
+            SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+            sr.color = (Color)color;
         }
 
         /// <summary>
