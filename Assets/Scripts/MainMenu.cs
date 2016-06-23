@@ -330,31 +330,31 @@ public class MainMenu : MonoBehaviour
         {
             case 1:
                 ImageObject.sprite = FirstPicture;
-                ExplanationText.text = "This is one of your characters, you have three characters in the game which you can control.";
+                ExplanationText.text = "This is one of your characters, there are 3 of them in your team";
                 break;
             case 2:
                 ImageObject.sprite = SecondPicture;
-                ExplanationText.text = "The white line around a character means it is selected, when selected you can command it to move or use skills.";
+                ExplanationText.text = "The white line around a character means it is selected";
                 break;
             case 3:
                 ImageObject.sprite = ThirdPicture;
-                ExplanationText.text = "When selected, you can hold and draw a line to where you want the character to move. Note: It will follow the line as you draw it. You can redraw the line whenever you want to.";
+                ExplanationText.text = "When selected you can hold and draw a line to where you want the character to move. To draw a differnt path just draw again.";
                 break;
             case 4:
                 ImageObject.sprite = FourthPicture;
-                ExplanationText.text = "This is your stamina bar, stamina means the length in which you can move. When it's empty it means that the character can no longer move further.";
+                ExplanationText.text = "You can draw until this stamina bar is empty";
                 break;
             case 5:
                 ImageObject.sprite = FifthPicture;
-                ExplanationText.text = "Here you see a couple of things, the triangle is the base capture area. Moving the opponents flag into this area will cap it and your team will score a point. The pentagons shape is a flag, moving the opponents flag towards your capture area will cause you to score.";
+                ExplanationText.text = "This is a flag in a base. Move the flag by pushing or using skills. Move the enemy flag into your base to score a point! The flags cant cross the black line";
                 break;
             case 6:
                 ImageObject.sprite = FifthPicture;
-                ExplanationText.text = "Slightly on the left of your base capture area you see a thin black line, out of which the flag cannot move. The black area on the far left of the picture indicates the edge of the arena in which the characters can move around.";
+                ExplanationText.text = "The flags cant cross the black line";
                 break;
             case 7:
                 ImageObject.sprite = SixthPicture;
-                ExplanationText.text = "This is a bumper, moving yourself into or kicking an opponent into one makes them bounce off with extra speed.";
+                ExplanationText.text = "This is a bumper, anything that hits it gets bounced back.";
                 break;
 
         }
@@ -366,7 +366,7 @@ public class MainMenu : MonoBehaviour
         NextPicture.gameObject.SetActive(true);
         PreviousPicture.gameObject.SetActive(false);
         ImageObject.sprite = FirstPicture;
-        ExplanationText.text = "This is one of your characters, you have three characters in the game which you can control.";
+        ExplanationText.text = "This is one of your characters, there are 3 of them in your team";
 
         FirstMenu.SetActive(false);
         Controls.SetActive(true);
