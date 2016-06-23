@@ -15,7 +15,7 @@ namespace Assets.Scripts.Skills
         }
 
         private bool shouldExecuteSkill;
-        public float KickForce = 25f;
+        public float KickForce = 10f;
         public Color KickColor = Color.green;
 
         void Update()
