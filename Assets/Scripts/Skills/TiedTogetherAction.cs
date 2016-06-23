@@ -39,8 +39,14 @@ namespace Assets.Scripts.Skills
             GetComponentInChildren<Member>().SetColor();
             for (int i = 0; i < lines.Count; i++)
             {
-                lines[i].SetPosition(0, this.gameObject.transform.position);
-                lines[i].SetPosition(1, influencedObjects[i].transform.position);
+                try
+                {
+                    lines[i].SetPosition(0, gameObject.transform.position);
+                    lines[i].SetPosition(1, influencedObjects[i].transform.position);
+                }
+                catch(Exception e)
+                {
+                }
             }
             foreach (SpringJoint2D springJoint in this.gameObject.GetComponents<SpringJoint2D>())
             {

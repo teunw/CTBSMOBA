@@ -280,7 +280,15 @@ public class DrawManager : MonoBehaviour
         {
             if (SelectedMember != null)
             {
+                SelectedMemberGameObject.SetActive(true);
+                SelectedMemberIndicator.gameObject.SetActive(true);
                 MemberLines.Add(new MemberLine(member).Reset(member.transform.position));
+            }
+            else
+            {
+                //Clean traces
+                SelectedMemberGameObject.SetActive(false);
+                SelectedMemberIndicator.gameObject.SetActive(false);
             }
         }
         GameScript.ProgressBar.gameObject.SetActive(IsMemberSelected);
