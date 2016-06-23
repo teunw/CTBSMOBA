@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 #endregion
 using System.IO;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts
 {
@@ -72,6 +73,21 @@ namespace Assets.Scripts
         /// </summary>
         public Text textMember3;
 
+        /// <summary>
+        /// Button to go to the next scene.
+        /// </summary>
+        public Button buttonNext;
+
+        /// <summary>
+        /// Team 1's member.
+        /// </summary>
+        private List<Member> team1;
+
+        /// <summary>
+        /// Team 2's member.
+        /// </summary>
+        private List<Member> team2;
+
 
         /// <summary>
         /// Start function.
@@ -81,6 +97,7 @@ namespace Assets.Scripts
         {
             this.members = new List<Member>();
             this.currentTeam = new List<Member>();
+            this.buttonNext.gameObject.SetActive(false);
             this.ReadFromFile();
         }
 
@@ -187,6 +204,7 @@ namespace Assets.Scripts
             if (!currentTeam.Contains(memberToAdd) && currentTeam.Count < 3)
             {
                 this.currentTeam.Add(memberToAdd);
+                CheckThreeMembers();
                 UpdateTeamLayout();
             }
         }
@@ -223,12 +241,54 @@ namespace Assets.Scripts
         }
 
         /// <summary>
+        /// Reset the layout of the scene.
+        /// </summary>
+        public void ResetTeamLayout()
+        {
+            textMember1.text = "Member 1 not assigned";
+            textMember2.text = "Member 2 not assigned";
+            textMember3.text = "Member 3 not assigned";
+            buttonNext.gameObject.SetActive(false);
+        }
+
+        /// <summary>
         /// Check if there are 3 members in the game.
         /// If so, enable the next button.
         /// </summary>
         public void CheckThreeMembers()
         {
+            if (this.currentTeam.Count == 3)
+            {
+                this.buttonNext.gameObject.SetActive(true);
+            }
+        }
 
+        /// <summary>
+        /// Go to the next team.
+        /// If both teams are filled,
+        /// go to the next scene with 
+        /// parameters/file shit.
+        /// </summary>
+        public void NextTeam()
+        {
+            if (team1 != null)
+            {
+                if (currentTeam.Count == 3)
+                {
+                    team2 = currentTeam;
+                    currentTeam.Clear();
+                    TeamCollector.SetTeam(team1, 1);
+                    TeamCollector.SetTeam(team2, 2);
+                    SceneManager.LoadScene("GameScene");
+                }
+            }
+
+            else
+            {
+                team1 = currentTeam;
+                currentTeam.Clear();
+                ResetTeamLayout();
+            }
         }
     }
 }
