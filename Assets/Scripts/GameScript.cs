@@ -167,6 +167,8 @@ public class GameScript : MonoBehaviour
             foreach (Member m in team1.members)
             {
                 m.RemoveLines();
+                m.SkillIndicatorMember.SetInactive();
+                m.SkillUseIndicatorManager.Deactivate(m.GetSkillAction());
             }
 
             team2.ChangeTurn(true);
@@ -181,6 +183,8 @@ public class GameScript : MonoBehaviour
             foreach (Member m in team2.members)
             {
                 m.RemoveLines();
+                m.SkillIndicatorMember.SetInactive();
+                m.SkillUseIndicatorManager.Deactivate(m.GetSkillAction());
             }
 
             team1.ChangeTurn(false);
