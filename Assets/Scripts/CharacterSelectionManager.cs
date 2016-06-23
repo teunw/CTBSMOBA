@@ -108,6 +108,11 @@ namespace Assets.Scripts
             this.buttonLeft.gameObject.SetActive(false);
         }
 
+        /// <summary>
+        /// Moves camera if necessary.
+        /// Makes sure the camera
+        /// can't go out of bounds.
+        /// </summary>
         void Update()
         {
             if (toMove)
