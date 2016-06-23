@@ -22,6 +22,14 @@ namespace Assets.Scripts.Skills
             get { return "Tied Together"; }
         }
         
+        public bool FirstPhase
+        {
+            get
+            {
+                return doBind < 1;
+            }
+        }
+
         private int doBind = 0; // 0: Do nothing | 1: Bind | 2: Wait | 3: Unbind
         private List<LineRenderer> lines = new List<LineRenderer>();
         private List<GameObject> influencedObjects = new List<GameObject>();

@@ -103,7 +103,7 @@ public class DrawManager : MonoBehaviour
                     SelectedMemberIndicator.SetActive(
                         CurrentMemberLine.LastPosition,
                         CurrentMemberLine.GetAlmostLastPosition,
-                        SelectedMember.GetSkill()
+                        SelectedMember
                         );
                 }
             }
