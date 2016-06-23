@@ -34,6 +34,11 @@ namespace Assets.Scripts.Skills
             GetComponentInChildren<Member>().SetColor(TieColor);
         }
 
+        void OnDestroy()
+        {
+            GetComponentInChildren<Member>().SetColor();
+        }
+
         void Update()
         {
             switch (doBind)

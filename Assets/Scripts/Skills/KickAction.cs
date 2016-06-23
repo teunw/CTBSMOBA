@@ -51,6 +51,11 @@ namespace Assets.Scripts.Skills
             EndKick();
         }
 
+        void OnDestroy()
+        {
+            GetComponentInChildren<Member>().SetColor();
+        }
+
         void Start()
         {
             GetComponentInChildren<Member>().SetColor(KickColor);
