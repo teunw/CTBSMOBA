@@ -15,6 +15,7 @@ public class DrawManager : MonoBehaviour
 {
     public GameObject DrawPlane;
     public GameScript GameScript;
+    public GameObject SelectedMemberGameObject;
     public SkillIndicator SelectedMemberIndicator;
     public Material whiteLine;
     // Lower value makes the line more round, but consumes more resources
@@ -110,6 +111,12 @@ public class DrawManager : MonoBehaviour
             {
                 SelectedMemberIndicator.SetInactive();
             }
+        }
+
+        SelectedMemberGameObject.SetActive(IsMemberSelected);
+        if (IsMemberSelected)
+        {
+            SelectedMemberGameObject.transform.position = SelectedMember.transform.position;
         }
 
         if (IsMemberSelected)
