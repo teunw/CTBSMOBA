@@ -14,6 +14,7 @@ public class DrawManager : MonoBehaviour
 {
     public GameObject DrawPlane;
     public GameScript GameScript;
+    public GameObject SelectedMemberIndicator;
     public Material whiteLine;
     // Lower value makes the line more round, but consumes more resources
     [Tooltip("Lower value makes the line more round, but consumes more resources")]
@@ -35,6 +36,7 @@ public class DrawManager : MonoBehaviour
     {
         drawLayer = 1 << 10;
         characterLayer = 1 << 11;
+        if (SelectedMemberIndicator == null) Debug.LogWarning("No indicator for member selected");
     }
 
     private MemberLine CurrentMemberLine
@@ -85,10 +87,22 @@ public class DrawManager : MonoBehaviour
     {
         if (GameScript.teamStatus == Assets.TeamStatus.Executing)
         {
-            
             return;
         }
         GameScript.ProgressBar.gameObject.SetActive(IsMemberSelected);
+
+        if (SelectedMemberIndicator != null)
+        {
+            if (SelectedMember != null)
+            {
+                SelectedMemberIndicator.SetActive(true);
+                SelectedMemberIndicator.transform.position = SelectedMember.transform.position;
+            }
+            else
+            {
+                SelectedMemberIndicator.SetActive(false);
+            }
+        }
 
         if (IsMemberSelected)
         {
