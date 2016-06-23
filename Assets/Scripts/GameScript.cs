@@ -66,6 +66,8 @@ public class GameScript : MonoBehaviour
     public Button besteGameButton;
     public ProgressBarBehaviour ProgressBar;
 
+    public DrawManager drawManager;
+
     public static GameScript instance { get; private set; }
 
     void Awake()
@@ -109,6 +111,15 @@ public class GameScript : MonoBehaviour
     /// </summary>
     public void SwitchTurn()
     {
+        if (drawManager != null)
+        {
+            drawManager.SetMember(null);
+        }
+        else
+        {
+            Debug.LogError("Drawmanager has not been set in the gamescript. \r\nPlease add it through the hierachy");
+        }
+
         if (currentTeam == null)
         {
             currentTeam = team1;

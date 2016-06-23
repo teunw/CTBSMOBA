@@ -245,6 +245,7 @@ public class DrawManager : MonoBehaviour
         }
         else
         {
+            if (SelectedMember == null) return;
             MemberLines.Add(new MemberLine(member).Reset(member.transform.position));
         }
     }
