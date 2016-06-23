@@ -166,7 +166,9 @@ public class GameScript : MonoBehaviour
         Debug.Log("Status: Executing");
         team1.PerformActions();
         team2.PerformActions();
-        endTurn.gameObject.SetActive(false);
+        kickButton.interactable = false;
+        besteGameButton.interactable = false;
+        endTurn.interactable = false;
     }
 
     /// <summary>
@@ -224,7 +226,9 @@ public class GameScript : MonoBehaviour
             currentTeam = team1;
             team1.ChangeTurn(true);
             team2.ChangeTurn(false);
-            endTurn.gameObject.SetActive(true);
+            endTurn.interactable = true;
+            kickButton.interactable = true;
+            besteGameButton.interactable = true;
             Debug.Log("BOTH TEAMS ARE DONE");
         }
     }
