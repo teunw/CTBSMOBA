@@ -28,6 +28,11 @@ namespace Assets.Scripts
         /// </summary>
         protected bool isMoving;
 
+        protected virtual void Awake()
+        {
+
+        }
+
         protected virtual void Start()
         {
             ResetPoints();

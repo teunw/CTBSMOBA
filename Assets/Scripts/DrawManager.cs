@@ -29,6 +29,7 @@ public class DrawManager : MonoBehaviour
     private int characterLayer;
 
     private bool noLongerOnCharacter = false;
+    private bool lineCompleted = true;
 
     void Start()
     {
@@ -93,7 +94,7 @@ public class DrawManager : MonoBehaviour
         {
             GameScript.ProgressBar.Value = GetStaminaPercent;
 
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0) && !lineCompleted)
             {
                 /* Casting a ray from the camera to the mouse position
                  * Because camera is orthographic depth doesnt matter
@@ -130,7 +131,8 @@ public class DrawManager : MonoBehaviour
                     CreateLine(CurrentMemberLine.LastPosition, hitpos);
                 }
                 //if raycast hits doesnt hit complete the line
-                else {
+                else
+                {
                     CompleteLine();
                 }
             }
@@ -180,8 +182,9 @@ public class DrawManager : MonoBehaviour
     public void CompleteLine()
     {
         SetSelectedMemberAction();
-//        SelectedMember = null;
+        //SelectedMember = null;
         noLongerOnCharacter = false;
+        lineCompleted = true;
     }
 
     /// <summary>
@@ -237,6 +240,7 @@ public class DrawManager : MonoBehaviour
     {
         Debug.Log("Selected member");
         SelectedMember = member;
+        lineCompleted = false;
         MemberLine ml = MemberLines.Find(o => o.Member == SelectedMember);
         if (ml != null)
         {
@@ -245,6 +249,7 @@ public class DrawManager : MonoBehaviour
         }
         else
         {
+            if (SelectedMember == null) return;
             MemberLines.Add(new MemberLine(member).Reset(member.transform.position));
         }
     }
