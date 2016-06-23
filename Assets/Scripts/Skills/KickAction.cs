@@ -17,16 +17,9 @@ namespace Assets.Scripts.Skills
         private bool shouldExecuteSkill;
         public float KickForce = 25f;
         public Color KickColor = Color.green;
-        private bool started = false;
 
         void Update()
         {
-            if (!started && GameScript.instance.teamStatus == TeamStatus.Executing)
-            {
-                GetComponentInChildren<Member>().SetColor();
-                started = true;
-            }
-
             if (!shouldExecuteSkill) return;
 
             Vector2 forwardPos = transform.position + (1f*transform.right);

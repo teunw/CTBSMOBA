@@ -28,7 +28,6 @@ namespace Assets.Scripts.Skills
         public float TieRange = 1.75f;
         public float TieDistance = 2f;
         public Color TieColor = Color.green;
-        private bool started = false;
 
         void Start()
         {
@@ -37,12 +36,6 @@ namespace Assets.Scripts.Skills
 
         void Update()
         {
-            if (!started && GameScript.instance.teamStatus == TeamStatus.Executing)
-            {
-                GetComponentInChildren<Member>().SetColor();
-                started = true;
-            }
-
             switch (doBind)
             {
                 case 0:

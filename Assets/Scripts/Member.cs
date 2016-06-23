@@ -56,9 +56,8 @@ namespace Assets.Scripts
 
         private Color defaultColor;
 
-        protected override void Start()
+        protected override void Awake()
         {
-            base.Start();
             SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
             defaultColor = sr.color;
         }
@@ -131,6 +130,7 @@ namespace Assets.Scripts
         public void ChangeTurn(bool yourTurn)
         {
             ResetPoints();
+            SetColor();
             this.yourTurn = yourTurn;
         }
 
