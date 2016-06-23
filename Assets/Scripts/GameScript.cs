@@ -89,31 +89,34 @@ public class GameScript : MonoBehaviour
             Destroy(this);
         }
 
-        List<Member> team1Members = TeamCollector.team1;
-        List<Member> team2Members = TeamCollector.team2;
-
-        int counter = 0;
-
-        foreach (Member m in team1Members)
+        if (TeamCollector.team1 != null && TeamCollector.team2 != null)
         {
-            Member memberToEdit = team1.members[counter];
-            memberToEdit.Speed = m.Speed;
-            memberToEdit.Stamina = m.Stamina;
-            memberToEdit.SetColor(team1.color);
-            Debug.Log("Set member: " + m.PlayerName);
-            counter++;
-        }
+            List<Member> team1Members = TeamCollector.team1;
+            List<Member> team2Members = TeamCollector.team2;
 
-        counter = 0;
+            int counter = 0;
 
-        foreach (Member m in team2Members)
-        {
-            Member memberToEdit = team2.members[counter];
-            memberToEdit.Speed = m.Speed;
-            memberToEdit.Stamina = m.Stamina;
-            memberToEdit.SetColor(team2.color);
-            Debug.Log("Set member: " + m.PlayerName);
-            counter++;
+            foreach (Member m in team1Members)
+            {
+                Member memberToEdit = team1.members[counter];
+                memberToEdit.Speed = m.Speed;
+                memberToEdit.Stamina = m.Stamina;
+                memberToEdit.SetColor(team1.color);
+                Debug.Log("Set member: " + m.PlayerName);
+                counter++;
+            }
+
+            counter = 0;
+
+            foreach (Member m in team2Members)
+            {
+                Member memberToEdit = team2.members[counter];
+                memberToEdit.Speed = m.Speed;
+                memberToEdit.Stamina = m.Stamina;
+                memberToEdit.SetColor(team2.color);
+                Debug.Log("Set member: " + m.PlayerName);
+                counter++;
+            }
         }
 
         Debug.Log("Changed Member's speed en stamina");
