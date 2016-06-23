@@ -152,7 +152,7 @@ public class GameScript : MonoBehaviour
         if (currentTeam == null)
         {
             currentTeam = team1;
-            textCurrentTurn.text = "TURN TEAM RED";
+            textCurrentTurn.text = "TURN RED";
             team1.ChangeTurn(true);
             team2.ChangeTurn(false);
             return;
@@ -161,7 +161,7 @@ public class GameScript : MonoBehaviour
         if (currentTeam == team1)
         {
             currentTeam = team2;
-            textCurrentTurn.text = "TURN TEAM BLUE";
+            textCurrentTurn.text = "TURN BLUE";
             team1.ChangeTurn(false);
 
             foreach (Member m in team1.members)

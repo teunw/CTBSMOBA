@@ -71,7 +71,7 @@ public class Team : MonoBehaviour
     public void RaiseScore()
     {
         score += 1;
-        textScore.text = "Team " + team + ": " + score;
+        textScore.text = score.ToString();
         if (game.CheckEndGame(score))
         {
             soundManager.playWinSound();
