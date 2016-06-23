@@ -137,7 +137,7 @@ namespace Assets.Scripts
         /// </summary>
         private void ReadFromFile()
         {
-            string path = @"Assets\Character\members.txt";
+            string path = Application.dataPath + "/Resources/Data.txt";
             StreamReader reader = new StreamReader(path);
 
             string line;
