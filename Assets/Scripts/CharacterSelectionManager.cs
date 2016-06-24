@@ -9,6 +9,8 @@ using UnityEngine.UI;
 
 #endregion
 using System.IO;
+using System.Net;
+using SimpleJSON;
 using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts
@@ -121,6 +123,8 @@ namespace Assets.Scripts
         /// </summary>
         private int currentMember;
 
+        private WWW www;
+
         /// <summary>
         /// Start function.
         /// This method will start the procedure of this class.
@@ -130,11 +134,52 @@ namespace Assets.Scripts
             this.members = new List<MemberData>();
             this.currentTeam = new List<Member>();
             this.buttonNext.gameObject.SetActive(false);
-            this.ReadFromFile();
             this.currentMember = 1;
             this.buttonLeft.gameObject.SetActive(false);
             this.teamNumber = 1;
             this.SetPickingTeam();
+
+            HttpWebResponse response = null;
+            try
+            {
+                WebRequest request = WebRequest.Create("http://dashcap.teunwillems.nl/data");
+                response = (HttpWebResponse) request.GetResponse();
+            }
+            catch (Exception e)
+            {
+                AddDefaultCharacters();
+                PutMembersInGame();
+                return;
+            }
+
+            Stream dataStream = response.GetResponseStream();
+            // Open the stream using a StreamReader for easy access.
+            StreamReader reader = new StreamReader(dataStream);
+            // Read the content.
+            string responseFromServer = reader.ReadToEnd();
+            Debug.Log(responseFromServer);
+
+            JSONNode node = JSON.Parse(responseFromServer);
+            JSONArray array = node["characters"].AsArray;
+            IEnumerator enumerator = array.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                object current = enumerator.Current;
+                JSONClass currentNode = JSON.Parse(current.ToString()).AsObject;
+
+                Debug.Log(currentNode["speed"].Value);
+                Debug.Log(currentNode["stamina"].Value);
+                MemberData md = new MemberData()
+                {
+                    Name = currentNode["name"].Value,
+                    Speed = (int) Convert.ToDouble(currentNode["speed"].Value),
+                    Stamina = (int) Convert.ToDouble(currentNode["stamina"].Value)
+                };
+
+                members.Add(md);
+                Debug.Log(md);
+            }
+            PutMembersInGame();
         }
 
         /// <summary>
@@ -436,13 +481,18 @@ namespace Assets.Scripts
 
     public struct MemberData
     {
-        public int Stamina;
-        public int Speed;
-        public string Name;
+        private int stamina;
+        private int speed;
+        private string name;
+        private string skill1, skill2;
+
+        public int Stamina { get { return stamina; } set { stamina = value; } }
+        public int Speed { get { return speed; } set { speed = value; } }
+        public string Name { get { return name; } set { name = value; } }
 
         public override string ToString()
         {
-            return String.Format("{0}-{1}-{2}", Stamina, Speed, Name);
+            return String.Format("{0}-{1}-{2}", stamina, speed, name);
         }
     }
 }
