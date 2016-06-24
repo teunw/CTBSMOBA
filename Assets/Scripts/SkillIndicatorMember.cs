@@ -21,7 +21,7 @@ namespace Assets.Scripts
 
         private GameObject GetSkillGameObject(Type skill)
         {
-            if (skill != typeof(KickAction) && skill != typeof(TiedTogetherAction)) throw new ArgumentException("Invalid skill type");
+            if (skill != typeof(KickAction) && skill != typeof(TiedTogetherAction) && skill != typeof(GrowAction)) throw new ArgumentException("Invalid skill type");
             return (skill == typeof(KickAction)) ? KickIndicator : RehtegotDietIndicator;
         }
         public void SetActive(Vector3 pos, Vector3 pos2, Member member)

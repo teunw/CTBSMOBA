@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using Assets.Scripts;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using Assets.Scripts.Skills;
+using System.Linq;
 
 public class GameScript : MonoBehaviour
 {
@@ -49,6 +51,7 @@ public class GameScript : MonoBehaviour
     public Button endTurn;
     public Button kickButton;
     public Button besteGameButton;
+    public Button growButton;
     public ProgressBarBehaviour ProgressBar;
 
     public DrawManager drawManager;
@@ -191,10 +194,16 @@ public class GameScript : MonoBehaviour
         }
         teamStatus = TeamStatus.Executing;
         Debug.Log("Status: Executing");
+        
         team1.PerformActions();
         team2.PerformActions();
+        foreach (Member member in team1.members.Concat(team2.members))
+        {
+            member.SendMessage(ActionConstants.OnExcecutingStart, SendMessageOptions.DontRequireReceiver);
+        }
         kickButton.interactable = false;
         besteGameButton.interactable = false;
+        growButton.interactable = false;
         endTurn.interactable = false;
     }
 
@@ -239,10 +248,17 @@ public class GameScript : MonoBehaviour
                 teamStatus = TeamStatus.Planning;
                 Debug.Log("Status: Planning");
 
+                foreach (Member member in team1.members.Concat(team2.members))
+                {
+                    member.SendMessage(ActionConstants.OnExcecutingDone, SendMessageOptions.DontRequireReceiver);
+                }
+                
+            
                 currentTeam = null;
                 SwitchTurn();
                 endTurn.interactable = true;
                 kickButton.interactable = true;
+                growButton.interactable = true;
                 besteGameButton.interactable = true;
                 Debug.Log("BOTH TEAMS ARE DONE");
             }
