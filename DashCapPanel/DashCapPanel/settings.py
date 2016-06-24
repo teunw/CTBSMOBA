@@ -51,6 +51,8 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+STATIC_ROOT = "/apps/django/DashCapPanel/static/"
+
 ROOT_URLCONF = 'DashCapPanel.urls'
 
 TEMPLATES = [
