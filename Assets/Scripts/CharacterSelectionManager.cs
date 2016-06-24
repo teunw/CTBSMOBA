@@ -56,7 +56,7 @@ namespace Assets.Scripts
         /// <summary>
         /// The members who are currently in your team.
         /// </summary>
-        private List<Member> currentTeam;
+        private List<MemberData> currentTeam;
 
         /// <summary>
         /// The text for current member 1.
@@ -109,12 +109,12 @@ namespace Assets.Scripts
         /// <summary>
         /// Team 1's member.
         /// </summary>
-        private List<Member> team1;
+        private List<MemberData> team1;
 
         /// <summary>
         /// Team 2's member.
         /// </summary>
-        private List<Member> team2;
+        private List<MemberData> team2;
 
         /// <summary>
         /// The currentmember
@@ -128,7 +128,7 @@ namespace Assets.Scripts
         void Start()
         {
             this.members = new List<MemberData>();
-            this.currentTeam = new List<Member>();
+            this.currentTeam = new List<MemberData>();
             this.buttonNext.gameObject.SetActive(false);
             this.ReadFromFile();
             this.currentMember = 1;
@@ -165,7 +165,6 @@ namespace Assets.Scripts
                 if (Input.GetKeyDown(KeyCode.RightArrow) && currentMember != this.members.Count())
                 {
                     moveCamera(true);
-
                 }
                 if (Input.GetKeyDown(KeyCode.LeftArrow) && currentMember != 1)
                 {
@@ -180,65 +179,54 @@ namespace Assets.Scripts
         /// </summary>
         private void ReadFromFile()
         {
-            string path = Application.dataPath + "/Resources/Data.txt";
+            string path = Application.dataPath + "/Resources/Data2.txt";
 
             StreamReader reader = null;
             try
             {
                 reader = new StreamReader(path);
+
+                string line;
+
+                while ((line = reader.ReadLine()) != null)
+                {
+                    string[] lines = line.Split('-');
+                    int stamina = Convert.ToInt32(lines[0]);
+                    int speed = Convert.ToInt32(lines[1]);
+                    string name = lines[2];
+
+                    MemberData m = new MemberData()
+                    {
+                        Stamina = stamina,
+                        Speed = speed,
+                        Name = name
+                    };
+                    members.Add(m);
+                }
+
+                reader.Close();
             }
             catch
             {
-                AddDefaultCharacters();
-                return;
             }
-
-            string line;
-
-            while ((line = reader.ReadLine()) != null)
-            {
-                string[] lines = line.Split('-');
-                int stamina = Convert.ToInt32(lines[0]);
-                int speed = Convert.ToInt32(lines[1]);
-                string name = lines[2];
-
-                MemberData m = new MemberData()
-                {
-                    Stamina = stamina,
-                    Speed = speed,
-                    Name = name
-                };
-                members.Add(m);
-            }
-
-            reader.Close();
+            AddMandatoryCharacters();
             PutMembersInGame();
         }
 
-        public void AddDefaultCharacters()
+        /// <summary>
+        /// Adds characters until at least 3 members are present
+        /// </summary>
+        public void AddMandatoryCharacters()
         {
-            MemberData m1 = new MemberData()
+            while (members.Count < 3)
             {
-                Stamina = 30,
-                Speed = 250,
-                Name = "Messi"
-            };
-            MemberData m2 = new MemberData()
-            {
-                Stamina = 10,
-                Speed = 170,
-                Name = "Sjonnie"
-            };
-            MemberData m3 = new MemberData()
-            {
-                Stamina = 15,
-                Speed = 240,
-                Name = "PieterHenk"
-            };
-
-            members.Add(m1);
-            members.Add(m2);
-            members.Add(m3);
+                members.Add(new MemberData()
+                {
+                    Stamina = 25 + members.Count,
+                    Speed = 200 - members.Count * 10,
+                    Name = "GC_" + members.Count
+                });
+            }
         }
 
         /// <summary>
@@ -259,7 +247,7 @@ namespace Assets.Scripts
                 go.transform.SetParent(emptyParentObject.transform);
 
                 Member mScript = go.GetComponent<Member>();
-                mScript.SetFieldsFromFile(m.Name, m.Stamina, m.Speed);
+                mScript.SetFieldsFromFile(m);
 
 
                 SimpleMember simpleMember = go.AddComponent<SimpleMember>();
@@ -297,7 +285,7 @@ namespace Assets.Scripts
         /// <summary>
         /// Add the selectedmember to your team.
         /// </summary>
-        public void AddMember(Member memberToAdd)
+        public void AddMember(MemberData memberToAdd)
         {
             if (!currentTeam.Contains(memberToAdd) && currentTeam.Count < 3)
             {
@@ -315,9 +303,9 @@ namespace Assets.Scripts
         {
             int counter = 1;
 
-            foreach (Member m in this.currentTeam)
+            foreach (MemberData m in this.currentTeam)
             {
-                string text = m.PlayerName + " - " + m.Speed.ToString() + " - " + m.Stamina.ToString();
+                string text = m.Name + " - " + m.Speed.ToString() + " - " + m.Stamina.ToString();
                 Color teamColor = teamNumber == 1 ? Color.red : Color.blue;
 
                 switch (counter)
@@ -390,8 +378,8 @@ namespace Assets.Scripts
             {
                 if (currentTeam.Count == 3)
                 {
-                    team2 = new List<Member>(currentTeam);
-                    TeamCollector.SetTeam(team2, 2);
+                    team2 = new List<MemberData>(currentTeam);
+                    TeamCollector.FillTeam(team2, 2);
                     Debug.Log("Team 2 has been set with: " + team2.Count + " players");
                     currentTeam.Clear();
                     SceneManager.LoadScene(2);
@@ -400,9 +388,9 @@ namespace Assets.Scripts
 
             else
             {
-                team1 = new List<Member>(currentTeam);
+                team1 = new List<MemberData>(currentTeam);
                 Debug.Log("Team 1 has been set with: " + team1.Count + " players");
-                TeamCollector.SetTeam(team1, 1);
+                TeamCollector.FillTeam(team1, 1);
                 currentTeam.Clear();
                 ResetTeamLayout();
                 teamNumber++;
