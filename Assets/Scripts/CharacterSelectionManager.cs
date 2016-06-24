@@ -147,7 +147,7 @@ namespace Assets.Scripts
             }
             catch (Exception e)
             {
-                AddDefaultCharacters();
+                AddMandatoryCharacters();
                 PutMembersInGame();
                 return;
             }
@@ -157,7 +157,7 @@ namespace Assets.Scripts
             StreamReader reader = new StreamReader(dataStream);
             // Read the content.
             string responseFromServer = reader.ReadToEnd();
-            Debug.Log(responseFromServer);
+
 
             JSONNode node = JSON.Parse(responseFromServer);
             JSONArray array = node["characters"].AsArray;
@@ -167,8 +167,6 @@ namespace Assets.Scripts
                 object current = enumerator.Current;
                 JSONClass currentNode = JSON.Parse(current.ToString()).AsObject;
 
-                Debug.Log(currentNode["speed"].Value);
-                Debug.Log(currentNode["stamina"].Value);
                 MemberData md = new MemberData()
                 {
                     Name = currentNode["name"].Value,
