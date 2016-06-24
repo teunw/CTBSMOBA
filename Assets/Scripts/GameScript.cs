@@ -39,20 +39,6 @@ public class GameScript : MonoBehaviour
     /// </summary>
     public TeamStatus teamStatus;
 
-    /// <summary>
-    /// A boolean to check if the 
-    /// actions of team 1 are done.
-    /// This is standard set to false.
-    /// </summary>
-    private bool team1ActionsDone;
-
-    /// <summary>
-    /// A boolean to check if the 
-    /// actions of team 2 are done.
-    /// This is standard set to false.
-    /// </summary>
-    private bool team2ActionsDone;
-
     //UI ELEMENTS
     public Text textCurrentTurn;
     public Text textScoreTeam1;
@@ -123,9 +109,6 @@ public class GameScript : MonoBehaviour
 
         SwitchTurn();
         teamStatus = TeamStatus.Planning;
-
-        team1ActionsDone = false;
-        team2ActionsDone = false;
 
         textWin.gameObject.SetActive(false);
         playAgain.gameObject.SetActive(false);
@@ -233,7 +216,7 @@ public class GameScript : MonoBehaviour
 
     public void Win(Team team)
     {
-        textWin.text = "Team " + team.team + " won!";
+        textWin.text = "Team " + (team.team == 1 ? "red" : "blue") + " won!";
         textWin.enabled = true;
         playAgain.gameObject.SetActive(true);
     }
@@ -251,27 +234,18 @@ public class GameScript : MonoBehaviour
     {
         if (teamStatus == TeamStatus.Executing)
         {
-            if (!team1.CheckActionsDone())
+            if ((team1.CheckActionsDone() && team2.CheckActionsDone()))
             {
-                return;
-            }
+                teamStatus = TeamStatus.Planning;
+                Debug.Log("Status: Planning");
 
-            if (!team2.CheckActionsDone())
-            {
-                return;
+                currentTeam = null;
+                SwitchTurn();
+                endTurn.interactable = true;
+                kickButton.interactable = true;
+                besteGameButton.interactable = true;
+                Debug.Log("BOTH TEAMS ARE DONE");
             }
-            team1ActionsDone = false;
-            team2ActionsDone = false;
-            teamStatus = TeamStatus.Planning;
-            Debug.Log("Status: Planning");
-
-            currentTeam = team1;
-            team1.ChangeTurn(true);
-            team2.ChangeTurn(false);
-            endTurn.interactable = true;
-            kickButton.interactable = true;
-            besteGameButton.interactable = true;
-            Debug.Log("BOTH TEAMS ARE DONE");
         }
     }
 
