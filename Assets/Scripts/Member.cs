@@ -74,10 +74,10 @@ namespace Assets.Scripts
 
         protected override void Awake()
         {
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             if (team != null)
             {
                 defaultColor = team.color;
-                spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             }
             else
             {
@@ -88,7 +88,7 @@ namespace Assets.Scripts
                 Color color = new Color(r, g, b);
                 this.SetColor(color);
             }
-            
+
         }
 
         /// <summary>
@@ -285,7 +285,7 @@ namespace Assets.Scripts
 
             return null;
         }
-        
+
         /// <summary>
         /// Removes the first skill component attached to this member
         /// </summary>
@@ -306,7 +306,7 @@ namespace Assets.Scripts
                 Destroy(action as KickAction);
             }
         }
-        
+
         /// <summary>
         /// Called from skills when they are added
         /// </summary>
