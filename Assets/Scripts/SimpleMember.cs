@@ -99,7 +99,7 @@ public class SimpleMember : MonoBehaviour
         GameObject btn;
         btn = Instantiate(Resources.Load("Button") as GameObject);
         Button button = btn.GetComponent<Button>();
-        button.onClick.AddListener(() => csm.AddMember(this.member));
+        button.onClick.AddListener(() => csm.AddMember(this.member.GetData()));
         button.transform.SetParent(canvas.transform);
         button.name = "Select button from: " + this.member.PlayerName;
         button.transform.position = new Vector3(0, 150, 0); //Camera.main.WorldToScreenPoint(this.member.transform.position) - new Vector3(0, 150, 0);

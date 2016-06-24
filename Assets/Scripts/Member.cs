@@ -252,11 +252,25 @@ namespace Assets.Scripts
         /// <param name="name">The name of the member.</param>
         /// <param name="stamina">The stamina of the member.</param>
         /// <param name="speed">The speed of the member.</param>
-        public void SetFieldsFromFile(string name, int stamina, int speed)
+        public void SetFieldsFromFile(MemberData data)
         {
-            this.PlayerName = name;
-            this.Stamina = stamina;
-            this.Speed = speed;
+            this.PlayerName = data.Name;
+            this.Stamina = data.Stamina;
+            this.Speed = data.Speed;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public MemberData GetData()
+        {
+            return new MemberData()
+            {
+                Stamina = this.Stamina,
+                Speed = this.Speed,
+                Name = this.PlayerName
+            };
         }
 
         /// <summary>

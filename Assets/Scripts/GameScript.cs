@@ -78,37 +78,12 @@ public class GameScript : MonoBehaviour
             Destroy(this);
         }
 
-        if (TeamCollector.team1 != null && TeamCollector.team2 != null)
+        if (TeamCollector.hasTeams)
         {
-            List<Member> team1Members = TeamCollector.team1;
-            List<Member> team2Members = TeamCollector.team2;
-
-            int counter = 0;
-
-            foreach (Member m in team1Members)
-            {
-                Member memberToEdit = team1.members[counter];
-                memberToEdit.Speed = m.Speed;
-                memberToEdit.Stamina = m.Stamina;
-                memberToEdit.SetColor(team1.color);
-                Debug.Log("Set member: " + m.PlayerName);
-                counter++;
-            }
-
-            counter = 0;
-
-            foreach (Member m in team2Members)
-            {
-                Member memberToEdit = team2.members[counter];
-                memberToEdit.Speed = m.Speed;
-                memberToEdit.Stamina = m.Stamina;
-                memberToEdit.SetColor(team2.color);
-                Debug.Log("Set member: " + m.PlayerName);
-                counter++;
-            }
+            Debug.Log("Changed Members speed and stamina");
+            TeamCollector.SetTeam(team1.members, 1);
+            TeamCollector.SetTeam(team2.members, 2);
         }
-
-        Debug.Log("Changed Member's speed en stamina");
 
         SwitchTurn();
         teamStatus = TeamStatus.Planning;
