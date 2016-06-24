@@ -8,6 +8,7 @@ public class SkillUseIndicatorManager : MonoBehaviour
 
     public GameObject Kick;
     public GameObject TiedTogether;
+    public GameObject Grow;
 
     public void SetActive(Action a, bool active = false)
     {
@@ -19,6 +20,11 @@ public class SkillUseIndicatorManager : MonoBehaviour
         {
             TiedTogether.SetActive(active);
         }
+        if (a is GrowAction)
+        {
+            Grow.SetActive(active);
+        }
+        
     }
 
     public void SetActive(Component a, bool active = false)

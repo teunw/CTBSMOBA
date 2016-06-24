@@ -225,6 +225,7 @@ namespace Assets.Scripts
         {
             soundManager.playBumpSound();
             transform.GetComponent<Rigidbody2D>().velocity = velocity;
+            SendMessage(ActionConstants.OnMemberWalkInterruptedString, SendMessageOptions.DontRequireReceiver);
         }
 
         public void ActionPressed(Type action)
@@ -283,6 +284,9 @@ namespace Assets.Scripts
             ka = GetComponent<TiedTogetherAction>();
             if (ka != null) return ka;
 
+            ka = GetComponent<GrowAction>();
+            if (ka != null) return ka;
+
             return null;
         }
 
@@ -299,11 +303,19 @@ namespace Assets.Scripts
             Debug.Log("Removed skill " + action.Name);
             if (action is TiedTogetherAction)
             {
-                Destroy(action as TiedTogetherAction);
+                if (((TiedTogetherAction)action).FirstPhase) 
+                {
+                    Destroy(action as TiedTogetherAction);
+                }
+                
             }
             if (action is KickAction)
             {
                 Destroy(action as KickAction);
+            }
+            if (action is GrowAction)
+            {
+                Destroy(action as GrowAction);
             }
         }
 

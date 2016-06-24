@@ -84,6 +84,7 @@ public class DrawManager : MonoBehaviour
         GameScript.ProgressBar.gameObject.SetActive(IsMemberSelected);
         GameScript.kickButton.gameObject.SetActive(IsMemberSelected);
         GameScript.besteGameButton.gameObject.SetActive(IsMemberSelected);
+        GameScript.growButton.gameObject.SetActive(IsMemberSelected);
     }
 
     private void Update()
@@ -272,6 +273,7 @@ public class DrawManager : MonoBehaviour
         }
         GameScript.ProgressBar.gameObject.SetActive(IsMemberSelected);
         GameScript.kickButton.gameObject.SetActive(IsMemberSelected);
+        GameScript.growButton.gameObject.SetActive(IsMemberSelected);
         GameScript.besteGameButton.gameObject.SetActive(IsMemberSelected);
     }
 
@@ -294,6 +296,10 @@ public class DrawManager : MonoBehaviour
     public void TiedtogetherPressed()
     {
         ActionPressed(typeof(TiedTogetherAction));
+    }
+    public void GrowPressed()
+    {
+        ActionPressed(typeof(GrowAction));
     }
 
 
