@@ -30,7 +30,7 @@ namespace Assets.Scripts
         /// <summary>
         /// List of members which need to be put into the game.
         /// </summary>
-        private List<Member> members;
+        public List<MemberData> members;
 
         /// <summary>
         /// The end position of the camera's journey.
@@ -73,6 +73,34 @@ namespace Assets.Scripts
         /// </summary>
         public Text textMember3;
 
+
+        /// <summary>
+        ///  The images for members 1 to 3
+        /// </summary>
+        public Image imageMember1;
+        public Image imageMember2;
+        public Image imageMember3;
+        
+        /// <summary>
+        /// Sprite used for characters
+        /// </summary>
+        public Sprite characterImage;
+
+        /// <summary>
+        /// Team number of team currently choosing characters
+        /// </summary>
+        private int teamNumber;
+
+        /// <summary>
+        /// Text for team currently choosing
+        /// </summary>
+        public Text teamName;
+
+        /// <summary>
+        /// Panel for team color
+        /// </summary>
+        public GameObject teamPanel;
+
         /// <summary>
         /// Button to go to the next scene.
         /// </summary>
@@ -93,19 +121,20 @@ namespace Assets.Scripts
         /// </summary>
         private int currentMember;
 
-
         /// <summary>
         /// Start function.
         /// This method will start the procedure of this class.
         /// </summary>
         void Start()
         {
-            this.members = new List<Member>();
+            this.members = new List<MemberData>();
             this.currentTeam = new List<Member>();
             this.buttonNext.gameObject.SetActive(false);
             this.ReadFromFile();
             this.currentMember = 1;
             this.buttonLeft.gameObject.SetActive(false);
+            this.teamNumber = 1;
+            this.SetPickingTeam();
         }
 
         /// <summary>
@@ -129,6 +158,20 @@ namespace Assets.Scripts
 
             this.buttonLeft.gameObject.SetActive(currentMember != 1);
             this.buttonRight.gameObject.SetActive(currentMember != this.members.Count);
+
+            if (Camera.main.transform.position.x % 10 == 0)
+            {
+               
+                if (Input.GetKeyDown(KeyCode.RightArrow) && currentMember != this.members.Count())
+                {
+                    moveCamera(true);
+
+                }
+                if (Input.GetKeyDown(KeyCode.LeftArrow) && currentMember != 1)
+                {
+                    moveCamera(false);
+                }
+            }
         }
 
         /// <summary>
@@ -138,7 +181,17 @@ namespace Assets.Scripts
         private void ReadFromFile()
         {
             string path = Application.dataPath + "/Resources/Data.txt";
-            StreamReader reader = new StreamReader(path);
+
+            StreamReader reader = null;
+            try
+            {
+                reader = new StreamReader(path);
+            }
+            catch
+            {
+                AddDefaultCharacters();
+                return;
+            }
 
             string line;
 
@@ -149,13 +202,43 @@ namespace Assets.Scripts
                 int speed = Convert.ToInt32(lines[1]);
                 string name = lines[2];
 
-                Member m = new Member();
-                m.SetFieldsFromFile(name, stamina, speed);
+                MemberData m = new MemberData()
+                {
+                    Stamina = stamina,
+                    Speed = speed,
+                    Name = name
+                };
                 members.Add(m);
             }
 
             reader.Close();
             PutMembersInGame();
+        }
+
+        public void AddDefaultCharacters()
+        {
+            MemberData m1 = new MemberData()
+            {
+                Stamina = 30,
+                Speed = 250,
+                Name = "Messi"
+            };
+            MemberData m2 = new MemberData()
+            {
+                Stamina = 10,
+                Speed = 170,
+                Name = "Sjonnie"
+            };
+            MemberData m3 = new MemberData()
+            {
+                Stamina = 15,
+                Speed = 240,
+                Name = "PieterHenk"
+            };
+
+            members.Add(m1);
+            members.Add(m2);
+            members.Add(m3);
         }
 
         /// <summary>
@@ -167,16 +250,16 @@ namespace Assets.Scripts
             Vector3 positionToPlaceMember;
             int currentCharacterNumber = 0;
 
-            foreach (Member m in this.members)
+            foreach (MemberData m in this.members)
             {
                 positionToPlaceMember = new Vector3(currentCharacterNumber * 10, 0, 0);
                 Quaternion q = Quaternion.Euler(0, 90, 0);
                 GameObject go = (GameObject)GameObject.Instantiate(this.originalGameObject, positionToPlaceMember, q);
-                go.name = m.PlayerName;
+                go.name = m.Name;
                 go.transform.SetParent(emptyParentObject.transform);
 
                 Member mScript = go.GetComponent<Member>();
-                mScript.SetFieldsFromFile(m.PlayerName, m.Stamina, m.Speed);
+                mScript.SetFieldsFromFile(m.Name, m.Stamina, m.Speed);
 
 
                 SimpleMember simpleMember = go.AddComponent<SimpleMember>();
@@ -204,8 +287,6 @@ namespace Assets.Scripts
                 currentMember -= 2;
             }
 
-            Debug.Log("Current member: " + currentMember);
-
             endPosition = new Vector3(Camera.main.transform.position.x + value, -0.44f, -5);
 
             toMove = true;
@@ -218,8 +299,6 @@ namespace Assets.Scripts
         /// </summary>
         public void AddMember(Member memberToAdd)
         {
-            Debug.Log("Gonna try to ADD: " + memberToAdd.PlayerName);
-
             if (!currentTeam.Contains(memberToAdd) && currentTeam.Count < 3)
             {
                 this.currentTeam.Add(memberToAdd);
@@ -239,24 +318,38 @@ namespace Assets.Scripts
             foreach (Member m in this.currentTeam)
             {
                 string text = m.PlayerName + " - " + m.Speed.ToString() + " - " + m.Stamina.ToString();
+                Color teamColor = teamNumber == 1 ? Color.red : Color.blue;
 
                 switch (counter)
                 {
                     case 1:
+                        imageMember1.sprite = characterImage;
+                        imageMember1.color = teamColor;
                         textMember1.text = text;
+                        imageMember1.gameObject.SetActive(true);
+                        imageMember2.gameObject.SetActive(false);
+                        imageMember3.gameObject.SetActive(false);
                         break;
 
                     case 2:
+                        imageMember2.sprite = characterImage;
+                        imageMember2.color = teamColor;
                         textMember2.text = text;
+                        imageMember2.gameObject.SetActive(true);
+                        imageMember3.gameObject.SetActive(false);
                         break;
 
                     case 3:
+                        imageMember3.sprite = characterImage;
+                        imageMember3.color = teamColor;
                         textMember3.text = text;
+                        imageMember3.gameObject.SetActive(true);
                         break;
                 }
 
                 counter++;
             }
+
         }
 
         /// <summary>
@@ -267,6 +360,9 @@ namespace Assets.Scripts
             textMember1.text = "Member 1 not assigned";
             textMember2.text = "Member 2 not assigned";
             textMember3.text = "Member 3 not assigned";
+            imageMember1.gameObject.SetActive(false);
+            imageMember2.gameObject.SetActive(false);
+            imageMember3.gameObject.SetActive(false);
             buttonNext.gameObject.SetActive(false);
         }
 
@@ -309,7 +405,44 @@ namespace Assets.Scripts
                 TeamCollector.SetTeam(team1, 1);
                 currentTeam.Clear();
                 ResetTeamLayout();
+                teamNumber++;
+                SetPickingTeam();
             }
+        }
+
+        public void RemoveMemberFromTeam(int teamMemberNr)
+        {
+            teamMemberNr -= 1;
+            currentTeam.Remove(currentTeam[teamMemberNr]);
+            UpdateTeamLayout();
+
+            if (currentTeam.Count == 0) imageMember1.gameObject.SetActive(false);
+        }
+
+        public void SetPickingTeam()
+        {
+            if (teamNumber == 1)
+            {
+                teamPanel.GetComponent<Image>().color = Color.red;
+                teamName.text = "Team\nRED\npicks";
+            }
+            else if(teamNumber == 2)
+            {
+                teamPanel.GetComponent<Image>().color = Color.blue;
+                teamName.text = "Team\nBLUE\npicks";
+            }
+        }
+    }
+
+    public struct MemberData
+    {
+        public int Stamina;
+        public int Speed;
+        public string Name;
+
+        public override string ToString()
+        {
+            return String.Format("{0}-{1}-{2}", Stamina, Speed, Name);
         }
     }
 }

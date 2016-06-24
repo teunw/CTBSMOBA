@@ -64,7 +64,7 @@ public class SimpleMember : MonoBehaviour
         textName.name = "Text Name from: " + this.member.PlayerName;
         textName.color = Color.black;
         textName.text = this.member.PlayerName;
-        textName.transform.position = Camera.main.WorldToScreenPoint(this.member.transform.position) - new Vector3(-32, 100, 0);
+        textName.transform.position = new Vector3(-32, 100, 0); // Camera.main.WorldToScreenPoint(this.member.transform.position) - new Vector3(-32, 100, 0);
 
 
         GameObject textParentSpeed = new GameObject();
@@ -76,7 +76,7 @@ public class SimpleMember : MonoBehaviour
         textSpeed.font = Font.CreateDynamicFontFromOSFont("Arial", 20);
         textSpeed.name = "Text Speed from: " + this.member.PlayerName;
         textSpeed.text = "Speed: " + this.member.Speed.ToString();
-        textSpeed.transform.position = Camera.main.WorldToScreenPoint(this.member.transform.position) - new Vector3(-18, 120, 0);
+        textSpeed.transform.position = new Vector3(-18, 120, 0); // Camera.main.WorldToScreenPoint(this.member.transform.position) - new Vector3(-18, 120, 0);
         textSpeed.color = Color.black;
 
         GameObject textParentStamina = new GameObject();
@@ -88,7 +88,7 @@ public class SimpleMember : MonoBehaviour
         textStamina.font = Font.CreateDynamicFontFromOSFont("Arial", 20);
         textStamina.name = "Text Stamina from: " + this.member.PlayerName;
         textStamina.text = "Stamina: " + this.member.Stamina.ToString();
-        textStamina.transform.position = Camera.main.WorldToScreenPoint(this.member.transform.position) - new Vector3(-12, 140, 0);
+        textStamina.transform.position = new Vector3(-12, 140, 0);  //Camera.main.WorldToScreenPoint(this.member.transform.position) - new Vector3(-12, 140, 0);
         textStamina.color = Color.black;
 
 
@@ -102,7 +102,7 @@ public class SimpleMember : MonoBehaviour
         button.onClick.AddListener(() => csm.AddMember(this.member));
         button.transform.SetParent(canvas.transform);
         button.name = "Select button from: " + this.member.PlayerName;
-        button.transform.position = Camera.main.WorldToScreenPoint(this.member.transform.position) - new Vector3(0, 150, 0);
+        button.transform.position = new Vector3(0, 150, 0); //Camera.main.WorldToScreenPoint(this.member.transform.position) - new Vector3(0, 150, 0);
 
         this.button = button;
         

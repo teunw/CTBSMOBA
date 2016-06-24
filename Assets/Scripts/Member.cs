@@ -70,7 +70,7 @@ namespace Assets.Scripts
         /// </summary>
         private Color defaultColor;
 
-        private SpriteRenderer spriteRenderer;
+        public SpriteRenderer spriteRenderer;
 
         protected override void Awake()
         {
