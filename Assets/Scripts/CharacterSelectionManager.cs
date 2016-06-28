@@ -142,7 +142,7 @@ namespace Assets.Scripts
             HttpWebResponse response = null;
             try
             {
-                WebRequest request = WebRequest.Create("http://dashcap.teunwillems.nl/data");
+                WebRequest request = WebRequest.Create("https://dashcap.teunwillems.nl/data");
                 response = (HttpWebResponse) request.GetResponse();
             }
             catch (Exception e)
