@@ -8,8 +8,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 #endregion
+
 using System.IO;
 using System.Net;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using Assets.Scripts.CharacterReader;
 using SimpleJSON;
 using UnityEngine.SceneManagement;
 
@@ -80,9 +84,10 @@ namespace Assets.Scripts
         ///  The images for members 1 to 3
         /// </summary>
         public Image imageMember1;
+
         public Image imageMember2;
         public Image imageMember3;
-        
+
         /// <summary>
         /// Sprite used for characters
         /// </summary>
@@ -123,7 +128,6 @@ namespace Assets.Scripts
         /// </summary>
         private int currentMember;
 
-        private WWW www;
 
         /// <summary>
         /// Start function.
@@ -139,43 +143,16 @@ namespace Assets.Scripts
             this.teamNumber = 1;
             this.SetPickingTeam();
 
-            HttpWebResponse response = null;
-            try
-            {
-                WebRequest request = WebRequest.Create("https://dashcap.teunwillems.nl/data");
-                response = (HttpWebResponse) request.GetResponse();
-            }
-            catch (Exception e)
+            StartCoroutine("ReadCharacterCoroutine");
+        }
+
+        void ReadCharacterCoroutine()
+        {
+            ICharacterReader reader = new HttpCharacterReader();
+            bool succes = reader.GetMembers(ref members);
+            if (!succes)
             {
                 AddMandatoryCharacters();
-                PutMembersInGame();
-                return;
-            }
-
-            Stream dataStream = response.GetResponseStream();
-            // Open the stream using a StreamReader for easy access.
-            StreamReader reader = new StreamReader(dataStream);
-            // Read the content.
-            string responseFromServer = reader.ReadToEnd();
-
-
-            JSONNode node = JSON.Parse(responseFromServer);
-            JSONArray array = node["characters"].AsArray;
-            IEnumerator enumerator = array.GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                object current = enumerator.Current;
-                JSONClass currentNode = JSON.Parse(current.ToString()).AsObject;
-
-                MemberData md = new MemberData()
-                {
-                    Name = currentNode["name"].Value,
-                    Speed = (int) Convert.ToDouble(currentNode["speed"].Value),
-                    Stamina = (int) Convert.ToDouble(currentNode["stamina"].Value)
-                };
-
-                members.Add(md);
-                Debug.Log(md);
             }
             PutMembersInGame();
         }
@@ -189,7 +166,8 @@ namespace Assets.Scripts
         {
             if (toMove)
             {
-                Camera.main.transform.position = Vector3.MoveTowards(Camera.main.transform.position, endPosition, 25f * Time.deltaTime);
+                Camera.main.transform.position = Vector3.MoveTowards(Camera.main.transform.position, endPosition,
+                    25f*Time.deltaTime);
 
                 if (Camera.main.transform.position == endPosition)
                 {
@@ -202,9 +180,8 @@ namespace Assets.Scripts
             this.buttonLeft.gameObject.SetActive(currentMember != 1);
             this.buttonRight.gameObject.SetActive(currentMember != this.members.Count);
 
-            if (Camera.main.transform.position.x % 10 == 0)
+            if (Camera.main.transform.position.x%10 == 0)
             {
-               
                 if (Input.GetKeyDown(KeyCode.RightArrow) && currentMember != this.members.Count())
                 {
                     moveCamera(true);
@@ -266,7 +243,7 @@ namespace Assets.Scripts
                 members.Add(new MemberData()
                 {
                     Stamina = 25 + members.Count,
-                    Speed = 200 - members.Count * 10,
+                    Speed = 200 - members.Count*10,
                     Name = "GC_" + members.Count
                 });
             }
@@ -283,9 +260,9 @@ namespace Assets.Scripts
 
             foreach (MemberData m in this.members)
             {
-                positionToPlaceMember = new Vector3(currentCharacterNumber * 10, 0, 0);
+                positionToPlaceMember = new Vector3(currentCharacterNumber*10, 0, 0);
                 Quaternion q = Quaternion.Euler(0, 90, 0);
-                GameObject go = (GameObject)GameObject.Instantiate(this.originalGameObject, positionToPlaceMember, q);
+                GameObject go = (GameObject) GameObject.Instantiate(this.originalGameObject, positionToPlaceMember, q);
                 go.name = m.Name;
                 go.transform.SetParent(emptyParentObject.transform);
 
@@ -380,7 +357,6 @@ namespace Assets.Scripts
 
                 counter++;
             }
-
         }
 
         /// <summary>
@@ -457,7 +433,7 @@ namespace Assets.Scripts
                 teamPanel.GetComponent<Image>().color = Color.red;
                 teamName.text = "Team\nRED\npicks";
             }
-            else if(teamNumber == 2)
+            else if (teamNumber == 2)
             {
                 teamPanel.GetComponent<Image>().color = Color.blue;
                 teamName.text = "Team\nBLUE\npicks";
@@ -472,9 +448,23 @@ namespace Assets.Scripts
         private string name;
         private string skill1, skill2;
 
-        public int Stamina { get { return stamina; } set { stamina = value; } }
-        public int Speed { get { return speed; } set { speed = value; } }
-        public string Name { get { return name; } set { name = value; } }
+        public int Stamina
+        {
+            get { return stamina; }
+            set { stamina = value; }
+        }
+
+        public int Speed
+        {
+            get { return speed; }
+            set { speed = value; }
+        }
+
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
 
         public override string ToString()
         {
