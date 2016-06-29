@@ -29,6 +29,8 @@ ALLOWED_HOSTS = []
 
 STATIC_FILES = '/apps/django/static/'
 
+STATIC_ROOT = "C:/django/"
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
     '/apps/django/static/',
@@ -59,7 +61,6 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-STATIC_ROOT = "/apps/django/static/"
 
 ROOT_URLCONF = 'DashCapPanel.urls'
 

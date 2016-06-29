@@ -12,7 +12,7 @@ class Character(models.Model):
         (TIEDTOGETHER, TIEDTOGETHER), (KICK, KICK), (GROW, GROW)
     )
 
-    owner = models.ForeignKey(User, blank=True, default=None)
+    owner = models.ForeignKey(User, blank=True, default=None, null=True)
     name = models.CharField(max_length=32)
     speed = models.FloatField(default=25)
     stamina = models.FloatField(default=200)
