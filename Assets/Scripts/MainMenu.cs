@@ -1,13 +1,23 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using System.Text;
+using Assets.Scripts;
+using SimpleJSON;
+using UnityEngine.Experimental.Networking;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 
 public class MainMenu : MonoBehaviour
 {
+
+    public const string WebRootURL = "http://localhost:8000/";
+
+    public MainMenuCharacter MainMenuCharacter;
 
     public GameObject FirstMenu;
     public GameObject Controls;
@@ -18,6 +28,13 @@ public class MainMenu : MonoBehaviour
     public InputField AverageSpeedField;
     public InputField NrOfSprintsField;
     public InputField AvgSprintDistanceField;
+
+    public InputField LoginUsernameField;
+    public InputField LoginPasswordField;
+    public Text ErrorText;
+    public Button LoginButton;
+    public Button RegisterButton;
+    private bool loggingIn;
 
     public Dropdown CharacterDropdownList;
 
@@ -380,6 +397,98 @@ public class MainMenu : MonoBehaviour
 
         FirstMenu.SetActive(false);
         Controls.SetActive(true);
+    }
+
+    public void Register()
+    {
+        StartCoroutine(RequestAccount("register"));
+    }
+
+    public void Login()
+    {
+        StartCoroutine(RequestAccount("login"));
+    }
+
+    public void ShowError(string error)
+    {
+        ErrorText.enabled = error != null;
+        if (error == null) return;
+
+        ErrorText.text = error;
+    }
+
+    public IEnumerator RequestAccount(string url)
+    {
+        // Make the button uninteractable and set the text to indicate the login
+        SetLoggingIn();
+        string webrequestUrl = string.Format("{0}{1}?username={2}&password={3}", WebRootURL, url, LoginUsernameField.text, LoginPasswordField.text);
+
+        ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) => true;
+        UnityWebRequest uwr = UnityWebRequest.Get(webrequestUrl);
+
+        yield return uwr.Send();
+
+        if (uwr.isError)
+        {
+            ShowError(uwr.error);
+        }
+        else
+        {
+            string responseFromServer = uwr.downloadHandler.text;
+            Debug.Log(responseFromServer);
+            JSONNode node = JSON.Parse(responseFromServer);
+            JSONNode obj = node["error"];
+            // Some error was returned by the server, display it
+            if (obj.Value != "")
+            {
+                Debug.LogWarning(string.Format("User error [{0}]", obj.Value));
+                ShowError(obj.Value);
+            }
+            else
+            {
+                // Handle character loading...
+                JSONClass characterNode = node["character"].AsObject;
+                MemberData md = new MemberData
+                {
+                    Name = characterNode["name"].Value,
+                    Speed = (int) float.Parse(characterNode["speed"].Value),
+                    Stamina = (int) float.Parse(characterNode["stamina"].Value)
+                };
+                MainMenuCharacter.SetCharacter(md);
+                ShowError(null);
+            }
+        }
+        SetLoggingIn(false);
+
+    }
+
+    public void ToggleLoggingIn()
+    {
+        loggingIn = !loggingIn;
+        SetLoggingIn(loggingIn);
+    }
+
+    public void SetLoggingIn(bool loggingIn = true)
+    {
+        SetButtons(loggingIn, LoginButton);
+        SetButtons(loggingIn, RegisterButton, "BUSY...", "REGISTER");
+    }
+
+    public void SetButtons(bool loggingIn = true, Button loginButton = null, string busyText = "LOGGING IN....", string doneText = "LOGIN")
+    {
+        if (loginButton == null) loginButton = this.LoginButton;
+        Text loginButtonText = loginButton.GetComponentInChildren<Text>();
+        if (loggingIn)
+        {
+            Debug.Log("tset");
+            loginButtonText.text = "LOGGING IN...";
+            loginButton.interactable = false;
+        }
+        else
+        {
+            loginButtonText.text = "LOGIN";
+            loginButton.interactable = true;
+        }
     }
 
     public void BackToMenu()

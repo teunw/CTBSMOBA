@@ -2,19 +2,27 @@ import json
 
 from django.core import serializers
 from django.http import JsonResponse, HttpResponse
+from django.utils.datastructures import MultiValueDictKeyError
 
 from DashData.models import Character
 from django.contrib.auth.models import User
 
 
 def characters(request):
-    dictionaries = [obj.as_dict() for obj in Character.objects.get_queryset()]
+    try:
+        dictionaries = [obj.as_dict() for obj in Character.objects.get_queryset()]
+    except Exception:
+        return JsonResponse({"error": "Could not retrieve characters, you can still play in offline mode "})
     return HttpResponse(json.dumps({"characters": dictionaries}), content_type='application/json')
 
 
 def login(request):
-    username = request.GET["username"]
-    password = request.GET["password"]
+    try:
+        username = request.GET["username"]
+        password = request.GET["password"]
+    except MultiValueDictKeyError:
+        return JsonResponse({"error": "Not all parameters were sent"})
+
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
@@ -25,7 +33,11 @@ def login(request):
     if not passwordCorrect:
         return JsonResponse({"error": "Incorrect password"})
 
-    userCharacters = Character.objects.get(owner=user)
+    try:
+        userCharacters = Character.objects.get(owner=user)
+    except Character.DoesNotExist:
+        return JsonResponse({"error": "User character not found"})
+
     return JsonResponse(
         {
             "success": passwordCorrect,
@@ -54,12 +66,19 @@ def register(request):
     )
     user.save()
 
-    Character.objects.create(owner=user, name=user.username)
+    userCharacters = Character.objects.create(owner=user, name=user.username)
 
     return JsonResponse(
         {
             "success": True,
-            "user": user.username
+            "user": user.username,
+            "character": {
+                "name": userCharacters.name,
+                "speed": userCharacters.speed,
+                "stamina": userCharacters.stamina,
+                "skill1": userCharacters.skill1,
+                "skill2": userCharacters.skill2,
+            }
         }
     )
 

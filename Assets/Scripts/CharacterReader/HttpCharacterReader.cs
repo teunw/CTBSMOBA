@@ -19,7 +19,7 @@ namespace Assets.Scripts.CharacterReader
             try
             {
                 ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) => true;
-                request = WebRequest.Create("https://dashcap.teunwillems.nl/data");
+                request = WebRequest.Create(MainMenu.WebRootURL + "data");
                 request.Timeout = 1000;
                 response = (HttpWebResponse)request.GetResponse();
 
