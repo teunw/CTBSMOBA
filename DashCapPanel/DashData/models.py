@@ -1,7 +1,7 @@
+from django.contrib.auth.models import User
 from django.db import models
+from django.conf import settings
 
-# Create your models here.
-from django.db.models import Model
 
 class Character(models.Model):
     TIEDTOGETHER = "Tiedtogether"
@@ -12,9 +12,10 @@ class Character(models.Model):
         (TIEDTOGETHER, TIEDTOGETHER), (KICK, KICK), (GROW, GROW)
     )
 
-    name = models.CharField(primary_key=True, max_length=32)
-    speed = models.FloatField()
-    stamina = models.FloatField()
+    owner = models.ForeignKey(User, blank=True, default=None)
+    name = models.CharField(max_length=32)
+    speed = models.FloatField(default=25)
+    stamina = models.FloatField(default=200)
     skill1 = models.CharField(
         max_length=32,
         choices=SKILL_CHOICES,
@@ -28,3 +29,24 @@ class Character(models.Model):
 
     def __str__(self):
         return self.name + " [" + self.speed.__str__() + " Speed:" + self.stamina.__str__() + " Stamina]"
+
+    @classmethod
+    def create(cls, owner, name):
+        character = cls(owner=owner, name=name)
+        return character
+
+    def as_dict(self):
+        return {
+            "owner": {
+                "id": self.owner_id,
+                "username": self.owner.username
+            },
+            "name": self.name,
+            "speed": self.speed,
+            "stamina": self.stamina,
+            "skill1": self.skill1,
+            "skill2": self.skill2,
+        }
+
+
+
