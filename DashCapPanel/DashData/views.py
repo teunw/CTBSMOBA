@@ -1,6 +1,5 @@
 import json
 
-from django.core import serializers
 from django.http import JsonResponse, HttpResponse
 from django.utils.datastructures import MultiValueDictKeyError
 
