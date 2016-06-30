@@ -234,8 +234,19 @@ namespace Assets.Scripts
             Component c = GetComponent(action);
             if (c != null)
             {
-                Destroy(c);
-                Debug.Log("Removed skill " + action.Name);
+                bool destroy = true;
+                if (c is TiedTogetherAction)
+                {
+                    if (!((TiedTogetherAction)c).FirstPhase)
+                    {
+                        destroy = false;
+                    }
+                }
+                if (destroy)
+                {
+                    Destroy(c);
+                    Debug.Log("Removed skill " + action.Name);
+                }
             }
             else
             {
