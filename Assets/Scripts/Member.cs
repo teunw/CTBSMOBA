@@ -231,17 +231,9 @@ namespace Assets.Scripts
         public void ActionPressed(Type action)
         {
             if (action.IsAssignableFrom(typeof(MonoBehaviour))) throw new Exception("Type isn't monobehaviour!");
-            Component c = GetComponent(action);
-            if (c != null)
-            {
-                Destroy(c);
-                Debug.Log("Removed skill " + action.Name);
-            }
-            else
-            {
-                gameObject.AddComponent(action);
-                Debug.Log("Added skill " + action.Name);
-            }
+            if (GetSkillAction() != null) return;
+            gameObject.AddComponent(action);
+            Debug.Log("Added skill " + action.Name);
         }
 
 
@@ -314,14 +306,13 @@ namespace Assets.Scripts
             {
                 return;
             }
-            Debug.Log("Removed skill " + action.Name);
             if (action is TiedTogetherAction)
             {
-                if (((TiedTogetherAction)action).FirstPhase) 
+                if (((TiedTogetherAction)action).FirstPhase)
                 {
                     Destroy(action as TiedTogetherAction);
                 }
-                
+
             }
             if (action is KickAction)
             {
