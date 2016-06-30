@@ -35,6 +35,8 @@ namespace Assets.Scripts.Skills
             GetComponentInChildren<Member>().SetColor(actionColor);
             scaleBefore = new Vector3(1,1,1);
             scaleAfter = new Vector3(1, 2, 2);
+            SendMessage(ActionConstants.OnSkillAdded, this, SendMessageOptions.DontRequireReceiver);
+
         }
         void Update() {
             if (grow)
@@ -79,6 +81,8 @@ namespace Assets.Scripts.Skills
         void OnDestroy()
         {
             GetComponentInChildren<Member>().SetColor();
+            SendMessage(ActionConstants.OnSkillRemoved, this, SendMessageOptions.DontRequireReceiver);
+
         }
 
     }
