@@ -163,6 +163,7 @@ namespace Assets.Scripts
                 AddMandatoryCharacters();
             }
             PutMembersInGame();
+            UpdateMemberUI();
         }
 
         /// <summary>
@@ -282,11 +283,16 @@ namespace Assets.Scripts
 
             toMove = true;
 
+            UpdateMemberUI();
+
+        }
+
+        private void UpdateMemberUI()
+        {
             MemberData member = members[currentMember];
             PlayerName.text = member.Name;
             PlayerSpeed.text = member.Speed.ToString();
             PlayerStamina.text = member.Stamina.ToString();
-
         }
 
         /// <summary>
