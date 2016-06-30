@@ -73,6 +73,8 @@ public class MainMenu : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
+        WWW www = new WWW("https://google.nl");
+        www.Dispose();
     }
 
     public void GoToInputScreen()

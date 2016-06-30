@@ -14,14 +14,14 @@ namespace Assets.Scripts.CharacterReader
     {
         public bool GetMembers(ref List<MemberData> members)
         {
-            HttpWebResponse response = null;
+            WebResponse response = null;
             WebRequest request = null;
             try
             {
                 ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) => true;
                 request = WebRequest.Create("https://dashcap.teunwillems.nl/data");
-                request.Timeout = 1000;
-                response = (HttpWebResponse)request.GetResponse();
+                request.Timeout = 2000;
+                response = request.GetResponse();
 
 
                 Stream dataStream = response.GetResponseStream();

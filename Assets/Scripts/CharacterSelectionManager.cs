@@ -128,6 +128,12 @@ namespace Assets.Scripts
         /// </summary>
         private int currentMember;
 
+        public float TouchTolerance = 10f;
+
+        public Text PlayerName;
+        public Text PlayerSpeed;
+        public Text PlayerStamina;
+        public Button PlayerSelect;
 
         /// <summary>
         /// Start function.
@@ -142,6 +148,8 @@ namespace Assets.Scripts
             this.buttonLeft.gameObject.SetActive(false);
             this.teamNumber = 1;
             this.SetPickingTeam();
+
+            PlayerSelect.onClick.AddListener(() => { AddMember(members[currentMember]); });
 
             StartCoroutine("ReadCharacterCoroutine");
         }
@@ -191,46 +199,24 @@ namespace Assets.Scripts
                     moveCamera(false);
                 }
             }
-        }
-
-        /// <summary>
-        /// Read the members from the file
-        /// and put them in the list.
-        /// </summary>
-        private void ReadFromFile()
-        {
-            string path = Application.dataPath + "/Resources/Data2.txt";
-
-            StreamReader reader = null;
-            try
+            if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved &&
+                Math.Abs(Camera.main.transform.position.x%10) < .02f)
             {
-                reader = new StreamReader(path);
-
-                string line;
-
-                while ((line = reader.ReadLine()) != null)
+                Vector2 touchDelta = Input.GetTouch(0).deltaPosition;
+                bool? move = null;
+                if (touchDelta.x > TouchTolerance && buttonLeft.IsActive())
                 {
-                    string[] lines = line.Split('-');
-                    int stamina = Convert.ToInt32(lines[0]);
-                    int speed = Convert.ToInt32(lines[1]);
-                    string name = lines[2];
-
-                    MemberData m = new MemberData()
-                    {
-                        Stamina = stamina,
-                        Speed = speed,
-                        Name = name
-                    };
-                    members.Add(m);
+                    move = false;
                 }
-
-                reader.Close();
+                else if (touchDelta.x < -TouchTolerance && buttonRight.IsActive())
+                {
+                    move = true;
+                }
+                if (move != null)
+                {
+                    moveCamera((bool) move);
+                }
             }
-            catch
-            {
-            }
-            AddMandatoryCharacters();
-            PutMembersInGame();
         }
 
         /// <summary>
@@ -238,7 +224,7 @@ namespace Assets.Scripts
         /// </summary>
         public void AddMandatoryCharacters()
         {
-            while (members.Count < 3)
+            while (members.Count < 6)
             {
                 members.Add(new MemberData()
                 {
@@ -269,11 +255,9 @@ namespace Assets.Scripts
                 Member mScript = go.GetComponent<Member>();
                 mScript.SetFieldsFromFile(m);
 
-
                 SimpleMember simpleMember = go.AddComponent<SimpleMember>();
                 simpleMember.csm = this;
                 simpleMember.member = mScript;
-                simpleMember.SetTextUnderCharacter();
 
                 currentCharacterNumber++;
             }
@@ -286,20 +270,23 @@ namespace Assets.Scripts
         /// <param name="right">Decides if the camera should move to the right or the left</param>
         public void moveCamera(bool right)
         {
-            int value = 10;
-            currentMember += 1;
-
-            if (!right)
-            {
-                value *= -1;
-                currentMember -= 2;
-            }
+            int value = (right) ? 10 : -10;
+            currentMember += (right) ? 1 : -1;
 
             endPosition = new Vector3(Camera.main.transform.position.x + value, -0.44f, -5);
 
-            toMove = true;
             buttonLeft.enabled = false;
             buttonRight.enabled = false;
+
+            if (currentMember > members.Count - 1 || currentMember < 0) return;
+
+            toMove = true;
+
+            MemberData member = members[currentMember];
+            PlayerName.text = member.Name;
+            PlayerSpeed.text = member.Speed.ToString();
+            PlayerStamina.text = member.Stamina.ToString();
+
         }
 
         /// <summary>
